@@ -17,6 +17,12 @@ build next — this section is just a quick summary.
 > of only the scripted timeline. See
 > [docs/ELEVENLABS_MIGRATION.md](docs/ELEVENLABS_MIGRATION.md) and
 > [docs/ELEVENLABS_API_REFERENCE.md](docs/ELEVENLABS_API_REFERENCE.md).
+>
+> **Two entry points since the 2026-09-08 design overhaul:** `/` is the
+> scroll-driven Predixion landing (`public/index.html`, built on the
+> vendored scroll-craft engine) ending in the AgentX / Kollect / LeadX demo
+> picker; `/app.html` is the Kollect demo itself, now inside an app shell
+> (sidebar progress + top bar). Both share `public/css/design-system.css`.
 
 ## Current scope (per latest decisions)
 
@@ -114,13 +120,19 @@ server/
     escalations.js      GET /api/escalations (second-screen booth staff view)
     whatsapp.js         POST /api/whatsapp/send, GET/POST /api/whatsapp/mode, POST /api/whatsapp/send-test
 public/
-  index.html            The 6-screen booth dashboard
-  css/styles.css
+  index.html            Predixion landing: scroll-driven (scroll-craft engine), ends in the demo picker
+  app.html              The Kollect demo: 6 screens inside the app shell (sidebar + top bar)
+  css/design-system.css Shared tokens + primitives (buttons, fields, cards, badges, shell)
+  css/landing.css       Landing-only composition on top of the design system
+  css/vendor/scrollcraft.css  Vendored scroll-craft engine floor (never edited here)
+  css/styles.css        App screens (legacy token names now resolve to the design system)
   js/
+    landing.js          Landing: mounts the engine + the scroll-scrubbed sample call
     telemetry.js        Client-side event tracking engine
-    state.js, capture.js, softlaunch.js, orbs.js, archetype.js, persona.js,
+    state.js (goTo() also drives the shell's sidebar/breadcrumb), capture.js, softlaunch.js, orbs.js, archetype.js, persona.js,
     dashboard.js
     vendor/
+      scrollcraft.js              Vendored scroll-craft engine (from .claude/skills/scroll-craft)
       thinking-orbs-engine.es.js  Verbatim copy of the `thinking-orbs` npm
                                   package's framework-agnostic engine (see
                                   vendor/thinking-orb.js header for the
@@ -131,6 +143,8 @@ public/
                                   breathing states instead of the static dot)
   audio/                No longer used — voice previews are spoken via the
                         Web Speech API instead of recorded clips
+  img/logo-white.png, logo-mark-white.png  White-on-transparent brand assets (the ones to use on dark UI)
+scrollcraft/            scroll-craft workspace: builds/predixion-gff/BRIEF.md (design brief) + FINGERPRINTS.md
 legacy/                 Archived/dead code, kept for reference only
 recordings/             Real call audio — gitignored, contains PII
 docs/

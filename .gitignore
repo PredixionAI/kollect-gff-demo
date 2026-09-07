@@ -33,3 +33,7 @@ Thumbs.db
 .claude/settings.local.json
 .gemini/
 *.tmp
+
+# scroll-craft verification output (screenshots), regenerated per run
+scrollcraft/lab/
+scrollcraft/builds/*/lab/

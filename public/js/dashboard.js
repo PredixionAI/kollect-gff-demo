@@ -1191,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if(!btn) return;
 
   function render(mode){
-    btn.textContent = `\u{1F4F1} WhatsApp: ${mode === 'live' ? 'LIVE' : 'MOCK'}`;
+    btn.textContent = `WhatsApp: ${mode === 'live' ? 'LIVE' : 'MOCK'}`;
     btn.classList.toggle('whatsapp-live-armed', mode === 'live');
   }
 
@@ -1201,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
       render(data.mode);
     } catch(err){
-      btn.textContent = '\u{1F4F1} WhatsApp: ?';
+      btn.textContent = 'WhatsApp: ?';
       console.warn('[whatsapp mode] fetch failed', err);
     }
   }

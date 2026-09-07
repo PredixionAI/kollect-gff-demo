@@ -65,6 +65,18 @@ raise the caps, or bypass this module in new send paths. The runtime
 mock/live toggle (`lib/whatsappModeState.js`) resets to `.env` on restart
 by design.
 
+**Two front-end entry points, one design system.** `public/index.html` is
+the Predixion landing (scroll-driven, built on the vendored scroll-craft
+engine in `public/js/vendor/scrollcraft.js`; brief and grammar in
+`scrollcraft/builds/predixion-gff/BRIEF.md`) and ends in the AgentX /
+Kollect / LeadX picker; Kollect links to `public/app.html`, the demo flow,
+which runs inside an app shell (sidebar progress + top bar, driven by
+`goTo()` in `state.js`). Every colour, radius, shadow and component comes
+from `public/css/design-system.css` (`--ds-*` tokens); `styles.css`'s old
+`--panel`/`--blue` names resolve to it. Use the white-on-transparent logos
+(`img/logo-white.png`, `logo-mark-white.png`), never the black-on-white ones,
+on dark UI. Never edit the vendored scroll-craft engine; theme via tokens.
+
 **Frontend is hand-edited vanilla JS** — `public/` is the source of truth,
 nothing generates it, there is no React/bundler. One screen ≈ one file in
 `public/js/`. Third-party UI code goes in `public/js/vendor/` as vendored
@@ -113,8 +125,10 @@ live-verified).
 ### Local server & screenshots
 - **Always serve on localhost — never screenshot a `file:///` URL.** This
   project's frontend is served by the Express app: `npm run dev` →
-  `http://localhost:3001`. Don't start a second instance if it's already
-  running.
+  `http://localhost:3001` (landing) and `/app.html` (demo). Don't start a
+  second instance if it's already running. For the landing, also run the
+  scroll-craft harness (`.claude/skills/scroll-craft/scripts/shoot.mjs`) at
+  desktop, phone and reduced-motion, and read the frames.
 - Screenshot with a headless browser (Playwright/Puppeteer) against
   `http://localhost:3001`, save the PNG, then read it back with the Read
   tool — Claude can see and analyze the image directly.
