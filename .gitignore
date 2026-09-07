@@ -27,6 +27,9 @@ recordings/
 Thumbs.db
 .vscode/
 .idea/
-.claude/
+# Local Claude Code state stays ignored, but project skills are shared code
+.claude/*
+!.claude/skills/
+.claude/settings.local.json
 .gemini/
 *.tmp
