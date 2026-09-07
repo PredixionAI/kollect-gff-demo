@@ -4,6 +4,7 @@ const state = {
   voice: null, // { id, name, meta, lang, provider, voiceId, sample, ttsLang, pastel }
   archetype: null, // full archetype object
   callId: null,
+  geminiAnalysis: null, // {status:'ready'|'unavailable', sentiment, summary, nextBestAction, whatsappCopy, ...} — real-call path only, see implementation_plan.md
 };
 
 function goTo(id) {

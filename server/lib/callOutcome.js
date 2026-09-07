@@ -1,5 +1,7 @@
 const store = require('./store');
 const whatsapp = require('./whatsapp');
+const geminiClient = require('./geminiClient');
+const config = require('../config');
 
 // Confirmed real fields via GET /calls/{call_id} (2026-09-05) — there is no
 // single "disposition" enum as the platform guide's example implied. VOIZ
@@ -70,6 +72,40 @@ async function handleCallOutcome(callId, record) {
       createdAt: new Date().toISOString(),
     });
   }
+
+  // Post-call intelligence — fire-and-forget, does NOT block this function's
+  // return. The real transcript/duration/answered fields above have already
+  // rendered on the dashboard by the time this resolves. Streamed: each
+  // field (sentiment, summary, NBA, dispute flag, WhatsApp copy) lands as
+  // its own store.updateCase the instant it finishes generating — on a long
+  // transcript that's the difference between one long silent wait and the
+  // dashboard visibly filling in field by field. Every patch re-emits over
+  // the same SSE bus the real completion event already used.
+  //
+  // Always called, even with no API key or no transcript — geminiClient
+  // resolves those to {status:'unavailable', reason:...} almost instantly.
+  // Skipping the call entirely in that case (an earlier version of this did)
+  // meant geminiAnalysis never landed at all, so the dashboard's pending
+  // badge sat there for the full client-side ceiling before silently giving
+  // up instead of clearing right away.
+  const runningAnalysis = { status: 'streaming' };
+  geminiClient.analyzeCallTranscriptStreaming({
+    transcript: transcriptText,
+    borrowerName: existing.name || record.customer_name,
+    language: existing.lang,
+    dueAmount: existing.dueAmount || config.demo.dueAmount,
+    dueDate: existing.dueDate || config.demo.dueDate,
+    callDurationSeconds: record.duration,
+    answered: a.answered,
+  }, (partial) => {
+    Object.assign(runningAnalysis, partial);
+    store.updateCase(callId, { geminiAnalysis: { ...runningAnalysis } });
+  }).then(finalAnalysis => {
+    store.updateCase(callId, { geminiAnalysis: finalAnalysis });
+  }).catch(err => {
+    console.error(`[callOutcome] gemini analysis threw for ${callId}`, err);
+    store.updateCase(callId, { geminiAnalysis: { status: 'unavailable', reason: 'threw' } });
+  });
 
   return updated;
 }

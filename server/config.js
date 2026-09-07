@@ -37,6 +37,14 @@ module.exports = {
     maxConcurrency: Number(process.env.MAX_CONCURRENCY || 5),
   },
 
+  // Post-call intelligence — real-call path only (see implementation_plan.md).
+  // Blank key means analysis is silently skipped (geminiClient short-circuits
+  // to `{status:'unavailable'}`); mock/simulated demo runs never touch this.
+  gemini: {
+    apiKey: required('GEMINI_API_KEY', true),
+    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+  },
+
   telemetry: {
     // Set GOOGLE_SHEET_WEBHOOK_URL in .env to the Apps Script web-app URL.
     // When blank the Google Sheets push is simply skipped — local fallback

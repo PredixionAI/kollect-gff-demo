@@ -11,7 +11,7 @@ const router = express.Router();
 // ever sends voiceId, never an agent_id, so it can't be spoofed into calling
 // a different agent than the one it displayed.
 router.post('/call', async (req, res) => {
-  const { name, phone, voiceId } = req.body || {};
+  const { name, phone, voiceId, lang } = req.body || {};
   if (!name || !phone) {
     return res.status(400).json({ error: 'name and phone are required' });
   }
@@ -42,6 +42,7 @@ router.post('/call', async (req, res) => {
       name,
       phone: formattedPhone,
       voiceId: voiceId || null,
+      lang: lang || null, // threaded through to geminiClient so its output matches the demo's language mix
       status: httpStatus === 200 ? 'initiated' : 'queued',
       room_name: body.room_name || null,
     });

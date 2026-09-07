@@ -730,6 +730,22 @@ function renderStep(instant){
       <div class="sig-desc">${sg.desc}</div>
     </div>`).join('');
 
+  // Real-call WhatsApp copy override \u2014 steps 7 & 9 (borrower-facing
+  // follow-up only, never the step-9 agent-escalation handoff, which is a
+  // structurally different case-summary message) show Gemini's tailored
+  // copy instead of the scripted template once it's ready. This mutates
+  // s.live.lines BEFORE the phone-pane render below AND before the
+  // triggerWhatsApp call further down reads the same s.live.lines \u2014 the
+  // displayed bubble and the actual send can never disagree. Gated on the
+  // step's own one-shot sent-flag so re-visiting a step after its message
+  // already went out (scripted, because Gemini wasn't ready yet at the
+  // time) never repaints the bubble to something that wasn't actually sent.
+  const whatsappStepAlreadySent = (idx === 7 && whatsappRound2Sent) || (idx === 9 && whatsappEscalationSent);
+  if((idx === 7 || idx === 9) && !whatsappStepAlreadySent && s.live.audience !== 'agent'
+     && state.geminiAnalysis && state.geminiAnalysis.status === 'ready' && state.geminiAnalysis.whatsappCopy){
+    s.live.lines = [state.geminiAnalysis.whatsappCopy];
+  }
+
   // Phone pane (right, persistent) \u2014 2026-09-07 redesign: the phone only
   // ever shows actual phone activity (a call or a WhatsApp thread). Next
   // Best Action / decision-engine reasoning is NOT phone content \u2014 it
@@ -838,6 +854,7 @@ async function triggerRealCall(){
         name: state.name,
         phone: state.phone,
         voiceId: state.voice ? state.voice.id : null,
+        lang: personaLang(),
       }),
     });
     const data = await res.json();
@@ -895,8 +912,16 @@ async function triggerWhatsApp(templateKey, message, stepIdx){
   }
 }
 
+// The SSE connection used to close the instant `completed` arrived, which
+// meant geminiAnalysis \u2014 arriving as a second store.updateCase a beat later,
+// over the SAME bus event \u2014 could never reach the browser (see
+// implementation_plan.md, "A real blocker found while planning this").
+// Fix: stay open through a first `completed` wave with no geminiAnalysis
+// yet, close only once it lands or a 5s ceiling is hit.
 function subscribeToCallEvents(callId){
   const source = new EventSource(`/api/call/${callId}/events`);
+  let analysisTimer = null;
+  let outcomeTracked = false;
   source.onmessage = (evt) => {
     const update = JSON.parse(evt.data);
     if(update.status === 'initiated') setCallStatusLine('Call in progress\u2026', 'live');
@@ -910,16 +935,38 @@ function subscribeToCallEvents(callId){
       setCallStatusLine(`Call completed \u2014 ${outcome}`, 'live');
       renderRealCallSummary(update);
       markRealCallOutcome(update);
-      if (window.track) track('call_outcome', {
-        callId:             state.callId,
-        call_success:       update.call_success,
-        customer_sentiment: update.customer_sentiment,
-        escalation_flag:    update.escalation_flag,
-        dispute_flag:       update.dispute_flag,
-        ptp_flag:           update.ptp_flag,
-        next_best_action:   update.next_best_action,
-      });
-      source.close();
+      if(!outcomeTracked){
+        outcomeTracked = true;
+        if (window.track) track('call_outcome', {
+          callId:             state.callId,
+          call_success:       update.call_success,
+          customer_sentiment: update.customer_sentiment,
+          escalation_flag:    update.escalation_flag,
+          dispute_flag:       update.dispute_flag,
+          ptp_flag:           update.ptp_flag,
+          next_best_action:   update.next_best_action,
+        });
+      }
+
+      // geminiAnalysis streams in field-by-field now — 'streaming' is not a
+      // terminal state, so keep the connection open and keep re-rendering
+      // on every wave. Only 'ready'/'unavailable' close it.
+      const analysisStatus = update.geminiAnalysis && update.geminiAnalysis.status;
+      const analysisDone = analysisStatus === 'ready' || analysisStatus === 'unavailable';
+
+      if(!analysisTimer && !analysisDone){
+        setAnalysisPending();
+        // Stays comfortably above geminiClient's own 8s timeout (server/lib/
+        // geminiClient.js) so the client never gives up before the server
+        // could still have succeeded — a real call hit exactly that gap
+        // when this was 5s against a 4s server timeout.
+        analysisTimer = setTimeout(() => source.close(), 10000);
+      }
+      if(update.geminiAnalysis) renderGeminiAnalysis(update.geminiAnalysis);
+      if(analysisDone){
+        clearTimeout(analysisTimer);
+        source.close();
+      }
     }
   };
   source.onerror = () => { /* SSE will auto-retry */ };
@@ -987,6 +1034,81 @@ function renderRealCallSummary(update){
       nbaEl.innerHTML = `${update.next_best_action} <span class="comm-real-tag">REAL</span>`;
       _nbaIsReal = true;
     }
+  }
+}
+
+/* =========================================================
+   GEMINI POST-CALL INTELLIGENCE — real-call path only. VOIZ's own
+   customer_sentiment/next_best_action/dispute_description come back null
+   on every real call this project has inspected (docs/VOIZ_API_REFERENCE.md),
+   so renderRealCallSummary above never has anything to show for them. This
+   is the fallback that fills those same slots — never a second, competing
+   set of fields. See implementation_plan.md.
+========================================================= */
+function setAnalysisPending(){
+  const outcomeEl = document.getElementById('rtOutcome');
+  if(!outcomeEl) return;
+  const existing = document.getElementById('aiStatusBadge');
+  if(existing) existing.remove();
+  outcomeEl.insertAdjacentHTML('afterbegin', '<span class="rt-badge ai-pending" id="aiStatusBadge">✨ Analyzing…</span>');
+}
+
+// Called once per wave — 'streaming' (0 or more times, each with whatever
+// new fields just finished generating), then exactly one terminal 'ready'
+// or 'unavailable'. Must be safe to call repeatedly with partial data:
+// every field write is idempotent (checks it hasn't already gone real
+// before writing) and every badge insert is guarded against duplicating on
+// the next wave.
+function renderGeminiAnalysis(analysis){
+  if(!analysis) return;
+
+  // Sentiment badge — insert once, the moment it first arrives (usually the
+  // first field to stream in, well before summary/NBA finish).
+  if(analysis.sentiment && !document.getElementById('aiSentimentBadge')){
+    const outcomeEl = document.getElementById('rtOutcome');
+    if(outcomeEl){
+      outcomeEl.insertAdjacentHTML('beforeend',
+        `<span class="rt-badge neutral" id="aiSentimentBadge">${analysis.sentiment}</span>`);
+    }
+  }
+
+  if(!_summaryIsReal && analysis.summary){
+    const summaryEl = document.getElementById('summaryPointer');
+    if(summaryEl){
+      summaryEl.innerHTML = `${analysis.summary} <span class="comm-real-tag">REAL</span>`;
+      _summaryIsReal = true;
+    }
+  }
+
+  if(!_nbaIsReal && analysis.nextBestAction){
+    const nbaEl = document.getElementById('nbaPointer');
+    if(nbaEl){
+      nbaEl.innerHTML = `${analysis.nextBestAction} <span class="comm-real-tag">REAL</span>`;
+      _nbaIsReal = true;
+    }
+  }
+
+  if(analysis.status === 'streaming'){
+    state.geminiAnalysis = analysis; // whatsappCopy may already be usable before the stream fully ends
+    return;
+  }
+
+  // Terminal states below — remove the pending pulse either way.
+  const pending = document.getElementById('aiStatusBadge');
+  if(pending) pending.remove();
+
+  // 'unavailable': real VOIZ data (transcript, duration, connection status)
+  // is already on screen and stays exactly as it is. Never falls back to
+  // scripted archetype text for a call that genuinely happened.
+  if(analysis.status !== 'ready') return;
+
+  state.geminiAnalysis = analysis; // read by the WhatsApp-copy override in renderStep (steps 7/9)
+
+  const outcomeEl = document.getElementById('rtOutcome');
+  if(outcomeEl && !document.getElementById('aiSpeedBadge')){
+    const latencyS = typeof analysis.latencyMs === 'number' ? (analysis.latencyMs / 1000).toFixed(1) : null;
+    outcomeEl.insertAdjacentHTML('afterbegin',
+      `<span class="rt-badge ai-badge" id="aiSpeedBadge">✨ AI${latencyS ? ` · ${latencyS}s` : ''}</span>`);
   }
 }
 
