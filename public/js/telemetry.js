@@ -17,7 +17,7 @@
   function makeId() {
     return 'ses_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
   }
-  const sessionId = sessionStorage.getItem('kl_session_id') || makeId();
+  let sessionId = sessionStorage.getItem('kl_session_id') || makeId();
   sessionStorage.setItem('kl_session_id', sessionId);
 
   // ── Cumulative counters (kept in memory, flushed via track()) ────────────────
@@ -30,7 +30,7 @@
 
   // ── Screen / tab timers ─────────────────────────────────────────────────────
   let _screenEnterTs  = null;   // when the current named screen was entered
-  let _currentScreen  = null;   // e.g. 'voice', 'archetype', 'persona'
+  let _currentScreen  = null;   // e.g. 'intro', 'voice', 'archetype', 'persona'
 
   let _dashTabEnterTs = null;   // when the current dashboard tab became active
   let _currentDashTab = null;   // 'b360' | 'strategy' | 'execution' | 'fulfilment'
@@ -65,7 +65,7 @@
     } catch (e) { /* ignore */ }
   }
 
-  // ── Tab time helpers ─────────────────────────────────────────────────────────
+  // ── Tab & screen time helpers ──────────────────────────────────────────────
   function flushTabTime() {
     if (!_currentDashTab || !_dashTabEnterTs) return;
     const now = Date.now();
@@ -80,6 +80,13 @@
     if (!_dashEnterTs) return;
     const totalS = Math.round((Date.now() - _dashEnterTs) / 1000);
     beacon('dashboard_total_time', { totalS });
+  }
+
+  function flushActiveScreen() {
+    if (!_screenEnterTs || !_currentScreen || _currentScreen === 'dashboard') return;
+    const elapsedMs = Date.now() - _screenEnterTs;
+    if (elapsedMs < 1000) return;
+    beacon('screen_dropoff', { screen: _currentScreen, timeOnScreenMs: elapsedMs });
   }
 
   // Heartbeat — flushes the active tab time every 15 s so even if the user
@@ -100,8 +107,28 @@
 
     switch (event) {
 
-      // ── Login ──────────────────────────────────────────────────────────────
+      // ── Login (Always generates a fresh sessionId for each attendee) ───────
       case 'login':
+        sessionId = makeId();
+        sessionStorage.setItem('kl_session_id', sessionId);
+        window._telemetrySessionId = sessionId;
+
+        _voiceBrowseCount = 0;
+        _voicePlayCount   = 0;
+        _manualNext       = 0;
+        _manualPrev       = 0;
+        _resetCount       = 0;
+        _beatTapCount     = 0;
+        _screenEnterTs    = null;
+        _currentScreen    = 'login';
+        _dashTabEnterTs   = null;
+        _currentDashTab   = null;
+        _tabAccumS        = {};
+        _dashEnterTs      = null;
+        _highestStep      = 0;
+        _highestLabel     = 'Login';
+        if (_heartbeat) { clearInterval(_heartbeat); _heartbeat = null; }
+
         post('login', {
           name:      payload.name,
           phone:     payload.phone,
@@ -115,6 +142,7 @@
         _screenEnterTs = Date.now();
         _currentScreen = 'intro';
         _beatTapCount  = 0;
+        post('screen_entered', { screenName: 'Intro Cinematic' });
         break;
 
       case 'intro_beat_tap':
@@ -142,6 +170,7 @@
       case 'voice_screen_entered':
         _screenEnterTs = Date.now();
         _currentScreen = 'voice';
+        post('screen_entered', { screenName: 'Voice Selection' });
         break;
 
       case 'voice_browsed':
@@ -168,6 +197,7 @@
       case 'archetype_screen_entered':
         _screenEnterTs = Date.now();
         _currentScreen = 'archetype';
+        post('screen_entered', { screenName: 'Archetype Selection' });
         break;
 
       case 'archetype_selected':
@@ -189,6 +219,7 @@
       case 'persona_screen_entered':
         _screenEnterTs = Date.now();
         _currentScreen = 'persona';
+        post('screen_entered', { screenName: 'Persona Reveal' });
         break;
 
       case 'dashboard_entered':
@@ -196,6 +227,7 @@
         if (_screenEnterTs && _currentScreen === 'persona') {
           post('persona_viewed', { timeOnScreenMs: Date.now() - _screenEnterTs });
         }
+        _currentScreen  = 'dashboard';
         _dashEnterTs    = Date.now();
         _dashTabEnterTs = Date.now();
         _currentDashTab = 'b360';
@@ -288,11 +320,13 @@
 
   // ── Flush on page unload ────────────────────────────────────────────────────
   window.addEventListener('pagehide', function () {
+    flushActiveScreen();
     flushTabTime();
     flushDashboardTotal();
   });
   window.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'hidden') {
+      flushActiveScreen();
       flushTabTime();
       flushDashboardTotal();
     }
@@ -303,3 +337,4 @@
   window._telemetrySessionId = sessionId;
 
 })();
+

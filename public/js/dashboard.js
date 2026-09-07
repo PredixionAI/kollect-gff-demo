@@ -322,6 +322,27 @@ let whatsappEscalationSent = false;
 let _nbaIsReal = false;
 let _summaryIsReal = false;
 
+// Unusual Activity + Assumed Reason only apply where the borrower's pattern
+// actually deviates from normal — a clean, single missed payment (the
+// 'technical' archetype) isn't unusual, so it has no entry here and the
+// whole block hides for that case. Every reason is written as something
+// inferred FROM the signals shown elsewhere on this panel (communication
+// behaviour, engagement), not a restatement of the archetype's own blurb.
+const UNUSUAL_SIGNALS = {
+  systemic: {
+    flag: 'Payment timing has slipped in multiple recent cycles, not just this one.',
+    reason: 'Repeated late payments alongside steady WhatsApp engagement point to a recurring cash-flow timing issue, not avoidance.',
+  },
+  disputed: {
+    flag: 'Borrower engaged immediately, but disputes the charge itself.',
+    reason: 'High responsiveness on WhatsApp paired with an explicit dispute points to genuine disagreement over the charge, not evasion.',
+  },
+  unreachable: {
+    flag: 'No response across WhatsApp or voice this cycle.',
+    reason: 'Falling engagement with no response on either channel points to genuine unavailability, not active avoidance.',
+  },
+};
+
 function startDash(){
   stepData = steps();
   realCallTriggered = false;
@@ -352,12 +373,26 @@ function startDash(){
   if(commEmpty) commEmpty.style.display = 'block';
   if(commList) commList.innerHTML = '';
 
-  // Unusual Activity's "assumed conclusion" reuses the archetype's own
-  // real description — not invented copy — since that's already written
-  // to read exactly like an inferred reason for the delayed payment.
+  // Unusual Activity + Assumed Reason: only shown when there IS something
+  // to flag (a clean single-slip case has nothing unusual about it), and
+  // the reason text is written as an inference from the OTHER signals on
+  // screen (communication behaviour, engagement) — not a restatement of
+  // the archetype's own description.
   const arch = state.archetype || archetypes[0];
-  const unusualEl = document.getElementById('unusualConclusion');
-  if(unusualEl) unusualEl.textContent = arch.desc;
+  const entry = UNUSUAL_SIGNALS[arch.id];
+  const unusualGroup      = document.getElementById('unusualGroup');
+  const assumedGroup      = document.getElementById('assumedGroup');
+  const unusualFlagEl     = document.getElementById('unusualFlag');
+  const unusualConclusionEl = document.getElementById('unusualConclusion');
+  if(entry){
+    if(unusualGroup) unusualGroup.classList.add('show');
+    if(assumedGroup) assumedGroup.classList.add('show');
+    if(unusualFlagEl) unusualFlagEl.textContent = entry.flag;
+    if(unusualConclusionEl) unusualConclusionEl.textContent = entry.reason;
+  } else {
+    if(unusualGroup) unusualGroup.classList.remove('show');
+    if(assumedGroup) assumedGroup.classList.remove('show');
+  }
 
   // Replay the phone pane's slide-in-from-right entrance each time the
   // dashboard is (re)entered, not just once on page load.
@@ -670,9 +705,6 @@ function renderStep(instant){
     const nbaEl = document.getElementById('nbaPointer');
     if(nbaEl) nbaEl.textContent = s.nbaNow ? s.nbaNow.title : '—';
   }
-
-  // Infra strip
-  document.getElementById('infraStripText').textContent = s.agents.join(', ') + '  \u00b7  ' + s.models.join(', ');
 
   // Signals
   document.getElementById('signalsList').innerHTML = s.signals.map(sg=>`

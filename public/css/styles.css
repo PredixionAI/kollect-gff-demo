@@ -254,13 +254,14 @@ body{
 .data-group .gh{display:flex; align-items:center; font-size:10.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; margin-bottom:4px; line-height:1.2;}
 .data-group.structured .gh{color:var(--green);}
 .data-group.appweb .gh{color:var(--amber);}
-.data-group.commbehaviour .gh{color:var(--blue);}
+.data-group.patterns .gh{color:var(--text-dim);}
 .data-group.unusual .gh{color:var(--red);}
+.data-group.assumed .gh{color:var(--text-dim);}
 .dot-item{display:flex; gap:8px; align-items:flex-start; font-size:13px; color:var(--text-dim); padding:1px 0; line-height:1.35;}
 .dot-item::before{content:''; width:5px; height:5px; border-radius:50%; margin-top:6px; flex-shrink:0;}
 .data-group.structured .dot-item::before{background:var(--green);}
 .data-group.appweb .dot-item::before{background:var(--amber);}
-.data-group.commbehaviour .dot-item::before{background:var(--blue);}
+.data-group.patterns .dot-item::before{background:var(--blue);}
 
 /* Segment 1, row 1 -- Structured Data (always visible, CRM/CIBIL/LMS
    together) next to Communication History, side by side. */
@@ -288,16 +289,16 @@ body{
 .unstructured-col .gh{font-size:10.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; color:var(--text-dim); margin-bottom:4px;}
 .summary-pointer, .nba-pointer{font-size:12px; color:var(--text-dim); line-height:1.4;}
 
-/* Segment 2 -- Signals: Real-Time Activity stays the live per-step feed;
-   the four static groups below it are each one clear angle on the borrower
-   (purchasing, app/web, communication behaviour, and a flagged anomaly with
-   its assumed cause) instead of two loosely-named catch-all blocks. */
-/* One row of four, not a cramped 2x2 -- the panel is wide enough that
-   spreading these out uses the real width instead of wasting it while
-   stacking two extra rows of height. */
-.signal-quad{display:grid; grid-template-columns:repeat(4, 1fr); gap:6px 18px;}
+/* Segment 2 -- Signals: title first (no INFRA strip above it anymore),
+   then stacked full-width groups in the order requested -- Activity Signals
+   (digital behaviour + drop-offs), Real-Time Activity (live per-step feed),
+   Purchasing Signals (horizontal), Common Payment Patterns, Unusual
+   Activity, and a final Assumed Reason grounded only in the signals shown
+   above it (not the archetype's own description). */
 .unusual-flag{font-size:12px; color:var(--text); font-weight:600; line-height:1.3;}
-.unusual-conclusion{font-size:10px; color:var(--text-faint); margin-top:1px; line-height:1.2;}
+.unusual-conclusion{font-size:12px; color:var(--text-dim); line-height:1.35;}
+.data-group.unusual, .data-group.assumed{display:none;}
+.data-group.unusual.show, .data-group.assumed.show{display:block;}
 
 /* center column */
 /* Compacted 2026-09-07 -- freed vertical space so the left pane fits
@@ -860,19 +861,10 @@ body{
 .nba-now-metric svg{width:14px; height:14px; color:var(--text-faint); flex-shrink:0;}
 .nba-now-metric b{color:var(--text); font-weight:700;}
 
-/* ---------- INFRA strip ---------- */
-.infra-strip{
-  background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:7px 12px;
-  font-size:11px; color:var(--text-faint); line-height:1.4; display:flex; gap:8px; align-items:baseline; flex-shrink:0;
-}
-.infra-strip-label{flex-shrink:0; font-weight:700; color:var(--text-dim); letter-spacing:.5px; font-size:10px;}
-.infra-strip span:not(.infra-strip-label){
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-}
-
 /* ---------- Purchasing Signals ---------- */
 .data-group.realtime-group .gh{color:var(--blue);}
 .data-group.purchasing .gh{color:var(--text-dim);}
+.spend-stat-row{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:2px;}
 
 /* ---------- COMMUNICATION HISTORY (one tight line per event) ---------- */
 .comm-platform{font-size:11px; font-weight:700; letter-spacing:.2px;}

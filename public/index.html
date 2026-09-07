@@ -138,6 +138,38 @@
       </div>
     </div>
 
+    <!-- STATE MACHINE: sits between the topbar and both data panels + phone
+         mockup, full width -- it's the global "which stage" indicator for
+         the whole dashboard, not just the left column. -->
+    <div class="state-machine">
+      <div class="sm-top">
+        <div class="tab-row" id="tabRow"></div>
+        <div class="step-controls">
+          <div class="ctrl-btn" id="btnPrev" title="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+          <div class="ctrl-btn" id="btnPlay" title="Play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="ctrl-btn" id="btnNext" title="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div>
+          <div class="ctrl-btn" id="btnReset" title="Restart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v6h-6"/></svg></div>
+        </div>
+      </div>
+      <div class="sm-current">
+        <div class="step-title" id="stepTitle">Default Detection</div>
+        <div class="step-subtitle" id="stepSubtitle">Payment of &#x20b9;45,000 missed on due date</div>
+      </div>
+    </div>
+
+    <!-- Input/output of the current stage -- travels with the state machine
+         at the top, not buried in the left column. -->
+    <div class="action-details">
+      <div class="ad-box">
+        <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>ACTION</div>
+        <div class="ad-body" id="actionText">Initiating Borrower 360 analysis</div>
+      </div>
+      <div class="ad-box">
+        <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>DETAILS</div>
+        <div class="ad-body" id="detailsText">System triggers workflow automation</div>
+      </div>
+    </div>
+
     <div class="main-grid">
       <!-- LEFT PANE: DASHBOARD / PROCESS VIEW -->
       <div class="col dash-pane">
@@ -216,61 +248,44 @@
           </div>
 
           <div class="card" id="rightDataPanels">
-            <div class="infra-strip">
-              <span class="infra-strip-label">INFRA</span>
-              <span id="infraStripText"></span>
-            </div>
             <div class="section-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>SIGNALS</div>
+
+            <div class="data-group appweb">
+              <div class="gh">Activity Signals<span class="ingest-counter" id="behaviorCounter">0/3</span></div>
+              <div class="dot-item" data-ingest="behavioral">Daily active &middot; High engagement</div>
+              <div class="dot-item" data-ingest="behavioral">Drop-off: Payment confirmation screen (2 sessions this week)</div>
+              <div class="dot-item" data-ingest="behavioral">Prefers WhatsApp</div>
+            </div>
+
             <div class="data-group realtime-group">
               <div class="gh">Real-Time Activity</div>
               <div id="signalsList"></div>
             </div>
-            <div class="signal-quad">
-              <div class="data-group purchasing">
-                <div class="gh">Purchasing Signals</div>
-                <div class="dot-item">&#x20b9;18,400 peak/day &middot; &#x20b9;2,150 avg/day</div>
+
+            <div class="data-group purchasing">
+              <div class="gh">Purchasing Signals</div>
+              <div class="spend-stat-row">
+                <div class="stat-box"><div class="k">Highest / Day</div><div class="v">&#x20b9;18,400</div></div>
+                <div class="stat-box"><div class="k">Avg Daily Spend</div><div class="v">&#x20b9;2,150</div></div>
               </div>
-              <div class="data-group appweb">
-                <div class="gh">App / Web Activity<span class="ingest-counter" id="behaviorCounter">0/2</span></div>
-                <div class="dot-item" data-ingest="behavioral">Daily active &middot; High engagement</div>
-              </div>
-              <div class="data-group commbehaviour">
-                <div class="gh">Communication Behaviour</div>
-                <div class="dot-item" data-ingest="behavioral">Prefers WhatsApp</div>
-              </div>
-              <div class="data-group unusual">
-                <div class="gh">Unusual Activity</div>
-                <div class="unusual-flag">Diverges from history &mdash; <span id="unusualConclusion">&mdash;</span></div>
-              </div>
+            </div>
+
+            <div class="data-group patterns">
+              <div class="gh">Common Payment Patterns</div>
+              <div class="dot-item">Pays via UPI &middot; Typically clears within 3 days of a reminder</div>
+            </div>
+
+            <div class="data-group unusual" id="unusualGroup">
+              <div class="gh">Unusual Activity</div>
+              <div class="unusual-flag" id="unusualFlag">&mdash;</div>
+            </div>
+            <div class="data-group assumed" id="assumedGroup">
+              <div class="gh">Assumed Reason</div>
+              <div class="unusual-conclusion" id="unusualConclusion">&mdash;</div>
             </div>
           </div>
         </div>
 
-        <div class="state-machine">
-          <div class="sm-top">
-            <div class="tab-row" id="tabRow"></div>
-            <div class="step-controls">
-              <div class="ctrl-btn" id="btnPrev" title="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
-              <div class="ctrl-btn" id="btnPlay" title="Play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
-              <div class="ctrl-btn" id="btnNext" title="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div>
-              <div class="ctrl-btn" id="btnReset" title="Restart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v6h-6"/></svg></div>
-            </div>
-          </div>
-          <div class="sm-current">
-            <div class="step-title" id="stepTitle">Default Detection</div>
-            <div class="step-subtitle" id="stepSubtitle">Payment of &#x20b9;45,000 missed on due date</div>
-          </div>
-        </div>
-        <div class="action-details">
-          <div class="ad-box">
-            <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>ACTION</div>
-            <div class="ad-body" id="actionText">Initiating Borrower 360 analysis</div>
-          </div>
-          <div class="ad-box">
-            <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>DETAILS</div>
-            <div class="ad-body" id="detailsText">System triggers workflow automation</div>
-          </div>
-        </div>
       </div>
 
       <!-- RIGHT PANE: PHONE MOCKUP — always visible, the real focus:

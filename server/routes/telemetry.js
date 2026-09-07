@@ -32,11 +32,30 @@ function buildPatch(event, data) {
 
     case 'login':
       return {
-        loginTime:   data.timestamp || new Date().toLocaleString('en-IN'),
-        name:        data.name,
-        phone:       data.phone,
-        loginMethod: data.method === 'bypass' ? 'Bypass / Demo Defaults' : 'Start Button',
+        loginTime:          data.timestamp || new Date().toLocaleString('en-IN'),
+        name:               data.name,
+        phone:              data.phone,
+        loginMethod:        data.method === 'bypass' ? 'Bypass / Demo Defaults' : 'Start Button',
+        highestStepReached: 'Login',
       };
+
+    case 'screen_entered':
+      return {
+        highestStepReached: data.screenName,
+      };
+
+    case 'screen_dropoff':
+      if (data.screen === 'voice') {
+        return { timeOnVoiceScreenS: Math.round((data.timeOnScreenMs || 0) / 1000) };
+      }
+      if (data.screen === 'archetype') {
+        return { timeOnArchetypeScreenS: Math.round((data.timeOnScreenMs || 0) / 1000) };
+      }
+      if (data.screen === 'persona') {
+        return { timeOnPersonaScreenS: Math.round((data.timeOnScreenMs || 0) / 1000) };
+      }
+      return {};
+
 
     case 'intro_beat_tap':
       // Increment beatTapCount — the next event will read the existing value
