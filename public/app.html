@@ -5,58 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kollect · Predixion AI</title>
 <link rel="icon" href="/img/logo-mark-white.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/fonts.css">
 <link rel="stylesheet" href="/css/design-system.css">
 <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="ds-body">
-<div id="app" class="ds-shell">
-
-  <!-- ============ APP SHELL: SIDEBAR ============ -->
-  <aside class="ds-side" aria-label="Demo navigation">
-    <a class="ds-side__brand" href="/" aria-label="Predixion AI home"><img src="/img/logo-mark-white.png" alt=""><span>Predixion AI</span></a>
-    <div class="ds-label ds-side__group">Kollect demo</div>
-    <nav class="ds-nav" id="stepNav">
-      <div class="ds-nav__item is-active" data-step="capture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Identity<span class="ds-nav__idx">01</span></div>
-      <div class="ds-nav__item" data-step="orbs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M7 8v8M17 8v8M3 11v2M21 11v2"/></svg>Voice<span class="ds-nav__idx">02</span></div>
-      <div class="ds-nav__item" data-step="archetype"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Borrower role<span class="ds-nav__idx">03</span></div>
-      <div class="ds-nav__item" data-step="persona"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>Case file<span class="ds-nav__idx">04</span></div>
-      <div class="ds-nav__item" data-step="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Live dashboard<span class="ds-nav__idx">05</span></div>
-    </nav>
-    <div class="ds-label ds-side__group">Suite</div>
-    <nav class="ds-nav">
-      <a class="ds-nav__item" href="/#demos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17z"/></svg>Kollect<span class="ds-badge ds-badge--live ds-badge--mono" style="margin-left:auto;height:20px">Live</span></a>
-      <div class="ds-nav__item is-locked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>AgentX<span class="ds-nav__idx">Soon</span></div>
-      <div class="ds-nav__item is-locked"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>LeadX<span class="ds-nav__idx">Soon</span></div>
-    </nav>
-    <div class="ds-side__foot">
-      <span class="ds-meta">Global Fintech Fest 2026</span>
-      <span class="ds-meta">Demo scenario · no real debt</span>
-    </div>
-  </aside>
-
-  <!-- ============ APP SHELL: TOP BAR ============ -->
-  <header class="ds-top">
-    <div class="ds-top__crumb"><span>Predixion Fincorp</span><span class="sep">/</span><b id="crumbScreen">Identity</b></div>
-    <div class="ds-top__spacer"></div>
-    <div class="ds-top__actions">
-      <button class="ds-btn ds-btn--secondary ds-btn--sm" id="btnOpenDirectCallModal" type="button">Direct call</button>
-      <button class="ds-btn ds-btn--secondary ds-btn--sm" id="btnWhatsappModeToggle" type="button" title="Toggle real WhatsApp sends on/off">WhatsApp: &hellip;</button>
-      <span class="ds-badge ds-badge--live"><span class="ds-dot ds-dot--pulse"></span>Live</span>
-    </div>
-  </header>
-
-  <!-- ============ APP SHELL: CONTENT ============ -->
-  <div class="ds-main" id="screens">
+<div id="app">
 
   <!-- ============ SCREEN 1: CAPTURE ============ -->
   <div class="screen active" id="screen-capture">
+    <a class="brand" href="/" aria-label="Predixion AI"><img class="brand__lockup" src="/img/logo-white.png" alt="Predixion AI"></a>
     <div class="capture-box">
-      <div class="pulse-ring">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.7"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
-      </div>
       <h1>You&#x2019;re about to meet Kollect</h1>
       <p class="lead">Kollect is Predixion AI&#x2019;s voice agent for loan recovery. In a moment, it&#x2019;ll build a live case around <em>you</em>: enter your details and it&#x2019;ll actually reach out.</p>
       <div class="field">
@@ -73,6 +32,7 @@
       </div>
       <button class="btn-primary" id="btnStart">Start the simulation</button>
       <button class="btn-ghost" id="btnBypass" type="button">Skip: use demo defaults (Vatsal &middot; +91 8879185247)</button>
+      <div class="foot-note">Step 1 of 5 &middot; Identity capture</div>
     </div>
   </div>
 
@@ -99,7 +59,9 @@
 
   <!-- ============ SCREEN 3: ORB VOICE CAROUSEL ============ -->
   <div class="screen" id="screen-orbs">
+    <a class="brand" href="/" aria-label="Predixion AI"><img class="brand__lockup" src="/img/logo-white.png" alt="Predixion AI"></a>
     <div class="orbs-head">
+      <div class="eyebrow">Step 2 of 5 &middot; Voice selection</div>
       <h1>Choose your agent&#x2019;s voice</h1>
       <p>Scroll, drag, or tap either side to browse. Each orb is a different voice, tone and language.</p>
     </div>
@@ -115,7 +77,9 @@
 
   <!-- ============ SCREEN 4: ARCHETYPE SELECT ============ -->
   <div class="screen" id="screen-archetype">
+    <a class="brand" href="/" aria-label="Predixion AI"><img class="brand__lockup" src="/img/logo-white.png" alt="Predixion AI"></a>
     <div class="arch-head">
+      <div class="eyebrow">Step 3 of 5 &middot; Choose your role</div>
       <h1>Which borrower are you today?</h1>
       <p>Pick how you&#x2019;ll respond when Kollect reaches out. This shapes how the demo plays out.</p>
     </div>
@@ -145,6 +109,22 @@
 
   <!-- ============ SCREEN 6: DASHBOARD ============ -->
   <div class="screen" id="screen-dash">
+    <div class="topbar">
+      <div class="tb-item">
+        <img class="tb-lockup" src="/img/logo-white.png" alt="Predixion AI">
+      </div>
+      <div class="divider"></div>
+      <div class="tb-item">
+        <div class="tb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 18h6"/></svg></div>
+        <div><div class="tb-title">Predixion Fincorp</div></div>
+      </div>
+      <div class="status-flex">
+        <button class="ds-btn ds-btn--secondary ds-btn--sm" id="btnOpenDirectCallModal" type="button">Direct call</button>
+        <button class="ds-btn ds-btn--secondary ds-btn--sm" id="btnWhatsappModeToggle" type="button" title="Toggle real WhatsApp sends on/off">WhatsApp: &hellip;</button>
+        <div style="display:flex;align-items:center;gap:7px;"><div class="live-dot"></div><span class="live-label">Live</span></div>
+      </div>
+    </div>
+
     <!-- STATE MACHINE: sits between the topbar and both data panels + phone
          mockup, full width -- it's the global "which stage" indicator for
          the whole dashboard, not just the left column. -->
@@ -311,8 +291,6 @@
     </div>
   </div>
 
-  </div><!-- /.ds-main -->
-
   <!-- ============ DIRECT CALL TRIGGER MODAL ============ -->
   <div class="modal-backdrop" id="directCallModal" style="display:none;">
     <div class="modal-box">
@@ -321,7 +299,7 @@
           <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17z"/></svg></span>
           <div>
             <h3>Direct call</h3>
-            <p>Dispatches a call straight to the voice provider with these exact parameters</p>
+            <p>Dispatches a call to the voice provider with these exact parameters</p>
           </div>
         </div>
         <button class="modal-close" id="btnCloseDirectCallModal">&times;</button>

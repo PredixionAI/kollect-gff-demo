@@ -21,8 +21,9 @@ build next — this section is just a quick summary.
 > **Two entry points since the 2026-09-08 design overhaul:** `/` is the
 > scroll-driven Predixion landing (`public/index.html`, built on the
 > vendored scroll-craft engine) ending in the AgentX / Kollect / LeadX demo
-> picker; `/app.html` is the Kollect demo itself, now inside an app shell
-> (sidebar progress + top bar). Both share `public/css/design-system.css`.
+> picker; `/app.html` is the Kollect demo itself (the original 6-screen
+> flow, restyled). Both share `public/css/design-system.css`; fonts are
+> self-hosted from `public/fonts/`.
 
 ## Current scope (per latest decisions)
 
@@ -121,15 +122,16 @@ server/
     whatsapp.js         POST /api/whatsapp/send, GET/POST /api/whatsapp/mode, POST /api/whatsapp/send-test
 public/
   index.html            Predixion landing: scroll-driven (scroll-craft engine), ends in the demo picker
-  app.html              The Kollect demo: 6 screens inside the app shell (sidebar + top bar)
-  css/design-system.css Shared tokens + primitives (buttons, fields, cards, badges, shell)
+  app.html              The Kollect demo: the 6-screen flow on the shared design system
+  css/design-system.css Shared tokens + primitives (buttons, fields, cards, tags, glass bar)
+  css/fonts.css         @font-face for the self-hosted Inter + Geist (public/fonts/)
   css/landing.css       Landing-only composition on top of the design system
   css/vendor/scrollcraft.css  Vendored scroll-craft engine floor (never edited here)
   css/styles.css        App screens (legacy token names now resolve to the design system)
   js/
     landing.js          Landing: mounts the engine + the scroll-scrubbed sample call
     telemetry.js        Client-side event tracking engine
-    state.js (goTo() also drives the shell's sidebar/breadcrumb), capture.js, softlaunch.js, orbs.js, archetype.js, persona.js,
+    state.js, capture.js, softlaunch.js, orbs.js, archetype.js, persona.js,
     dashboard.js
     vendor/
       scrollcraft.js              Vendored scroll-craft engine (from .claude/skills/scroll-craft)

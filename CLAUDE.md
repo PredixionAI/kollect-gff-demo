@@ -69,13 +69,18 @@ by design.
 the Predixion landing (scroll-driven, built on the vendored scroll-craft
 engine in `public/js/vendor/scrollcraft.js`; brief and grammar in
 `scrollcraft/builds/predixion-gff/BRIEF.md`) and ends in the AgentX /
-Kollect / LeadX picker; Kollect links to `public/app.html`, the demo flow,
-which runs inside an app shell (sidebar progress + top bar, driven by
-`goTo()` in `state.js`). Every colour, radius, shadow and component comes
+Kollect / LeadX picker; Kollect links to `public/app.html`, the original
+6-screen demo flow. Every colour, radius, shadow and component comes
 from `public/css/design-system.css` (`--ds-*` tokens); `styles.css`'s old
 `--panel`/`--blue` names resolve to it. Use the white-on-transparent logos
 (`img/logo-white.png`, `logo-mark-white.png`), never the black-on-white ones,
-on dark UI. Never edit the vendored scroll-craft engine; theme via tokens.
+on dark UI, always the full lockup, never the glyph alone. Fonts are
+self-hosted (`public/fonts/`, `css/fonts.css`): Geist for display, Inter for
+UI. Design rules that came out of review: no sidebar/app-shell around the
+demo, no emoji as icons, no uppercase mono labels as decoration, hairline
+borders at 6-12% white, glass (backdrop blur) only where something floats,
+white pill primaries, medium weights. Never edit the vendored scroll-craft
+engine; theme via tokens.
 
 **Frontend is hand-edited vanilla JS** — `public/` is the source of truth,
 nothing generates it, there is no React/bundler. One screen ≈ one file in

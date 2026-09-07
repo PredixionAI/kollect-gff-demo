@@ -6,9 +6,7 @@
 <title>Predixion AI · Agents that hold the conversation</title>
 <meta name="description" content="Predixion builds voice-native AI agents for lending. Kollect recovers loans by actually calling the borrower. Live demo at GFF 2026.">
 <link rel="icon" href="/img/logo-mark-white.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/fonts.css">
 <link rel="stylesheet" href="/css/vendor/scrollcraft.css">
 <link rel="stylesheet" href="/css/design-system.css">
 <link rel="stylesheet" href="/css/landing.css">
@@ -19,10 +17,7 @@
 <div class="sc-grain" aria-hidden="true"></div>
 
 <header class="site-bar">
-  <a class="site-bar__brand" href="/" aria-label="Predixion AI">
-    <img src="/img/logo-mark-white.png" alt="" width="28" height="28">
-    <span>Predixion AI</span>
-  </a>
+  <a class="site-bar__brand" href="/" aria-label="Predixion AI"><img src="/img/logo-white.png" alt="Predixion AI"></a>
   <nav class="site-bar__nav" aria-label="Site">
     <a href="#turn">How it works</a>
     <a href="#platform">Platform</a>
@@ -39,7 +34,6 @@
   <section class="hero" data-sc-act="pin" data-sc-span="1.9" data-sc-drift="#0b0c10">
     <div data-sc-stage class="hero__stage">
       <div class="hero__field" data-sc-parallax="0.6" aria-hidden="true"></div>
-      <div class="hero__grid" aria-hidden="true"></div>
 
       <div class="hero__copy" data-sc-cue="0 0.82 0">
         <h1 class="sc-display sc-display--xl hero__title" data-sc-kinetic="lines">Lending runs on conversations. We taught agents to hold them.</h1>
@@ -59,7 +53,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7h-3V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a1 1 0 0 0-1-1z"/></svg>
               Borrower 360
             </div>
-            <span class="ds-badge ds-badge--mono ds-badge--soft">Sample case</span>
+            <span class="ds-tag">Sample case</span>
           </div>
           <div class="ds-card__body case__body">
             <div class="case__who">
@@ -68,7 +62,7 @@
                 <div class="case__name">Vatsal · Pune</div>
                 <div class="ds-meta">Personal loan · 1 day past due</div>
               </div>
-              <span class="ds-badge ds-badge--warn">Technical defaulter</span>
+              <span class="ds-tag">Technical defaulter</span>
             </div>
             <div class="case__stats">
               <div><span class="ds-label">Due</span><b class="ds-nums">₹45,000</b></div>
@@ -137,7 +131,7 @@
                       <div class="call__status" data-call-status>Dialing…</div>
                     </div>
                   </div>
-                  <span class="ds-badge ds-badge--mono ds-badge--soft">Sample call</span>
+                  <span class="ds-tag">Sample call</span>
                 </div>
                 <ol class="call__lines" data-call-lines>
                   <li class="call__line call__line--agent" data-at="0.06">Namaste Vatsal, this is Priya from Predixion Fincorp. Is this a good time to talk?</li>
@@ -152,9 +146,9 @@
                   <li class="call__line call__line--agent" data-at="0.78">Perfect. Take care, Vatsal.</li>
                 </ol>
                 <div class="call__outcome" data-call-outcome>
-                  <span class="ds-badge ds-badge--live"><span class="ds-dot"></span>PTP · ₹15,000 · 12 Sep</span>
-                  <span class="ds-badge">Sentiment: cooperative</span>
-                  <span class="ds-badge ds-badge--accent">Next: reminder, T-1</span>
+                  <span class="ds-tag ds-tag--live"><span class="ds-dot"></span>PTP · ₹15,000 · 12 Sep</span>
+                  <span class="ds-tag">Sentiment: cooperative</span>
+                  <span class="ds-tag ds-tag--accent">Next: reminder, T-1</span>
                 </div>
               </div>
             </div>
@@ -217,11 +211,11 @@
               <span class="agent__glyph agent__glyph--x">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
               </span>
-              <span class="ds-badge ds-badge--mono">Coming soon</span>
+              <span class="ds-tag">Coming soon</span>
             </header>
             <h3>AgentX</h3>
             <p>Autonomous outreach across the whole customer lifecycle. Plans the journey, runs it on every channel.</p>
-            <footer>In the lab</footer>
+            <footer>In development</footer>
           </article>
 
           <article class="agent agent--live" id="agentKollect" tabindex="0" role="link" aria-label="Start the Kollect live demo">
@@ -229,7 +223,7 @@
               <span class="agent__glyph agent__glyph--k">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17z"/></svg>
               </span>
-              <span class="ds-badge ds-badge--live"><span class="ds-dot ds-dot--pulse"></span>Live demo</span>
+              <span class="ds-tag ds-tag--live"><span class="ds-dot ds-dot--pulse"></span>Live demo</span>
             </header>
             <h3>Kollect</h3>
             <p>The loan-recovery agent. It builds a live case around you, calls your phone, negotiates a plan and follows up on WhatsApp.</p>
@@ -241,11 +235,11 @@
               <span class="agent__glyph agent__glyph--l">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
               </span>
-              <span class="ds-badge ds-badge--mono">Coming soon</span>
+              <span class="ds-tag">Coming soon</span>
             </header>
             <h3>LeadX</h3>
             <p>Lead qualification that engages every inbound lead in minutes and hands sales a booked, briefed conversation.</p>
-            <footer>In the lab</footer>
+            <footer>In development</footer>
           </article>
         </div>
       </div>
