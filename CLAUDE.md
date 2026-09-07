@@ -92,3 +92,75 @@ live-verified).
   never commit it or anything like it.
 - Concurrency: VOIZ enforces the real cap of 5 and returns `202 queued`;
   this app just handles that response, it does not enforce anything.
+
+## Frontend design rules
+
+### Always do first
+- **Invoke the `frontend-design` skill** before writing any frontend code,
+  every session, no exceptions.
+
+### Reference images
+- If a reference image is provided: match layout, spacing, typography, and
+  color exactly. Swap in placeholder content (images via
+  `https://placehold.co/WIDTHxHEIGHT`, generic copy). Do not improve or add
+  to the design.
+- If no reference image: design from scratch with high craft (see guardrails
+  below).
+- Screenshot your output, compare against the reference, fix mismatches,
+  re-screenshot. Do at least 2 comparison rounds. Stop only when no visible
+  differences remain or the user says so.
+
+### Local server & screenshots
+- **Always serve on localhost — never screenshot a `file:///` URL.** This
+  project's frontend is served by the Express app: `npm run dev` →
+  `http://localhost:3001`. Don't start a second instance if it's already
+  running.
+- Screenshot with a headless browser (Playwright/Puppeteer) against
+  `http://localhost:3001`, save the PNG, then read it back with the Read
+  tool — Claude can see and analyze the image directly.
+- When comparing, be specific: "heading is 32px but reference shows ~24px",
+  "card gap is 16px but should be 24px".
+- Check: spacing/padding, font size/weight/line-height, colors (exact hex),
+  alignment, border-radius, shadows, image sizing.
+
+### Output defaults
+- Frontend changes to the booth app itself follow the existing structure
+  (`public/`, hand-edited vanilla JS/CSS — see above).
+- New standalone pages/prototypes (e.g. under `public/prototypes/`): a
+  single `index.html` file with all styles inline, Tailwind via CDN
+  (`<script src="https://cdn.tailwindcss.com"></script>`), unless told
+  otherwise. Mobile-first responsive.
+
+### Brand assets
+- Check for a `brand_assets/` folder (and this repo's `public/img/` logos)
+  before designing. If assets exist, use them — no placeholders where real
+  assets are available; if a color palette is defined, use those exact
+  values, do not invent brand colors.
+
+### Anti-generic guardrails
+- **Colors:** never use the default Tailwind palette (indigo-500, blue-600,
+  etc.) as the primary. Pick a custom brand color and derive from it.
+- **Shadows:** never flat `shadow-md` — layered, color-tinted shadows with
+  low opacity.
+- **Typography:** never the same font for headings and body. Pair a
+  display/serif with a clean sans; tight tracking (`-0.03em`) on large
+  headings, generous line-height (`1.7`) on body.
+- **Gradients:** layer multiple radial gradients; add grain/texture via SVG
+  noise filter for depth.
+- **Animations:** only animate `transform` and `opacity`. Never
+  `transition-all`. Spring-style easing.
+- **Interactive states:** every clickable element needs hover,
+  focus-visible, and active states. No exceptions.
+- **Images:** add a gradient overlay (`bg-gradient-to-t from-black/60`) and
+  a color treatment layer with `mix-blend-multiply`.
+- **Spacing:** intentional, consistent spacing tokens — not random Tailwind
+  steps.
+- **Depth:** surfaces get a layering system (base → elevated → floating),
+  not all at the same z-plane.
+
+### Hard rules
+- Do not add sections, features, or content not in the reference.
+- Do not "improve" a reference design — match it.
+- Do not stop after one screenshot pass.
+- Do not use `transition-all`.
+- Do not use default Tailwind blue/indigo as the primary color.
