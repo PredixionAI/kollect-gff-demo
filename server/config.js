@@ -11,6 +11,37 @@ function required(name, fallbackOk) {
 module.exports = {
   port: process.env.PORT || 3001,
 
+  // Which platform places/tracks calls: 'elevenlabs' | 'voiz'. This branch
+  // exists to trial ElevenLabs, so it defaults to elevenlabs — set
+  // VOICE_PROVIDER=voiz to fall back with zero code change (all VOIZ code
+  // is intact below). See server/lib/callProvider.js.
+  voiceProvider: (process.env.VOICE_PROVIDER || 'elevenlabs').toLowerCase(),
+
+  // ElevenLabs Agents Platform — see docs/ELEVENLABS_API_REFERENCE.md and
+  // docs/ELEVENLABS_MIGRATION.md for what each of these is and where in the
+  // ElevenLabs dashboard it comes from.
+  elevenlabs: {
+    baseUrl: process.env.ELEVENLABS_BASE_URL || 'https://api.elevenlabs.io',
+    apiKey: required('ELEVENLABS_API_KEY', true),
+    // The imported phone number the agent dials FROM (Twilio or SIP trunk).
+    phoneNumberId: process.env.ELEVENLABS_PHONE_NUMBER_ID || '',
+    // 'sip-trunk' | 'twilio' — must match how phoneNumberId was imported.
+    transport: process.env.ELEVENLABS_TRANSPORT || 'sip-trunk',
+    defaultAgentId: process.env.ELEVENLABS_DEFAULT_AGENT_ID || '',
+    // Same orb → agent contract as VOIZ below: set an env var, the orb
+    // lights up automatically (routes/voices.js via callProvider).
+    agentIdsByVoice: {
+      priya: process.env.ELEVENLABS_AGENT_ID_PRIYA || process.env.ELEVENLABS_DEFAULT_AGENT_ID || '',
+      arjun: process.env.ELEVENLABS_AGENT_ID_ARJUN || '',
+      meera: process.env.ELEVENLABS_AGENT_ID_MEERA || '',
+      vikram: process.env.ELEVENLABS_AGENT_ID_VIKRAM || '',
+      ritu: process.env.ELEVENLABS_AGENT_ID_RITU || '',
+    },
+    // Shared secret the agent's webhook tools send as X-Tool-Secret
+    // (routes/agentTools.js). Blank = unauthenticated, local rehearsal only.
+    toolSecret: process.env.ELEVENLABS_TOOL_SECRET || '',
+  },
+
   voiz: {
     baseUrl: required('VOIZ_BASE_URL'),
     apiKey: required('VOIZ_API_KEY'),

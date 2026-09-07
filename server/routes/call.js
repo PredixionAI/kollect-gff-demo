@@ -1,6 +1,6 @@
 const express = require('express');
 const config = require('../config');
-const voizClient = require('../lib/voizClient');
+const callProvider = require('../lib/callProvider');
 const store = require('../lib/store');
 const callPoller = require('../lib/callPoller');
 
@@ -19,13 +19,13 @@ router.post('/call', async (req, res) => {
   let formattedPhone = phone.replace(/[^0-9+]/g, '');
   if (!formattedPhone.startsWith('+')) formattedPhone = '+91' + formattedPhone;
 
-  const targetAgentId = (voiceId && config.voiz.agentIdsByVoice[voiceId]) || config.voiz.defaultAgentId;
+  const targetAgentId = callProvider.agentIdForVoice(voiceId);
   if (!targetAgentId) {
-    return res.status(500).json({ error: 'No VOIZ agent configured for this voice, and no VOIZ_DEFAULT_AGENT_ID fallback set' });
+    return res.status(500).json({ error: `No ${callProvider.providerName()} agent configured for this voice, and no default agent fallback set` });
   }
 
   try {
-    const { httpStatus, body, payloadSent } = await voizClient.placeCall({
+    const { httpStatus, body, payloadSent } = await callProvider.placeCall({
       agentId: targetAgentId,
       customerPhone: formattedPhone,
       customerName: name,
@@ -34,7 +34,7 @@ router.post('/call', async (req, res) => {
     });
 
     if (httpStatus !== 200 && httpStatus !== 202) {
-      return res.status(httpStatus || 502).json({ error: 'VOIZ call dispatch failed', voizStatus: httpStatus, body, payloadSent });
+      return res.status(httpStatus || 502).json({ error: `${callProvider.providerName()} call dispatch failed`, voizStatus: httpStatus, body, payloadSent });
     }
 
     const callId = body.call_id || `unknown-${Date.now()}`;
@@ -51,7 +51,7 @@ router.post('/call', async (req, res) => {
     res.status(httpStatus).json({ call_id: callId, status: httpStatus === 200 ? 'initiated' : 'queued', voizResponse: body, payloadSent });
   } catch (err) {
     console.error('[call] dispatch error', err);
-    res.status(502).json({ error: 'Could not reach VOIZ', detail: String(err) });
+    res.status(502).json({ error: `Could not reach ${callProvider.providerName()}`, detail: String(err) });
   }
 });
 
@@ -64,8 +64,8 @@ router.post('/call-direct', async (req, res) => {
   }
 
   try {
-    const { httpStatus, body, payloadSent } = await voizClient.placeCall({
-      agentId: agentId || config.voiz.defaultAgentId,
+    const { httpStatus, body, payloadSent } = await callProvider.placeCall({
+      agentId: agentId || callProvider.defaultAgentId(),
       customerPhone,
       customerName: customerName || 'Vatsal',
       dueAmount: dueAmount !== undefined ? dueAmount : config.demo.dueAmount,
@@ -77,7 +77,8 @@ router.post('/call-direct', async (req, res) => {
     const callId = body.call_id || `call_${Date.now()}`;
     store.createCase(callId, {
       name: customerName || 'Vatsal',
-      phone: payloadSent.customer_phone,
+      // VOIZ payloads carry customer_phone, ElevenLabs payloads to_number.
+      phone: payloadSent.customer_phone || payloadSent.to_number,
       voiceId: null,
       status: body.status || (httpStatus === 200 ? 'initiated' : 'failed'),
       room_name: body.room_name || null,
@@ -93,7 +94,7 @@ router.post('/call-direct', async (req, res) => {
     });
   } catch (err) {
     console.error('[call-direct] error', err);
-    res.status(502).json({ error: 'Failed to trigger call via VOIZ API', detail: String(err) });
+    res.status(502).json({ error: `Failed to trigger call via ${callProvider.providerName()} API`, detail: String(err) });
   }
 });
 

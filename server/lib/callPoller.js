@@ -1,4 +1,4 @@
-const voizClient = require('./voizClient');
+const callProvider = require('./callProvider');
 const callOutcome = require('./callOutcome');
 
 // Primary way this app learns a call's outcome — GET /calls/{call_id},
@@ -23,7 +23,7 @@ function pollCall(callId) {
     }
 
     try {
-      const { httpStatus, body } = await voizClient.getCallDetails(callId);
+      const { httpStatus, body } = await callProvider.getCallDetails(callId);
       if (httpStatus !== 200) return; // transient — keep polling
 
       if (TERMINAL_STATUSES.has(body.status)) {

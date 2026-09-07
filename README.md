@@ -11,6 +11,13 @@ actually been verified against each real platform vs. still assumed.
 See [EXECUTION.md](EXECUTION.md) for the full current-state brief and what to
 build next — this section is just a quick summary.
 
+> **Branch `feature/elevenlabs`**: calls go through ElevenLabs Agents
+> Platform instead of VOIZ (`VOICE_PROVIDER` in `.env` switches back), and
+> the voice agent triggers WhatsApp mid-call via webhook tool calls instead
+> of only the scripted timeline. See
+> [docs/ELEVENLABS_MIGRATION.md](docs/ELEVENLABS_MIGRATION.md) and
+> [docs/ELEVENLABS_API_REFERENCE.md](docs/ELEVENLABS_API_REFERENCE.md).
+
 ## Current scope (per latest decisions)
 
 - Real outbound call via VOIZ, triggered from the backend (no keys in the

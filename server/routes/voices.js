@@ -1,6 +1,6 @@
 const express = require('express');
 const voiceCatalog = require('../voiceCatalog');
-const config = require('../config');
+const callProvider = require('../lib/callProvider');
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.get('/voices', (req, res) => {
     ttsLang: v.ttsLang,
     sample: v.sampleText,
     sampleAudio: v.sampleAudio || null,
-    active: Boolean(config.voiz.agentIdsByVoice[v.id]),
+    active: Boolean(callProvider.agentIdsByVoice()[v.id]),
   }));
   res.json(voices);
 });
