@@ -416,6 +416,7 @@ body{
 }
 .call-status-line.err{color:var(--red);}
 .call-status-line .dot{width:7px; height:7px; border-radius:50%; background:var(--amber); flex-shrink:0;}
+.call-status-line .orb-holder{flex-shrink:0; display:flex; align-items:center;}
 .call-status-line.live .dot{background:var(--green);}
 
 /* ---------- DIRECT CALL TRIGGER MODAL & BUTTON ---------- */

@@ -873,17 +873,43 @@ function stopPlay(){
 /* =========================================================
    REAL CALL — backend proxy at /api/call (no keys here)
 ========================================================= */
-function setCallStatusLine(text, mode){
+// orbState: a thinking-orbs state name ('connecting'|'listening'|'breathing'
+// …) replaces the static dot with an animated orb while the backend is doing
+// something; omit it for terminal lines (completed / errors) and the dot
+// returns. Falls back to the dot untouched if the vendor module didn't load.
+let callStatusOrb = null;
+function setCallStatusLine(text, mode, orbState){
   const el     = document.getElementById('realCallStatus');
   const textEl = document.getElementById('realCallStatusText');
   if(!el || !textEl) return;
   textEl.textContent = text;
   el.className = 'call-status-line' + (mode ? ` ${mode}` : '');
   el.style.display = 'flex';
+
+  const dot = el.querySelector('.dot');
+  if(orbState && window.ThinkingOrb){
+    if(dot) dot.style.display = 'none';
+    if(callStatusOrb){
+      callStatusOrb.setState(orbState);
+    } else {
+      const holder = document.createElement('span');
+      holder.className = 'orb-holder';
+      el.insertBefore(holder, textEl);
+      callStatusOrb = window.ThinkingOrb.mount(holder, { state: orbState, size: 20, theme: 'dark' });
+    }
+  } else {
+    if(callStatusOrb){
+      callStatusOrb.destroy();
+      callStatusOrb = null;
+      const holder = el.querySelector('.orb-holder');
+      if(holder) holder.remove();
+    }
+    if(dot) dot.style.display = '';
+  }
 }
 
 async function triggerRealCall(){
-  setCallStatusLine('Dialing your number\u2026');
+  setCallStatusLine('Dialing your number\u2026', null, 'connecting');
   try {
     const res = await fetch('/api/call', {
       method: 'POST',
@@ -904,9 +930,9 @@ async function triggerRealCall(){
     state.callId = data.call_id;
     if (window.track) track('call_triggered', { callId: data.call_id, status: data.status, voiceId: state.voice ? state.voice.id : null });
     if(data.status === 'queued'){
-      setCallStatusLine('Booth is at capacity, your call is queued and will dial shortly.');
+      setCallStatusLine('Booth is at capacity, your call is queued and will dial shortly.', null, 'breathing');
     } else {
-      setCallStatusLine('Call connecting\u2026', 'live');
+      setCallStatusLine('Call connecting\u2026', 'live', 'connecting');
     }
     subscribeToCallEvents(data.call_id);
   } catch(err){
@@ -968,8 +994,8 @@ function subscribeToCallEvents(callId){
   const giveUpTimer = setTimeout(() => { realCallCompleted = true; }, 3.5 * 60 * 1000);
   source.onmessage = (evt) => {
     const update = JSON.parse(evt.data);
-    if(update.status === 'initiated') setCallStatusLine('Call in progress\u2026', 'live');
-    if(update.status === 'queued')    setCallStatusLine('Queued, waiting for a free line\u2026');
+    if(update.status === 'initiated') setCallStatusLine('Call in progress\u2026', 'live', 'listening');
+    if(update.status === 'queued')    setCallStatusLine('Queued, waiting for a free line\u2026', null, 'breathing');
     if(update.status === 'completed'){
       // No single "disposition" field exists (confirmed against the real
       // API), outcome comes from separate boolean flags instead.

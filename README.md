@@ -120,6 +120,15 @@ public/
     telemetry.js        Client-side event tracking engine
     state.js, capture.js, softlaunch.js, orbs.js, archetype.js, persona.js,
     dashboard.js
+    vendor/
+      thinking-orbs-engine.es.js  Verbatim copy of the `thinking-orbs` npm
+                                  package's framework-agnostic engine (see
+                                  vendor/thinking-orb.js header for the
+                                  upgrade command)
+      thinking-orb.js             Vanilla adapter (no React on this page) —
+                                  window.ThinkingOrb, used by the dashboard
+                                  call-status line (connecting/listening/
+                                  breathing states instead of the static dot)
   audio/                No longer used — voice previews are spoken via the
                         Web Speech API instead of recorded clips
 legacy/                 Archived/dead code, kept for reference only
