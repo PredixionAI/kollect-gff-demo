@@ -6,14 +6,88 @@
 <title>Kollect: Live Agentic Collections Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,560;9..144,640&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 <div id="app">
 
+  <!-- ============ SCREEN 0a: PREDIXION WELCOME ============ -->
+  <div class="screen active" id="screen-welcome">
+    <div class="pw-glow"></div>
+    <div class="pw-grain"></div>
+    <div class="brand">
+      <div class="mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
+      <div><div class="name">Predixion AI</div><div class="sub">Agentic AI for lending</div></div>
+    </div>
+    <div class="pw-hero">
+      <div class="pw-orb" id="pwOrb"></div>
+      <div class="pw-eyebrow">Predixion AI &middot; GFF 2026</div>
+      <h1 class="pw-title">Lending runs on conversations.<br>We taught agents to hold them.</h1>
+      <p class="pw-lead">Predixion builds voice-native AI agents for the full lending lifecycle
+        &mdash; qualifying leads, serving customers, and recovering loans &mdash;
+        that call, negotiate and follow up like your best rep, in your borrower&#x2019;s language.</p>
+      <div class="pw-pillars">
+        <span class="pw-pillar">Voice-native</span>
+        <span class="pw-pillar-dot"></span>
+        <span class="pw-pillar">Omnichannel &middot; Call + WhatsApp</span>
+        <span class="pw-pillar-dot"></span>
+        <span class="pw-pillar">Built for India&#x2019;s languages</span>
+      </div>
+      <button class="btn-primary pw-cta" id="btnExploreDemos">Explore the demos &#x2192;</button>
+      <div class="foot-note pw-foot">Live at the booth &middot; three agents, one platform</div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 0b: DEMO PICKER (AgentX / Kollect / LeadX) ============ -->
+  <div class="screen" id="screen-products">
+    <div class="pw-glow pw-glow-products"></div>
+    <div class="pw-grain"></div>
+    <div class="brand">
+      <div class="mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
+      <div><div class="name">Predixion AI</div><div class="sub">Agentic AI for lending</div></div>
+    </div>
+    <div class="pp-head">
+      <div class="pw-eyebrow">The agent suite</div>
+      <h1 class="pp-title">Choose your demo</h1>
+      <p class="pp-sub">One platform, three agents. Kollect is live at the booth today &mdash; it will actually call you.</p>
+    </div>
+    <div class="pp-grid">
+      <div class="pp-card pp-card-disabled" data-product="agentx" aria-disabled="true">
+        <div class="pp-card-top">
+          <div class="pp-icon pp-icon-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+          <span class="pp-tag pp-tag-soon">Coming soon</span>
+        </div>
+        <div class="pp-name">AgentX</div>
+        <div class="pp-desc">The autonomous outreach agent &mdash; plans and runs omnichannel journeys across the whole customer lifecycle.</div>
+        <div class="pp-cta-row pp-cta-muted">In the lab &#x2192;</div>
+      </div>
+
+      <div class="pp-card pp-card-live" data-product="kollect" id="cardKollect" role="button" tabindex="0" aria-label="Start the Kollect live demo">
+        <div class="pp-card-top">
+          <div class="pp-icon pp-icon-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17z"/></svg></div>
+          <span class="pp-tag pp-tag-live"><span class="pp-live-dot"></span>Live demo</span>
+        </div>
+        <div class="pp-name">Kollect</div>
+        <div class="pp-desc">The loan-recovery voice agent. It builds a live case around you, calls your phone, negotiates &mdash; and follows up on WhatsApp.</div>
+        <div class="pp-cta-row">Start the demo <span class="pp-arrow">&#x2192;</span></div>
+      </div>
+
+      <div class="pp-card pp-card-disabled" data-product="leadx" aria-disabled="true">
+        <div class="pp-card-top">
+          <div class="pp-icon pp-icon-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <span class="pp-tag pp-tag-soon">Coming soon</span>
+        </div>
+        <div class="pp-name">LeadX</div>
+        <div class="pp-desc">The lead qualification agent &mdash; engages every inbound lead in minutes and hands sales a booked, briefed conversation.</div>
+        <div class="pp-cta-row pp-cta-muted">In the lab &#x2192;</div>
+      </div>
+    </div>
+    <button class="pp-back" id="btnBackToWelcome" type="button">&#x2190; About Predixion</button>
+  </div>
+
   <!-- ============ SCREEN 1: CAPTURE ============ -->
-  <div class="screen active" id="screen-capture">
+  <div class="screen" id="screen-capture">
     <div class="brand">
       <div class="mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
       <div><div class="name">Predixion AI</div><div class="sub">Agentic Collections</div></div>
@@ -385,6 +459,7 @@
 <script src="/js/telemetry.js"></script>
 <script src="/js/state.js"></script>
 
+<script src="/js/welcome.js"></script>
 <script src="/js/capture.js"></script>
 <script src="/js/softlaunch.js"></script>
 <script src="/js/orbs.js"></script>
