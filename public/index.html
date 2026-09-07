@@ -164,8 +164,8 @@
         <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>ACTION</div>
         <div class="ad-body" id="actionText">Initiating Borrower 360 analysis</div>
       </div>
-      <div class="ad-box">
-        <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>DETAILS</div>
+      <div class="ad-box ad-box-clickable" id="detailsBox" role="button" tabindex="0" aria-label="Open full details">
+        <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>DETAILS<svg class="ad-expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
         <div class="ad-body" id="detailsText">System triggers workflow automation</div>
       </div>
     </div>
@@ -358,6 +358,25 @@
           <div class="rh" id="dcResultStatus">STATUS: PENDING</div>
           <div class="rb" id="dcResultDetails"></div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DETAILS EXPAND MODAL ============ -->
+  <div class="modal-backdrop" id="detailsModal" style="display:none;">
+    <div class="modal-box details-modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="icon">&#128196;</span>
+          <div>
+            <h3>Details</h3>
+            <p id="detailsModalStep">Step 1 of 13</p>
+          </div>
+        </div>
+        <button class="modal-close" id="btnCloseDetailsModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="details-modal-text" id="detailsModalText">System triggers workflow automation</div>
       </div>
     </div>
   </div>

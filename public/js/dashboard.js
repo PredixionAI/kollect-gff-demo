@@ -22,7 +22,7 @@ function personaPacks(nm, agent, lang){
       w1Lines:[`Namaste ${nm} ji,`,``,`Aapki EMI \u20b945,000 kal due thi.`,``,`Abhi pay karein: https://pay.link/45k`],
       w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
       callType:'chat',
-      callLines:[`[AI Voice Agent \u2014 FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, ABC Bank ki taraf se.`,``,`${nm}: Haan bilkul, main abhi hi pay kar deta hoon!`],
+      callLines:[`[AI Voice Agent \u2014 FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, Predixion Fincorp ki taraf se.`,``,`${nm}: Haan bilkul, main abhi hi pay kar deta hoon!`],
       callAction:'Call answered \u2014 borrower agreed to pay immediately', callDetails:`AI Voice Agent \u2014 Friendly mode (${agent})`,
       sentLines:['Outcome: Payment agreed verbally','Sentiment: Cooperative, high confidence','Risk delta: -20 (improving)','','Recalculating next best action...'],
       sentAction:'Call ended: borrower confirmed payment', sentDetails:'Sentiment: cooperative, high confidence',
@@ -33,7 +33,7 @@ function personaPacks(nm, agent, lang){
       s9Title:'Payment Verification', s9Subtitle:'Confirming funds cleared, no escalation needed',
       s9Lines:['Payment gateway: confirmed','LMS: reconciling balance','Account status updating to CURRENT','','No escalation required \u2014 case will auto-close'],
       s9Action:'Funds verified \u2014 reconciling with LMS', s9Details:'Escalation protocol not triggered',
-      s10Title:'Case Resolved Early', s10Subtitle:'No human hand-off needed', s10Audience:'borrower', s10Contact:'ABC Bank', s10ContactSub:'Business Account',
+      s10Title:'Case Resolved Early', s10Subtitle:'No human hand-off needed', s10Audience:'borrower', s10Contact:'Predixion Fincorp', s10ContactSub:'Business Account',
       s10Lines:[`Aapka account ab up-to-date hai, ${nm} ji.`,``,`Dhanyawad samay par jawab dene ke liye!`],
       s10Action:'Final confirmation sent 11:40 AM', s10Details:'Case closed without human involvement',
       escalate:false,
@@ -56,7 +56,7 @@ function personaPacks(nm, agent, lang){
       w1Lines:[`Namaste ${nm} ji,`,``,`Aapki EMI \u20b945,000 kal due thi.`,``,`Abhi pay karein: https://pay.link/45k`],
       w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
       callType:'chat',
-      callLines:[`[AI Voice Agent \u2014 FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, ABC Bank ki taraf se.`,``,`${nm}: Yaar, is mahine thoda tight hai. Kya thodi mohlat mil sakti hai?`],
+      callLines:[`[AI Voice Agent \u2014 FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, Predixion Fincorp ki taraf se.`,``,`${nm}: Yaar, is mahine thoda tight hai. Kya thodi mohlat mil sakti hai?`],
       callAction:'Call answered \u2014 borrower requested more time', callDetails:`AI Voice Agent \u2014 Friendly mode (${agent})`,
       sentLines:['Outcome: Promise-to-pay (soft), needs structured plan','Sentiment: Receptive, financial strain detected','Risk delta: unchanged','','Recalculating next best action...'],
       sentAction:'Call ended: borrower asked for more time', sentDetails:'Sentiment: receptive, financially constrained',
@@ -67,7 +67,7 @@ function personaPacks(nm, agent, lang){
       s9Title:'Plan Acceptance Check', s9Subtitle:'Borrower reviewing installment offer',
       s9Lines:['Reply received: "SPLIT"','Plan accepted \u2014 2 installments confirmed','No escalation needed','','Scheduling first installment reminder'],
       s9Action:'Borrower replied SPLIT at 3:22 PM', s9Details:'Plan accepted \u2014 scheduling installments',
-      s10Title:'Plan Activated', s10Subtitle:'Installment schedule confirmed via WhatsApp', s10Audience:'borrower', s10Contact:'ABC Bank', s10ContactSub:'Business Account',
+      s10Title:'Plan Activated', s10Subtitle:'Installment schedule confirmed via WhatsApp', s10Audience:'borrower', s10Contact:'Predixion Fincorp', s10ContactSub:'Business Account',
       s10Lines:[`Perfect, ${nm} ji!`,``,`Installment 1: \u20b922,500 \u2014 due today`,`Installment 2: \u20b922,500 \u2014 due in 7 days`,``,`Hum aapko reminder bhejenge har installment se pehle.`],
       s10Action:'Schedule confirmed 3:25 PM', s10Details:'Case closed without human involvement',
       escalate:false,
@@ -90,7 +90,7 @@ function personaPacks(nm, agent, lang){
       w1Lines:[`Namaste ${nm} ji,`,``,`Aapki EMI \u20b945,000 kal due thi.`,``,`Abhi pay karein: https://pay.link/45k`],
       w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
       callType:'chat',
-      callLines:[`[AI Voice Agent \u2014 FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, ABC Bank ki taraf se.`,``,`${nm}: Ye charge galat hai. Maine ye pehle hi customer care ko bataya tha. Mujhe insaan se baat karni hai.`],
+      callLines:[`[AI Voice Agent \u2014 FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, Predixion Fincorp ki taraf se.`,``,`${nm}: Ye charge galat hai. Maine ye pehle hi customer care ko bataya tha. Mujhe insaan se baat karni hai.`],
       callAction:'Call answered \u2014 borrower disputes the charge', callDetails:`AI Voice Agent \u2014 Friendly mode (${agent})`,
       sentLines:['Outcome: Dispute raised, distrust of automated contact','Sentiment: Skeptical, defensive','Escalation flag: borrower requested human','','Recalculating next best action...'],
       sentAction:'Call ended: borrower disputed the charge', sentDetails:'Sentiment: skeptical, defensive',
@@ -222,7 +222,7 @@ function steps(){
   { tab:'execution', pill:'Step 4/13', title:'Round 1: WhatsApp', subtitle:'Friendly Reminder \u2014 WhatsApp',
     action:P.w1Action, details:P.w1Details, classV:archTitle, status:'progress',
     lastContact:{time:'10:15 AM', platform:'whatsapp', platformLabel:'WhatsApp', status: P.callType==='terminal' ? 'pending' : 'connected', statusLabel: P.callType==='terminal' ? 'Sent · Not Read' : 'Connected · Read'},
-    live:{type:'chat', tag:'WHATSAPP', time:'10:15 AM', voice:false, contact:'ABC Bank', contactSub:'Business Account', lines:P.w1Lines},
+    live:{type:'chat', tag:'WHATSAPP', time:'10:15 AM', voice:false, contact:'Predixion Fincorp', contactSub:'Business Account', lines:P.w1Lines},
     nbaNow:P.nba.s4,
     agents:['Friendly Reminder Agent','Tracking Agent'], models:['Template Generator (GPT-4)'],
     signals:[{name:'WhatsApp API', tag:'sent', desc:'Dispatched: 10:15:03 AM'},{name:'WhatsApp API', tag:P.callType==='terminal'?'pending':'read', desc:P.callType==='terminal'?'Not yet read':'Read: 10:17:23 AM'}],
@@ -234,7 +234,7 @@ function steps(){
       : {time:'11:30 AM', platform:'voice', platformLabel:'Voice Call', status:'connected', statusLabel:'Connected · 1m 23s'},
     live: P.callType==='terminal'
       ? {type:'terminal', tag:'CALL ATTEMPT', voice:false, lines:P.callLines}
-      : {type:'chat', tag:'VOICE AGENT', time:'11:30 AM', voice:true, contact:'ABC Bank Collections', lines:P.callLines},
+      : {type:'chat', tag:'VOICE AGENT', time:'11:30 AM', voice:true, contact:'Predixion Fincorp', lines:P.callLines},
     nbaNow:P.nba.s5,
     agents:[`Friendly Reminder Agent (${agent})`,'Speech Analyzer'], models:['Conversational AI (GPT-4)','Sentiment Detection'],
     signals:[{name:'RAG KB', tag:'script', desc:'Friendly reminder script loaded'},{name:'Voice Agent', tag:P.callType==='terminal'?'no-answer':'connected', desc:P.callType==='terminal'?'6 rings, no pickup':'Duration: 1m 23s'}],
@@ -258,7 +258,7 @@ function steps(){
   { tab:'execution', pill:'Step 8/13', title:P.w2Title, subtitle:P.w2Subtitle,
     action:P.w2Action, details:P.w2Details, classV:archTitle, status:'progress',
     lastContact:{time:'3:00 PM', platform:'whatsapp', platformLabel:'WhatsApp', status:P.escalate?'pending':'connected', statusLabel:P.escalate?'Sent \u00b7 Not Read':'Sent \u00b7 Delivered'},
-    live:{type:'chat', tag:'WHATSAPP', time:'3:00 PM', voice:false, contact:'ABC Bank', contactSub:'Business Account', lines:P.w2Lines},
+    live:{type:'chat', tag:'WHATSAPP', time:'3:00 PM', voice:false, contact:'Predixion Fincorp', contactSub:'Business Account', lines:P.w2Lines},
     nbaNow:P.nba.s8,
     agents:['Firm Reminder Agent','Payment Plan Agent'], models:['Template Generator (GPT-4)','Plan Structuring Model'],
     signals:[{name:'WhatsApp API', tag:'sent', desc:'Dispatched: 3:00:00 PM'},{name:'WhatsApp API', tag:'delivered', desc:'Delivered: 3:00:04 PM'}],
@@ -478,11 +478,13 @@ function renderTabs(){
 const ICON_MIC    = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>`;
 const ICON_SPEAKER= `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.5 8.5a5.5 5.5 0 0 1 0 7"/></svg>`;
 const ICON_HANGUP = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 11.5c2.5-2.4 5.6-3.7 8.4-3.7s5.9 1.3 8.4 3.7c.4.4.4 1 0 1.4l-1.9 1.9c-.4.4-1 .4-1.4.1-.7-.5-1.5-.9-2.3-1.2-.4-.1-.6-.5-.6-.9v-1.7c-1.4-.4-2.9-.4-4.4 0v1.7c0 .4-.3.8-.6.9-.8.3-1.6.7-2.3 1.2-.4.3-1 .3-1.4-.1L3.6 12.9c-.4-.4-.4-1 0-1.4z"/></svg>`;
+const ICON_WA_VIDEOCALL = `<svg viewBox="0 0 24 24" fill="none" stroke="#aebac1" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>`;
+const ICON_WA_CALL = `<svg viewBox="0 0 24 24" fill="none" stroke="#aebac1" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;
 
 function renderPhoneMockup(s){
   const lines = s.live.lines.filter(l => l.trim() !== '');
   if(!s.live.voice){
-    const contact    = s.live.contact    || 'ABC Bank';
+    const contact    = s.live.contact    || 'Predixion Fincorp';
     const contactSub = s.live.contactSub || 'Business Account';
     const initials   = contact.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
     const bodyText   = lines.join('<br>');
@@ -496,6 +498,10 @@ function renderPhoneMockup(s){
               <span class="wa-back">&#8249;</span>
               <div class="wa-avatar">${initials}</div>
               <div class="wa-title"><div class="wa-name">${contact}</div><div class="wa-sub">${contactSub}</div></div>
+              <div class="wa-header-actions">
+                <span class="wa-action">${ICON_WA_VIDEOCALL}</span>
+                <span class="wa-action">${ICON_WA_CALL}</span>
+              </div>
             </div>
             <div class="wa-body">
               <div class="wa-bubble-in">
@@ -520,7 +526,7 @@ function renderPhoneMockup(s){
           <div class="call-top">
             <div class="call-avatar">${personaInit}</div>
             <div class="call-name">${personaName}</div>
-            <div class="call-status"><span class="live-blip"></span>${s.live.contact || 'ABC Bank'} &middot; ${s.live.time || ''}</div>
+            <div class="call-status"><span class="live-blip"></span>${s.live.contact || 'Predixion Fincorp'} &middot; ${realTimeLabel()}</div>
           </div>
           <div class="call-captions">${captions.map(l => `<div class="cap-line">${l}</div>`).join('')}</div>
           <div class="call-controls">
@@ -553,6 +559,8 @@ let _phoneHasContent = false;
 // waiting for something to happen, not a placeholder.
 const ICON_PHONE_APP = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;
 const ICON_WHATSAPP_APP = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+const ICON_SMS_APP = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`;
+const ICON_CAMERA_APP = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
 
 function renderPhoneIdle(){
   const titleEl = document.getElementById('phoneDockTitle');
@@ -565,19 +573,28 @@ function renderPhoneIdle(){
         <div class="phone-notch"></div>
         <div class="phone-statusbar"><span>9:41</span><span>100%</span></div>
         <div class="phone-home">
+          <img class="phone-wallpaper-logo" src="/img/logo-mark.png" alt="">
           <div class="phone-home-time">9:41</div>
           <div class="phone-home-apps">
             <div class="phone-app">
-              <div class="phone-app-icon fincorp">&alpha;</div>
-              <div class="phone-app-label">Predixion Fincorp</div>
+              <div class="phone-app-icon phone">${ICON_PHONE_APP}</div>
+              <div class="phone-app-label">Phone</div>
+            </div>
+            <div class="phone-app">
+              <div class="phone-app-icon sms">${ICON_SMS_APP}</div>
+              <div class="phone-app-label">Messages</div>
             </div>
             <div class="phone-app">
               <div class="phone-app-icon whatsapp">${ICON_WHATSAPP_APP}</div>
               <div class="phone-app-label">WhatsApp</div>
             </div>
             <div class="phone-app">
-              <div class="phone-app-icon phone">${ICON_PHONE_APP}</div>
-              <div class="phone-app-label">Phone</div>
+              <div class="phone-app-icon camera">${ICON_CAMERA_APP}</div>
+              <div class="phone-app-label">Camera</div>
+            </div>
+            <div class="phone-app">
+              <div class="phone-app-icon fincorp"><img src="/img/logo-mark.png" alt=""></div>
+              <div class="phone-app-label">Predixion Fincorp</div>
             </div>
           </div>
         </div>
@@ -1124,4 +1141,36 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+});
+
+/* =========================================================
+   DETAILS EXPAND MODAL \u2014 the compact DETAILS box in the
+   action-details row got shorter to make room for the phone
+   mockup; clicking it opens the same text large and readable
+   instead of losing it to the smaller box.
+========================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const box       = document.getElementById('detailsBox');
+  const modal     = document.getElementById('detailsModal');
+  const btnClose  = document.getElementById('btnCloseDetailsModal');
+  const modalText = document.getElementById('detailsModalText');
+  const modalStep = document.getElementById('detailsModalStep');
+  if(!box || !modal) return;
+
+  function openDetailsModal(){
+    modalText.textContent = document.getElementById('detailsText').textContent;
+    modalStep.textContent = `Step ${idx+1} of ${stepData.length}`;
+    modal.style.display = 'flex';
+  }
+  function closeDetailsModal(){ modal.style.display = 'none'; }
+
+  box.addEventListener('click', openDetailsModal);
+  box.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openDetailsModal(); }
+  });
+  if(btnClose) btnClose.addEventListener('click', closeDetailsModal);
+  modal.addEventListener('click', (e) => { if(e.target === modal) closeDetailsModal(); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && modal.style.display !== 'none') closeDetailsModal();
+  });
 });
