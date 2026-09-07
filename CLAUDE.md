@@ -82,6 +82,13 @@ borders at 6-12% white, glass (backdrop blur) only where something floats,
 white pill primaries, medium weights. Never edit the vendored scroll-craft
 engine; theme via tokens.
 
+**The dashboard is an agent console.** `public/js/dashboard.js` is the step
+engine (13 scripted steps in 4 phases, real call + WhatsApp triggers);
+`public/js/workflow.js` wraps its `renderStep` to paint the case-journey node
+graph and fit the phone mockup into its panel. Layout: dotted canvas,
+floating toolbar, graph, then three glass panels (case file, phone,
+inspector). Element ids the engine writes to must be preserved.
+
 **Frontend is hand-edited vanilla JS** — `public/` is the source of truth,
 nothing generates it, there is no React/bundler. One screen ≈ one file in
 `public/js/`. Third-party UI code goes in `public/js/vendor/` as vendored
@@ -104,6 +111,11 @@ header (the platform guide says Bearer, which does not work); ElevenLabs uses
 live-verified).
 
 ## Cautions
+
+- **Provider names never reach the UI.** VOIZ, ElevenLabs, Vobiz and the
+  like stay in server logs, docs and code comments only. Every user-facing
+  string (status lines, alerts, modal copy, API `error` fields the client
+  displays) is written provider-neutral ("The call could not be placed").
 
 - `recordings/` contains real attendee call audio (PII) and is gitignored —
   never commit it or anything like it.

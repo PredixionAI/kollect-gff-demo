@@ -21,7 +21,7 @@ router.post('/call', async (req, res) => {
 
   const targetAgentId = callProvider.agentIdForVoice(voiceId);
   if (!targetAgentId) {
-    return res.status(500).json({ error: `No ${callProvider.providerName()} agent configured for this voice, and no default agent fallback set` });
+    return res.status(500).json({ error: 'No agent is configured for this voice yet' });
   }
 
   try {
@@ -34,7 +34,7 @@ router.post('/call', async (req, res) => {
     });
 
     if (httpStatus !== 200 && httpStatus !== 202) {
-      return res.status(httpStatus || 502).json({ error: `${callProvider.providerName()} call dispatch failed`, voizStatus: httpStatus, body, payloadSent });
+      return res.status(httpStatus || 502).json({ error: 'The call could not be placed', providerStatus: httpStatus, body, payloadSent });
     }
 
     const callId = body.call_id || `unknown-${Date.now()}`;
@@ -51,7 +51,7 @@ router.post('/call', async (req, res) => {
     res.status(httpStatus).json({ call_id: callId, status: httpStatus === 200 ? 'initiated' : 'queued', voizResponse: body, payloadSent });
   } catch (err) {
     console.error('[call] dispatch error', err);
-    res.status(502).json({ error: `Could not reach ${callProvider.providerName()}`, detail: String(err) });
+    res.status(502).json({ error: 'The call service is unreachable', detail: String(err) });
   }
 });
 
@@ -94,7 +94,7 @@ router.post('/call-direct', async (req, res) => {
     });
   } catch (err) {
     console.error('[call-direct] error', err);
-    res.status(502).json({ error: `Failed to trigger call via ${callProvider.providerName()} API`, detail: String(err) });
+    res.status(502).json({ error: 'The call could not be dispatched', detail: String(err) });
   }
 });
 

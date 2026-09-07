@@ -107,7 +107,11 @@
     </div>
   </div>
 
-  <!-- ============ SCREEN 6: DASHBOARD ============ -->
+  <!-- ============ SCREEN 6: DASHBOARD (agent console) ============
+       A workflow canvas: the case journey as a node graph across the top,
+       a floating toolbar for the step engine, and three glass panels below
+       (case file, the borrower's phone, inspector). Every element id the
+       step engine writes to is preserved; workflow.js paints the graph. -->
   <div class="screen" id="screen-dash">
     <div class="topbar">
       <div class="tb-item">
@@ -125,45 +129,27 @@
       </div>
     </div>
 
-    <!-- STATE MACHINE: sits between the topbar and both data panels + phone
-         mockup, full width -- it's the global "which stage" indicator for
-         the whole dashboard, not just the left column. -->
-    <div class="state-machine">
-      <div class="sm-top">
-        <div class="tab-row" id="tabRow"></div>
+    <div class="wf-canvas">
+      <div class="wf-toolbar">
         <div class="step-controls">
           <div class="ctrl-btn" id="btnPrev" title="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
           <div class="ctrl-btn" id="btnPlay" title="Play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
           <div class="ctrl-btn" id="btnNext" title="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div>
           <div class="ctrl-btn" id="btnReset" title="Restart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v6h-6"/></svg></div>
         </div>
+        <span class="wf-toolbar__sep"></span>
+        <span class="wf-toolbar__step" id="footStep">Step 1 of 13</span>
       </div>
-      <div class="sm-current">
-        <div class="step-title" id="stepTitle">Default Detection</div>
-        <div class="step-subtitle" id="stepSubtitle">Payment of &#x20b9;45,000 missed on due date</div>
-      </div>
-    </div>
 
-    <!-- Input/output of the current stage -- travels with the state machine
-         at the top, not buried in the left column. -->
-    <div class="action-details">
-      <div class="ad-box">
-        <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>ACTION</div>
-        <div class="ad-body" id="actionText">Initiating Borrower 360 analysis</div>
-      </div>
-      <div class="ad-box ad-box-clickable" id="detailsBox" role="button" tabindex="0" aria-label="Open full details">
-        <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>DETAILS<svg class="ad-expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
-        <div class="ad-body" id="detailsText">System triggers workflow automation</div>
-      </div>
-    </div>
+      <div class="wf-graph" id="workflowGraph" aria-label="Case journey"></div>
+      <div class="tab-row" id="tabRow" hidden></div>
 
-    <div class="main-grid">
-      <!-- LEFT PANE: DASHBOARD / PROCESS VIEW -->
-      <div class="col dash-pane">
-        <div class="call-status-line" id="realCallStatus" style="display:none;"><span class="dot"></span><span id="realCallStatusText"></span></div>
-
-        <div class="dash-pane-top">
-          <div class="card" id="leftPanelCard">
+      <div class="wf-panels">
+        <aside class="wf-panel wf-panel--case">
+          <div class="wf-panel__head"><span>Case file</span><span class="wf-panel__meta" id="footClass">Technical Defaulter</span></div>
+          <div class="wf-panel__body">
+            <div class="call-status-line" id="realCallStatus" style="display:none;"><span class="dot"></span><span id="realCallStatusText"></span></div>
+            <div class="card" id="leftPanelCard">
             <div class="persona-head">
               <div class="profile-row">
                 <div class="profile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><path d="M20 7h-3V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a1 1 0 0 0-1-1z"/></svg></div>
@@ -221,8 +207,37 @@
               </div>
             </div>
           </div>
+          </div>
+        </aside>
 
-          <div class="card" id="rightDataPanels">
+        <section class="wf-panel wf-panel--phone" id="phonePane">
+          <div id="rightPhonePanel" class="card right-phone-card">
+          <div class="phone-dock-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+            <span id="phoneDockTitle">Borrower&#x2019;s phone</span>
+          </div>
+          <div class="phone-dock-body" id="phoneDockBody"></div>
+        </div>
+        </section>
+
+        <aside class="wf-panel wf-panel--inspector">
+          <div class="wf-panel__head"><span>Inspector</span><span class="wf-panel__meta">Current node</span></div>
+          <div class="wf-panel__body">
+            <div class="wf-inspector__title">
+              <div class="step-title" id="stepTitle">Default Detection</div>
+              <div class="step-subtitle" id="stepSubtitle">Payment of &#x20b9;45,000 missed on due date</div>
+            </div>
+            <div class="action-details">
+      <div class="ad-box">
+        <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>ACTION</div>
+        <div class="ad-body" id="actionText">Initiating Borrower 360 analysis</div>
+      </div>
+      <div class="ad-box ad-box-clickable" id="detailsBox" role="button" tabindex="0" aria-label="Open full details">
+        <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>DETAILS<svg class="ad-expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+        <div class="ad-body" id="detailsText">System triggers workflow automation</div>
+      </div>
+    </div>
+            <div class="card" id="rightDataPanels">
             <div class="section-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>SIGNALS</div>
 
             <div class="data-group appweb">
@@ -269,24 +284,8 @@
               <div class="nba-reason" id="nbaReason"></div>
             </div>
           </div>
-        </div>
-
-      </div>
-
-      <!-- RIGHT PANE: PHONE MOCKUP — always visible, the real focus:
-           calls, transcripts, WhatsApp, Next Best Action. -->
-      <div class="col phone-pane" id="phonePane">
-        <div id="rightPhonePanel" class="card right-phone-card">
-          <div class="phone-dock-head">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
-            <span id="phoneDockTitle">Borrower&#x2019;s phone</span>
           </div>
-          <div class="phone-dock-body" id="phoneDockBody"></div>
-        </div>
-        <div class="footer-status">
-          <span id="footStep">Step 1 of 13</span>
-          <span id="footClass">Technical Defaulter</span>
-        </div>
+        </aside>
       </div>
     </div>
   </div>
@@ -378,5 +377,6 @@
 <script src="/js/archetype.js"></script>
 <script src="/js/persona.js"></script>
 <script src="/js/dashboard.js"></script>
+<script src="/js/workflow.js"></script>
 </body>
 </html>

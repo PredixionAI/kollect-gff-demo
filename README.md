@@ -132,7 +132,8 @@ public/
     landing.js          Landing: mounts the engine + the scroll-scrubbed sample call
     telemetry.js        Client-side event tracking engine
     state.js, capture.js, softlaunch.js, orbs.js, archetype.js, persona.js,
-    dashboard.js
+    dashboard.js        Step engine (13 steps / 4 phases, real call + WhatsApp triggers)
+    workflow.js         Case-journey node graph + phone fit for the console layout
     vendor/
       scrollcraft.js              Vendored scroll-craft engine (from .claude/skills/scroll-craft)
       thinking-orbs-engine.es.js  Verbatim copy of the `thinking-orbs` npm

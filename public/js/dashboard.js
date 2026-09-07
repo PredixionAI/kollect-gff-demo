@@ -923,7 +923,7 @@ async function triggerRealCall(){
     });
     const data = await res.json();
     if(!res.ok){
-      setCallStatusLine(`Call could not be placed (${data.error || res.status})`, 'err');
+      setCallStatusLine(data.error || 'The call could not be placed', 'err');
       realCallCompleted = true; // nothing to wait for, unblock auto-play
       return;
     }
@@ -1283,11 +1283,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if(btnSend){
     btnSend.addEventListener('click', async () => {
       btnSend.disabled = true;
-      btnSend.textContent = '\u23f3 Dispatching Call via VOIZ API...';
+      btnSend.textContent = 'Dispatching call…';
       resultBox.style.display = 'block';
       resultStatus.className = 'rh';
       resultStatus.textContent = 'STATUS: DISPATCHING...';
-      resultDetails.textContent = 'Sending payload to VOIZ backend...';
+      resultDetails.textContent = 'Sending request…';
       try {
         const payload = {
           agentId: dcAgentId.value,
@@ -1327,7 +1327,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setCallStatusLine('Network / Dispatch error', 'err');
       } finally {
         btnSend.disabled = false;
-        btnSend.textContent = '\u26a1 Dispatch Call Now via VOIZ API';
+        btnSend.textContent = 'Dispatch call now';
       }
     });
   }
