@@ -72,3 +72,31 @@ ScrollCraft.mount(document.body);
   card.addEventListener('click', (e) => { if(!(e.target.closest('a'))) go(); });
   card.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } });
 })();
+
+// Word fill: split each [data-fill-words] heading into words and light them
+// progressively as the heading travels from 88% to 38% of the viewport.
+(function wordFill(){
+  const heads = Array.from(document.querySelectorAll('[data-fill-words]'));
+  if(!heads.length) return;
+  heads.forEach(h => {
+    const words = h.textContent.trim().split(/\s+/);
+    h.innerHTML = words.map(w => `<span class="w">${w}</span>`).join(' ');
+  });
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced){ heads.forEach(h => h.querySelectorAll('.w').forEach(w => w.classList.add('is-lit'))); return; }
+  let ticking = false;
+  function update(){
+    ticking = false;
+    const vh = innerHeight;
+    heads.forEach(h => {
+      const r = h.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (vh * 0.88 - r.top) / (vh * 0.5)));
+      const ws = h.querySelectorAll('.w');
+      const lit = Math.round(p * ws.length);
+      ws.forEach((w, i) => w.classList.toggle('is-lit', i < lit));
+    });
+  }
+  addEventListener('scroll', () => { if(!ticking){ ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener('resize', update);
+  update();
+})();

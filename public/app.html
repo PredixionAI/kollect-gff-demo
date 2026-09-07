@@ -12,9 +12,30 @@
 <body class="ds-body">
 <div id="app">
 
+  <!-- ============ TOP BAR: brand, step progress, context actions ============ -->
+  <header class="app-bar">
+    <a class="app-bar__brand" href="/" aria-label="Predixion AI"><img src="/img/logo-white.png" alt="Predixion AI"></a>
+    <nav class="stepper" id="stepper" aria-label="Demo progress">
+      <div class="stepper__step" data-step="capture"><span class="stepper__dot">1</span><span class="stepper__label">Identity</span></div>
+      <span class="stepper__line"></span>
+      <div class="stepper__step" data-step="orbs"><span class="stepper__dot">2</span><span class="stepper__label">Voice</span></div>
+      <span class="stepper__line"></span>
+      <div class="stepper__step" data-step="archetype"><span class="stepper__dot">3</span><span class="stepper__label">Borrower</span></div>
+      <span class="stepper__line"></span>
+      <div class="stepper__step" data-step="persona"><span class="stepper__dot">4</span><span class="stepper__label">Case</span></div>
+      <span class="stepper__line"></span>
+      <div class="stepper__step" data-step="dash"><span class="stepper__dot">5</span><span class="stepper__label">Live</span></div>
+    </nav>
+    <div class="app-bar__actions" id="dashActions">
+      <span class="app-bar__tenant"><span class="ds-dot" style="color:var(--ds-ok)"></span>Predixion Fincorp</span>
+      <button class="ds-btn ds-btn--secondary ds-btn--sm" id="btnOpenDirectCallModal" type="button">Direct call</button>
+      <button class="ds-btn ds-btn--secondary ds-btn--sm" id="btnWhatsappModeToggle" type="button" title="Toggle real WhatsApp sends on/off">WhatsApp: &hellip;</button>
+    </div>
+  </header>
+
   <!-- ============ SCREEN 1: CAPTURE ============ -->
   <div class="screen active" id="screen-capture">
-    <a class="brand" href="/" aria-label="Predixion AI"><img class="brand__lockup" src="/img/logo-white.png" alt="Predixion AI"></a>
+    
     <div class="capture-box">
       <h1>You&#x2019;re about to meet Kollect</h1>
       <p class="lead">Kollect is Predixion AI&#x2019;s voice agent for loan recovery. In a moment, it&#x2019;ll build a live case around <em>you</em>: enter your details and it&#x2019;ll actually reach out.</p>
@@ -59,7 +80,7 @@
 
   <!-- ============ SCREEN 3: ORB VOICE CAROUSEL ============ -->
   <div class="screen" id="screen-orbs">
-    <a class="brand" href="/" aria-label="Predixion AI"><img class="brand__lockup" src="/img/logo-white.png" alt="Predixion AI"></a>
+    
     <div class="orbs-head">
       <div class="eyebrow">Step 2 of 5 &middot; Voice selection</div>
       <h1>Choose your agent&#x2019;s voice</h1>
@@ -77,7 +98,7 @@
 
   <!-- ============ SCREEN 4: ARCHETYPE SELECT ============ -->
   <div class="screen" id="screen-archetype">
-    <a class="brand" href="/" aria-label="Predixion AI"><img class="brand__lockup" src="/img/logo-white.png" alt="Predixion AI"></a>
+    
     <div class="arch-head">
       <div class="eyebrow">Step 3 of 5 &middot; Choose your role</div>
       <h1>Which borrower are you today?</h1>
@@ -113,22 +134,6 @@
        (case file, the borrower's phone, inspector). Every element id the
        step engine writes to is preserved; workflow.js paints the graph. -->
   <div class="screen" id="screen-dash">
-    <div class="topbar">
-      <div class="tb-item">
-        <img class="tb-lockup" src="/img/logo-white.png" alt="Predixion AI">
-      </div>
-      <div class="divider"></div>
-      <div class="tb-item">
-        <div class="tb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 18h6"/></svg></div>
-        <div><div class="tb-title">Predixion Fincorp</div></div>
-      </div>
-      <div class="status-flex">
-        <button class="ds-btn ds-btn--secondary ds-btn--sm" id="btnOpenDirectCallModal" type="button">Direct call</button>
-        <button class="ds-btn ds-btn--secondary ds-btn--sm" id="btnWhatsappModeToggle" type="button" title="Toggle real WhatsApp sends on/off">WhatsApp: &hellip;</button>
-        <div style="display:flex;align-items:center;gap:7px;"><div class="live-dot"></div><span class="live-label">Live</span></div>
-      </div>
-    </div>
-
     <div class="wf-canvas">
       <div class="wf-toolbar">
         <div class="step-controls">
@@ -178,8 +183,8 @@
                 <div class="data-group structured">
                   <div class="gh">Structured data</div>
                   <div class="dot-item" data-ingest="structured">LMS: 18-month clean history</div>
-                  <div class="dot-item" data-ingest="structured">CRM: Software engineer, &#x20b9;85k/mo</div>
-                  <div class="dot-item" data-ingest="structured">Bank: Savings &#x20b9;1.2L</div>
+                  <div class="dot-item" data-ingest="structured">Loan: Personal, 24 months, 18 EMIs paid on time</div>
+                  <div class="dot-item" data-ingest="structured">Autopay: Mandate active, one bounce this cycle</div>
                 </div>
               </div>
               <div class="b360-col">
@@ -252,17 +257,9 @@
               <div id="signalsList"></div>
             </div>
 
-            <div class="data-group purchasing">
-              <div class="gh">Purchasing signals</div>
-              <div class="spend-stat-row">
-                <div class="stat-box"><div class="k">Highest / Day</div><div class="v">&#x20b9;18,400</div></div>
-                <div class="stat-box"><div class="k">Avg Daily Spend</div><div class="v">&#x20b9;2,150</div></div>
-              </div>
-            </div>
-
             <div class="data-group patterns">
               <div class="gh">Common payment patterns</div>
-              <div class="dot-item">Pays via UPI &middot; Typically clears within 3 days of a reminder</div>
+              <div class="dot-item">Pays via UPI, usually within 3 days of a reminder</div>
             </div>
 
             <div class="data-group unusual" id="unusualGroup">
