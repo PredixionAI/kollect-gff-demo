@@ -262,11 +262,10 @@ body{
 .data-group.appweb .dot-item::before{background:var(--amber);}
 .data-group.commbehaviour .dot-item::before{background:var(--blue);}
 
-/* Segment 1, row 2 -- Borrower 360 (structured + unstructured data) next to
-   Communication History, side by side instead of stacked full-width. */
+/* Segment 1, row 1 -- Structured Data (always visible, CRM/CIBIL/LMS
+   together) next to Communication History, side by side. */
 .b360-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
 .b360-col{min-width:0;}
-.unstructured .real-transcript-card{margin-top:0;}
 
 .comm-history{position:relative; min-height:20px;}
 .comm-empty{font-size:12.5px; color:var(--text-faint); padding:2px 0;}
@@ -279,10 +278,15 @@ body{
   border:1px solid #164430; border-radius:4px; padding:1px 5px; flex-shrink:0;
 }
 
-/* No-scroll rule: once the real transcript has content, the structured-data
-   bullets (their job -- build a first impression -- is done by now) step
-   aside to make room, instead of the pane scrolling or clipping. */
-#leftPanelCard.has-transcript .data-group.structured{display:none;}
+/* Segment 1, row 2 -- Unstructured Data: the specific interaction's detail
+   (transcript / summary / next best action), full width, three across,
+   below the always-visible structured snapshot -- not competing with it
+   for the same half-width column. */
+.unstructured-row{margin-top:2px;}
+.unstructured-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:16px;}
+.unstructured-col{min-width:0;}
+.unstructured-col .gh{font-size:10.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; color:var(--text-dim); margin-bottom:4px;}
+.summary-pointer, .nba-pointer{font-size:12px; color:var(--text-dim); line-height:1.4;}
 
 /* Segment 2 -- Signals: Real-Time Activity stays the live per-step feed;
    the four static groups below it are each one clear angle on the borrower
@@ -897,8 +901,12 @@ body{
 .rt-badge.neutral{color:var(--text-dim); border-color:var(--border-soft); background:var(--panel);}
 .rt-transcript{
   font-family:var(--mono); font-size:12px; line-height:1.55;
-  color:#d7dbe2; max-height:110px; overflow-y:auto; white-space:pre-wrap;
+  color:#d7dbe2; max-height:150px; overflow-y:auto; white-space:pre-wrap;
+  scrollbar-width:thin; scrollbar-color:var(--border) transparent;
 }
+.rt-transcript::-webkit-scrollbar{width:5px;}
+.rt-transcript::-webkit-scrollbar-track{background:transparent;}
+.rt-transcript::-webkit-scrollbar-thumb{background:var(--border); border-radius:10px;}
 .rt-outcome:empty, .rt-transcript:empty{display:none;}
 .rt-transcript .rt-line-agent{color:var(--blue);}
 .rt-transcript .rt-line-customer{color:var(--text-dim);}

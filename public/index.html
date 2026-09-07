@@ -176,16 +176,6 @@
                   <div class="dot-item" data-ingest="structured">CRM: Software engineer, &#x20b9;85k/mo</div>
                   <div class="dot-item" data-ingest="structured">Bank: Savings &#x20b9;1.2L</div>
                 </div>
-                <div class="data-group unstructured">
-                  <div class="gh">Unstructured Data</div>
-                  <!-- Real call transcript & outcome — populated from GET /calls/{id}
-                       polling once a real call ends (server/lib/callPoller.js). Shows
-                       a placeholder until then; this is real data, not scripted copy. -->
-                  <div class="real-transcript-card" id="realTranscriptCard">
-                    <div class="rt-outcome" id="rtOutcome"></div>
-                    <div class="rt-transcript" id="rtTranscript">Awaiting first call.</div>
-                  </div>
-                </div>
               </div>
               <div class="b360-col">
                 <div class="section-label">
@@ -194,6 +184,32 @@
                 <div class="comm-history" id="commHistory">
                   <div class="comm-empty" id="commEmpty">No contact yet</div>
                   <div class="comm-list" id="commList"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="unstructured-row">
+              <div class="section-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15h6M9 11h6"/></svg>Unstructured Data
+              </div>
+              <div class="unstructured-grid">
+                <div class="unstructured-col transcript-col">
+                  <div class="gh">Call Transcript</div>
+                  <!-- Real call transcript & outcome — populated from GET /calls/{id}
+                       polling once a real call ends (server/lib/callPoller.js). Shows
+                       a placeholder until then; this is real data, not scripted copy. -->
+                  <div class="real-transcript-card" id="realTranscriptCard">
+                    <div class="rt-outcome" id="rtOutcome"></div>
+                    <div class="rt-transcript" id="rtTranscript">Awaiting first call.</div>
+                  </div>
+                </div>
+                <div class="unstructured-col">
+                  <div class="gh">Summary</div>
+                  <div class="summary-pointer" id="summaryPointer">&mdash;</div>
+                </div>
+                <div class="unstructured-col">
+                  <div class="gh">Next Best Action</div>
+                  <div class="nba-pointer" id="nbaPointer">&mdash;</div>
                 </div>
               </div>
             </div>

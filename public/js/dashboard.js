@@ -317,6 +317,10 @@ let realCallTriggered = false;
 let whatsappRound1Sent = false;
 let whatsappRound2Sent = false;
 let whatsappEscalationSent = false;
+// Once a real call supplies a real NBA/summary, stop overwriting the panel
+// with the scripted per-step guess on every subsequent step render.
+let _nbaIsReal = false;
+let _summaryIsReal = false;
 
 function startDash(){
   stepData = steps();
@@ -329,8 +333,8 @@ function startDash(){
   _phoneHasContent = false;
   goToStep(0, true);
   startIngestion();
-  const leftCard = document.getElementById('leftPanelCard');
-  if(leftCard) leftCard.classList.remove('has-transcript');
+  _nbaIsReal = false;
+  _summaryIsReal = false;
   const callStatusEl = document.getElementById('realCallStatus');
   if(callStatusEl) callStatusEl.style.display = 'none';
 
@@ -660,6 +664,13 @@ function renderStep(instant){
   // Last Contacted card
   updateLastContact(s);
 
+  // Next Best Action — scripted nbaNow guess, only while no real call has
+  // supplied the actual recommendation yet (see renderRealCallSummary).
+  if(!_nbaIsReal){
+    const nbaEl = document.getElementById('nbaPointer');
+    if(nbaEl) nbaEl.textContent = s.nbaNow ? s.nbaNow.title : '—';
+  }
+
   // Infra strip
   document.getElementById('infraStripText').textContent = s.agents.join(', ') + '  \u00b7  ' + s.models.join(', ');
 
@@ -876,14 +887,6 @@ function renderRealCallSummary(update){
   const transcriptEl = document.getElementById('rtTranscript');
   if(!card || !outcomeEl || !transcriptEl) return;
 
-  // No-scroll design rule: the transcript card needs room, and this pane
-  // never scrolls, so once real data exists the static Borrower 360
-  // bullet list and sync chips (their job — build a first impression —
-  // is done by now) step aside to make space, instead of the panel being
-  // silently clipped or a scrollbar appearing.
-  const leftCard = document.getElementById('leftPanelCard');
-  if(leftCard) leftCard.classList.add('has-transcript');
-
   const badges = [];
   if(update.escalation_flag || update.dispute_flag){
     badges.push(['escalated', update.dispute_flag ? 'Dispute' : 'Escalated']);
@@ -893,7 +896,6 @@ function renderRealCallSummary(update){
     badges.push(['neutral', 'Not resolved']);
   }
   if(update.customer_sentiment) badges.push(['neutral', `Sentiment: ${update.customer_sentiment}`]);
-  if(update.next_best_action)   badges.push(['neutral', `NBA: ${update.next_best_action}`]);
   if(update.ptp_flag)           badges.push(['resolved', 'Promise to pay']);
   if(typeof update.answered === 'boolean'){
     badges.push([update.answered ? 'resolved' : 'neutral', update.answered ? 'Answered' : 'No answer']);
@@ -911,6 +913,31 @@ function renderRealCallSummary(update){
     }).join('');
   } else {
     transcriptEl.textContent = 'No transcript available for this call.';
+  }
+
+  // Summary — a real one-liner from the actual call, not scripted copy.
+  // No scripted fallback exists for this (there's nothing to show before a
+  // real call happens), so it stays "—" until real data lands.
+  const summaryEl = document.getElementById('summaryPointer');
+  if(summaryEl){
+    const bits = [];
+    if(update.dispute_description) bits.push(update.dispute_description);
+    if(update.customer_sentiment)  bits.push(`Sentiment: ${update.customer_sentiment}`);
+    if(typeof update.call_success === 'boolean') bits.push(update.call_success ? 'Call succeeded' : 'Call did not resolve the case');
+    if(bits.length){
+      summaryEl.textContent = bits.join(' · ');
+      _summaryIsReal = true;
+    }
+  }
+
+  // Next Best Action — real overrides the scripted nbaNow guess the moment
+  // the actual call tells us what it recommends.
+  if(update.next_best_action){
+    const nbaEl = document.getElementById('nbaPointer');
+    if(nbaEl){
+      nbaEl.innerHTML = `${update.next_best_action} <span class="comm-real-tag">REAL</span>`;
+      _nbaIsReal = true;
+    }
   }
 }
 
