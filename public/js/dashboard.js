@@ -536,9 +536,16 @@ function renderPhoneMockup(s){
       </div>`;
   }
   const dialogue    = lines.filter(l => /:\s/.test(l) && !l.startsWith('['));
-  const captions    = dialogue.slice(-2);
+  const captions    = dialogue.slice(-3);
   const personaName = state.voice ? state.voice.name : 'Priya';
   const personaInit = personaName.charAt(0).toUpperCase();
+  const rows = captions.map(l => {
+    const m = l.match(/^([^:]+):\s*(.*)$/);
+    if(!m) return '';
+    const who = m[1].trim();
+    const isAgent = /^agent$/i.test(who);
+    return `<div class="ct-row ${isAgent ? 'agent' : 'user'}"><span class="ct-who">${isAgent ? personaName : who}</span><span class="ct-text">${m[2]}</span></div>`;
+  }).join('');
   return `
     <div class="phone-wrap">
       <div class="phone-mockup">
@@ -550,7 +557,7 @@ function renderPhoneMockup(s){
             <div class="call-name">${personaName}</div>
             <div class="call-status"><span class="live-blip"></span>${s.live.contact || 'Predixion Fincorp'} &middot; ${realTimeLabel()}</div>
           </div>
-          <div class="call-captions">${captions.map(l => `<div class="cap-line">${l}</div>`).join('')}</div>
+          <div class="call-transcript"><div class="ct-head">Live transcript</div>${rows}</div>
           <div class="call-controls">
             <div class="call-btn">${ICON_MIC}</div>
             <div class="call-btn end">${ICON_HANGUP}</div>
@@ -594,30 +601,15 @@ function renderPhoneIdle(){
       <div class="phone-mockup">
         <div class="phone-notch"></div>
         <div class="phone-statusbar"><span>9:41</span><span>100%</span></div>
-        <div class="phone-home">
-          <img class="phone-wallpaper-logo" src="/img/logo-mark.png" alt="">
-          <div class="phone-home-time">9:41</div>
-          <div class="phone-home-apps">
-            <div class="phone-app">
-              <div class="phone-app-icon phone">${ICON_PHONE_APP}</div>
-              <div class="phone-app-label">Phone</div>
-            </div>
-            <div class="phone-app">
-              <div class="phone-app-icon sms">${ICON_SMS_APP}</div>
-              <div class="phone-app-label">Messages</div>
-            </div>
-            <div class="phone-app">
-              <div class="phone-app-icon whatsapp">${ICON_WHATSAPP_APP}</div>
-              <div class="phone-app-label">WhatsApp</div>
-            </div>
-            <div class="phone-app">
-              <div class="phone-app-icon camera">${ICON_CAMERA_APP}</div>
-              <div class="phone-app-label">Camera</div>
-            </div>
-            <div class="phone-app">
-              <div class="phone-app-icon fincorp"><img src="/img/logo-mark.png" alt=""></div>
-              <div class="phone-app-label">Predixion Fincorp</div>
-            </div>
+        <div class="ph-lock">
+          <div class="ph-time">9:41</div>
+          <div class="ph-date">Tuesday, 8 September</div>
+          <div class="ph-quiet">No new notifications</div>
+          <div class="ph-dock">
+            <div class="ph-app"><div class="ph-app-icon phone">${ICON_PHONE_APP}</div><div class="ph-app-label">Phone</div></div>
+            <div class="ph-app"><div class="ph-app-icon messages">${ICON_SMS_APP}</div><div class="ph-app-label">Messages</div></div>
+            <div class="ph-app"><div class="ph-app-icon whatsapp">${ICON_WHATSAPP_APP}</div><div class="ph-app-label">WhatsApp</div></div>
+            <div class="ph-app"><div class="ph-app-icon fincorp"><img src="/img/logo-full.png" alt=""></div><div class="ph-app-label">Fincorp</div></div>
           </div>
         </div>
       </div>
@@ -666,12 +658,19 @@ function renderContactHistory(){
     return;
   }
   emptyEl.style.display = 'none';
+  const ICONS = {
+    whatsapp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    voice: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    sms: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H7l-3 3z"/></svg>',
+    email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+  };
   listEl.innerHTML = _contactHistory.map(lc => `
-      <div class="comm-item">
-        <span class="lc-dot ${lc.status}"></span>
-        <span class="comm-time">${lc.time}</span>
-        <span class="comm-platform ${lc.platform}">${lc.platformLabel}</span>
-        <span class="comm-status">${lc.statusLabel}</span>
+      <div class="comm-item ${lc.status}">
+        <span class="comm-ico ${lc.platform}">${ICONS[lc.platform] || ICONS.sms}</span>
+        <div class="comm-main">
+          <div class="comm-line"><span class="comm-platform ${lc.platform}">${lc.platformLabel}</span><span class="comm-time">${lc.time}</span></div>
+          <div class="comm-status"><span class="lc-dot ${lc.status}"></span>${lc.statusLabel}</div>
+        </div>
       </div>`).join('');
 }
 
@@ -1075,10 +1074,13 @@ function renderRealCallSummary(update){
     `<span class="rt-badge ${cls}">${label}</span>`).join('');
 
   if(update.transcript){
-    transcriptEl.innerHTML = update.transcript.split('\n').map(line => {
-      const isAgent = line.startsWith('agent:');
-      const cls = isAgent ? 'rt-line-agent' : 'rt-line-customer';
-      return `<div class="${cls}">${line.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>`;
+    const personaName = state.voice ? state.voice.name : 'Agent';
+    transcriptEl.innerHTML = update.transcript.split('\n').filter(l => l.trim()).map(line => {
+      const m = line.match(/^([^:]+):\s*(.*)$/);
+      const who = m ? m[1].trim().toLowerCase() : '';
+      const isAgent = who === 'agent';
+      const text = (m ? m[2] : line).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      return `<div class="rt-msg ${isAgent ? 'agent' : 'customer'}"><span class="rt-who">${isAgent ? personaName : (state.name || 'Borrower')}</span><div class="rt-bubble">${text}</div></div>`;
     }).join('');
   } else {
     transcriptEl.textContent = 'No transcript available for this call.';
