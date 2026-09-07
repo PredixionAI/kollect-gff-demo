@@ -269,7 +269,7 @@ body{
 .b360-col{min-width:0;}
 
 .comm-history{
-  position:relative; min-height:20px; max-height:80px; overflow-y:auto;
+  position:relative; min-height:20px; max-height:160px; overflow-y:auto;
   scrollbar-width:thin; scrollbar-color:var(--border) transparent;
 }
 .comm-history::-webkit-scrollbar{width:5px;}
@@ -285,14 +285,13 @@ body{
   border:1px solid #164430; border-radius:4px; padding:1px 5px; flex-shrink:0;
 }
 
-/* Segment 1, row 2 -- Unstructured Data: the specific interaction's detail
-   (transcript / summary / next best action), full width, three across,
-   below the always-visible structured snapshot -- not competing with it
-   for the same half-width column. */
+/* Segment 1, row 2 -- Unstructured Data: now just the call transcript, full
+   width. Summary / Next Best Action moved into the Signals panel (see
+   .data-group.strategy below) -- freed this row to give the transcript the
+   full card width instead of splitting it three ways, which is what let it
+   need an internal scroll for anything more than a couple of lines. */
 .unstructured-row{margin-top:2px;}
-.unstructured-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:16px;}
-.unstructured-col{min-width:0;}
-.unstructured-col .gh{font-size:10.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; color:var(--text-dim); margin-bottom:4px;}
+.unstructured-row .gh{font-size:10.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; color:var(--text-dim); margin-bottom:4px;}
 .summary-pointer, .nba-pointer{font-size:12px; color:var(--text-dim); line-height:1.4;}
 
 /* Segment 2 -- Signals: title first (no INFRA strip above it anymore),
@@ -305,6 +304,15 @@ body{
 .unusual-conclusion{font-size:12px; color:var(--text-dim); line-height:1.35;}
 .data-group.unusual, .data-group.assumed{display:none;}
 .data-group.unusual.show, .data-group.assumed.show{display:block;}
+
+/* Summary + Next Best Action -- moved here from the left card's Unstructured
+   Data row so they always have real room to breathe instead of being
+   squeezed into a third of that row's width, and so the Signals panel's
+   own empty space (when Unusual/Assumed don't apply) gets used instead of
+   sitting blank. Always here regardless of whether there's spare room --
+   the panel simply runs taller on archetypes where Unusual/Assumed also show. */
+.data-group.strategy .gh{color:var(--blue);}
+.nba-reason{font-size:11px; color:var(--text-faint); font-style:italic; line-height:1.35; margin-top:3px;}
 
 /* center column */
 /* Compacted 2026-09-07 -- freed vertical space so the left pane fits
@@ -812,13 +820,37 @@ body{
 .wa-header-actions{display:flex; align-items:center; gap:16px; margin-left:auto; flex-shrink:0;}
 .wa-action{width:19px; height:19px; display:flex; align-items:center; justify-content:center;}
 .wa-action svg{width:100%; height:100%;}
-.wa-body{flex:1; padding:14px 12px; overflow-y:auto; display:flex; flex-direction:column; justify-content:flex-end;}
-.wa-bubble-in{
-  background:#202c33; border-radius:10px 10px 10px 2px; padding:9px 11px; max-width:90%;
-  align-self:flex-start; box-shadow:0 1px 2px rgba(0,0,0,.3); flex-shrink:0;
+.wa-body{
+  flex:1; padding:14px 12px; overflow-y:auto; display:flex; flex-direction:column; justify-content:flex-end;
+  background-color:#0b141a;
+  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.035) 1px, transparent 0);
+  background-size:20px 20px;
 }
-.wa-bubble-in .wa-text{font-size:12px; line-height:1.55; color:#e9edef; white-space:pre-wrap;}
-.wa-bubble-in .wa-meta{font-size:9px; color:#8696a0; text-align:right; margin-top:4px;}
+.wa-bubble-in{
+  position:relative; background:#202c33; border-radius:8px 8px 8px 2px; padding:7px 9px 8px; max-width:90%;
+  align-self:flex-start; box-shadow:0 1px 1.5px rgba(0,0,0,.35); flex-shrink:0;
+}
+.wa-bubble-in::before{
+  content:''; position:absolute; left:-6px; top:0; width:0; height:0;
+  border-style:solid; border-width:0 6px 8px 0; border-color:transparent #202c33 transparent transparent;
+}
+.wa-bubble-in .wa-text{font-size:12px; line-height:1.5; color:#e9edef; white-space:pre-wrap;}
+.wa-bubble-in .wa-meta{font-size:9px; color:#8696a0; text-align:right; margin-top:3px;}
+
+.wa-inputbar{flex-shrink:0; display:flex; align-items:center; gap:8px; padding:6px 8px 8px; background:#0b141a;}
+.wa-input-field{
+  flex:1; min-width:0; display:flex; align-items:center; gap:7px;
+  background:#1f2c34; border-radius:20px; padding:6px 10px;
+}
+.wa-input-icon{width:15px; height:15px; flex-shrink:0; display:flex;}
+.wa-input-icon svg{width:100%; height:100%;}
+.wa-input-icon:nth-child(3), .wa-input-icon:nth-child(4){margin-left:auto;}
+.wa-input-placeholder{flex:1; font-size:11px; color:#8696a0;}
+.wa-input-mic{
+  width:30px; height:30px; border-radius:50%; background:#00a884; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.4);
+}
+.wa-input-mic svg{width:15px; height:15px;}
 
 /* Call variant */
 .call-screen{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:30px 14px 22px; background:linear-gradient(180deg,#111417 0%,#0a0d10 100%); min-height:0;}
@@ -911,15 +943,9 @@ body{
 .rt-badge.escalated{color:var(--red); border-color:#3a1a1a; background:#1f0a0a;}
 .rt-badge.resolved{color:var(--green); border-color:#164430; background:#0c2419;}
 .rt-badge.neutral{color:var(--text-dim); border-color:var(--border-soft); background:var(--panel);}
-.rt-badge.ai-badge{color:var(--blue); border-color:#2a4d80; background:var(--blue-dim);}
-.rt-badge.ai-pending{color:var(--text-dim); border-color:var(--border-soft); background:var(--panel); animation:aiPendingPulse 1.4s ease-in-out infinite;}
-@keyframes aiPendingPulse{0%,100%{opacity:1;} 50%{opacity:.5;}}
-@media (prefers-reduced-motion: reduce){
-  .rt-badge.ai-pending{animation:none;}
-}
 .rt-transcript{
   font-family:var(--mono); font-size:12px; line-height:1.55;
-  color:#d7dbe2; max-height:150px; overflow-y:auto; white-space:pre-wrap;
+  color:#d7dbe2; max-height:250px; overflow-y:auto; white-space:pre-wrap;
   scrollbar-width:thin; scrollbar-color:var(--border) transparent;
 }
 .rt-transcript::-webkit-scrollbar{width:5px;}

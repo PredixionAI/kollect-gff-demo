@@ -83,7 +83,7 @@ function buildPatch(event, data) {
 
     case 'voice_confirmed':
       return {
-        voiceSelected:        `${data.voiceName} — ${data.voiceLang}`,
+        voiceSelected:        `${data.voiceName} (${data.voiceLang})`,
         timeOnVoiceScreenS:   Math.round((data.timeOnScreenMs || 0) / 1000),
         uiTapLog:             [`Voice: Confirmed ${data.voiceName}`],
       };
@@ -146,7 +146,7 @@ function buildPatch(event, data) {
 
     case 'whatsapp_toggle':
       return {
-        whatsappToggleUsed: `Yes — switched to ${data.newMode.toUpperCase()}`,
+        whatsappToggleUsed: `Yes, switched to ${data.newMode.toUpperCase()}`,
         uiTapLog:           [`WhatsApp Toggle: → ${data.newMode}`],
       };
 

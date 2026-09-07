@@ -22,17 +22,17 @@ function personaPacks(nm, agent, lang){
       w1Lines:[`Namaste ${nm} ji,`,``,`Aapki EMI \u20b945,000 kal due thi.`,``,`Abhi pay karein: https://pay.link/45k`],
       w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
       callType:'chat',
-      callLines:[`[AI Voice Agent \u2014 FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, Predixion Fincorp ki taraf se.`,``,`${nm}: Haan bilkul, main abhi hi pay kar deta hoon!`],
-      callAction:'Call answered \u2014 borrower agreed to pay immediately', callDetails:`AI Voice Agent \u2014 Friendly mode (${agent})`,
+      callLines:[`[AI Voice Agent, FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, Predixion Fincorp ki taraf se.`,``,`${nm}: Haan bilkul, main abhi hi pay kar deta hoon!`],
+      callAction:'Call answered, borrower agreed to pay immediately', callDetails:`AI Voice Agent, Friendly mode (${agent})`,
       sentLines:['Outcome: Payment agreed verbally','Sentiment: Cooperative, high confidence','Risk delta: -20 (improving)','','Recalculating next best action...'],
       sentAction:'Call ended: borrower confirmed payment', sentDetails:'Sentiment: cooperative, high confidence',
-      nbaAction:'Confirm & close \u2014 no further contact needed', nbaDetails:'Selected over retry / escalate \u2014 borrower already committed',
+      nbaAction:'Confirm & close, no further contact needed', nbaDetails:'Selected over retry / escalate, borrower already committed',
       w2Title:'Payment Confirmation', w2Subtitle:'Thank-you message with receipt link',
       w2Lines:[`Dhanyawad ${nm} ji!`,``,`Aapka payment safaltapoorvak mil gaya hai.`,``,`Receipt: https://pay.link/receipt/45k`],
       w2Action:'Confirmation sent 11:35 AM', w2Details:'Auto-triggered after payment gateway confirms receipt',
       s9Title:'Payment Verification', s9Subtitle:'Confirming funds cleared, no escalation needed',
-      s9Lines:['Payment gateway: confirmed','LMS: reconciling balance','Account status updating to CURRENT','','No escalation required \u2014 case will auto-close'],
-      s9Action:'Funds verified \u2014 reconciling with LMS', s9Details:'Escalation protocol not triggered',
+      s9Lines:['Payment gateway: confirmed','LMS: reconciling balance','Account status updating to CURRENT','','No escalation required, case will auto-close'],
+      s9Action:'Funds verified, reconciling with LMS', s9Details:'Escalation protocol not triggered',
       s10Title:'Case Resolved Early', s10Subtitle:'No human hand-off needed', s10Audience:'borrower', s10Contact:'Predixion Fincorp', s10ContactSub:'Business Account',
       s10Lines:[`Aapka account ab up-to-date hai, ${nm} ji.`,``,`Dhanyawad samay par jawab dene ke liye!`],
       s10Action:'Final confirmation sent 11:40 AM', s10Details:'Case closed without human involvement',
@@ -41,48 +41,48 @@ function personaPacks(nm, agent, lang){
       f11Action:'\u20b945,000 received at 11:38 AM', f11Details:'Payment gateway confirms full settlement',
       f11Lines:['Amount: \u20b945,000','Channel: Payment link (UPI)','Time: 11:38 AM','','Reconciling with LMS...','Case marked RESOLVED'],
       f12Action:'Recovery achieved in 2 touchpoints, no escalation', f12Details:'Time to resolution: ~28 minutes from default',
-      f12Lines:['Touchpoint 1: WhatsApp (friendly) \u2014 read, no action yet','Touchpoint 2: Voice call (friendly) \u2014 borrower agreed immediately','No escalation needed','Outcome: Paid in full, \u20b945,000, UPI'],
-      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: RESOLVED \u2014 paid in full','Audit trail: 13 steps, 2 touchpoints','','Thank you for experiencing Kollect.'],
+      f12Lines:['Touchpoint 1: WhatsApp (friendly), read, no action yet','Touchpoint 2: Voice call (friendly), borrower agreed immediately','No escalation needed','Outcome: Paid in full, \u20b945,000, UPI'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: RESOLVED, paid in full','Audit trail: 13 steps, 2 touchpoints','','Thank you for experiencing Kollect.'],
       nba:{
-        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Low-pressure tone selected for a Technical Defaulter \u2014 clean history means no need to escalate urgency.', metric:'91% response rate for this profile'},
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Low-pressure tone selected for a Technical Defaulter, clean history means no need to escalate urgency.', metric:'91% response rate for this profile'},
         s5:{label:'ACTION TAKEN', state:'taken', title:'Friendly voice call placed', reason:'Following up warmly since WhatsApp was read but no reply yet.', metric:'Call duration: 1m 12s'},
-        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower verbally confirmed payment \u2014 reassessing whether further contact is needed.', metric:'Confidence: 0.94'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower verbally confirmed payment, reassessing whether further contact is needed.', metric:'Confidence: 0.94'},
         s8:{label:'ACTION TAKEN', state:'taken', title:'Confirmation message sent', reason:'Closing the loop immediately rather than waiting for payment gateway polling.', metric:'Sent within 90s of call ending'},
-        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Verify and close \u2014 skip escalation', reason:'Funds already confirmed by the gateway; a human hand-off adds no value here.', metric:'Escalation threshold not met'},
-        s10:{label:'ACTION TAKEN', state:'taken', title:'Case closed, borrower notified', reason:'Fastest possible resolution \u2014 one call, one message, no escalation.', metric:'Resolved in ~25 minutes'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Verify and close, skip escalation', reason:'Funds already confirmed by the gateway; a human hand-off adds no value here.', metric:'Escalation threshold not met'},
+        s10:{label:'ACTION TAKEN', state:'taken', title:'Case closed, borrower notified', reason:'Fastest possible resolution, one call, one message, no escalation.', metric:'Resolved in ~25 minutes'},
       },
     },
     systemic: {
       w1Lines:[`Namaste ${nm} ji,`,``,`Aapki EMI \u20b945,000 kal due thi.`,``,`Abhi pay karein: https://pay.link/45k`],
       w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
       callType:'chat',
-      callLines:[`[AI Voice Agent \u2014 FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, Predixion Fincorp ki taraf se.`,``,`${nm}: Yaar, is mahine thoda tight hai. Kya thodi mohlat mil sakti hai?`],
-      callAction:'Call answered \u2014 borrower requested more time', callDetails:`AI Voice Agent \u2014 Friendly mode (${agent})`,
+      callLines:[`[AI Voice Agent, FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, Predixion Fincorp ki taraf se.`,``,`${nm}: Yaar, is mahine thoda tight hai. Kya thodi mohlat mil sakti hai?`],
+      callAction:'Call answered, borrower requested more time', callDetails:`AI Voice Agent, Friendly mode (${agent})`,
       sentLines:['Outcome: Promise-to-pay (soft), needs structured plan','Sentiment: Receptive, financial strain detected','Risk delta: unchanged','','Recalculating next best action...'],
       sentAction:'Call ended: borrower asked for more time', sentDetails:'Sentiment: receptive, financially constrained',
-      nbaAction:'Offer 2-installment payment plan', nbaDetails:'Selected over retry / escalate \u2014 borrower engaged but constrained',
-      w2Title:'Round 2: Payment Plan Offer', w2Subtitle:'Firm-but-fair plan offer \u2014 WhatsApp',
+      nbaAction:'Offer 2-installment payment plan', nbaDetails:'Selected over retry / escalate, borrower engaged but constrained',
+      w2Title:'Round 2: Payment Plan Offer', w2Subtitle:'Firm-but-fair plan offer, WhatsApp',
       w2Lines:[`${nm} ji,`,``,`Hum samajhte hain ki abhi thoda mushkil hai.`,`Aapke liye 2 installments ka option hai:`,`\u20b922,500 abhi + \u20b922,500 agle hafte.`,``,`Reply karein "SPLIT" confirm karne ke liye.`],
       w2Action:'Plan offer sent 3:00 PM', w2Details:'Offers 2-installment split, empathetic tone',
       s9Title:'Plan Acceptance Check', s9Subtitle:'Borrower reviewing installment offer',
-      s9Lines:['Reply received: "SPLIT"','Plan accepted \u2014 2 installments confirmed','No escalation needed','','Scheduling first installment reminder'],
-      s9Action:'Borrower replied SPLIT at 3:22 PM', s9Details:'Plan accepted \u2014 scheduling installments',
+      s9Lines:['Reply received: "SPLIT"','Plan accepted, 2 installments confirmed','No escalation needed','','Scheduling first installment reminder'],
+      s9Action:'Borrower replied SPLIT at 3:22 PM', s9Details:'Plan accepted, scheduling installments',
       s10Title:'Plan Activated', s10Subtitle:'Installment schedule confirmed via WhatsApp', s10Audience:'borrower', s10Contact:'Predixion Fincorp', s10ContactSub:'Business Account',
-      s10Lines:[`Perfect, ${nm} ji!`,``,`Installment 1: \u20b922,500 \u2014 due today`,`Installment 2: \u20b922,500 \u2014 due in 7 days`,``,`Hum aapko reminder bhejenge har installment se pehle.`],
+      s10Lines:[`Perfect, ${nm} ji!`,``,`Installment 1: \u20b922,500, due today`,`Installment 2: \u20b922,500, due in 7 days`,``,`Hum aapko reminder bhejenge har installment se pehle.`],
       s10Action:'Schedule confirmed 3:25 PM', s10Details:'Case closed without human involvement',
       escalate:false,
       f11Title:'Plan Confirmed', f11Subtitle:'First installment received, second scheduled',
       f11Action:'First installment \u20b922,500 received at 3:45 PM', f11Details:'Second installment scheduled for 7 days',
       f11Lines:['Amount: \u20b922,500 (installment 1 of 2)','Channel: Payment link (UPI)','Time: 3:45 PM','','Second installment scheduled','Case marked RESOLVED (plan active)'],
       f12Action:'Recovery structured across 2 installments, no human needed', f12Details:'Time to first payment: ~5h 30m from default',
-      f12Lines:['Touchpoint 1: WhatsApp (friendly) \u2014 read, no action','Touchpoint 2: Voice call \u2014 requested more time','Touchpoint 3: WhatsApp (plan offer) \u2014 accepted','Outcome: Plan active, \u20b922,500 of \u20b945,000 recovered so far'],
-      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: RESOLVED \u2014 payment plan active','Audit trail: 13 steps, 3 touchpoints','','Thank you for experiencing Kollect.'],
+      f12Lines:['Touchpoint 1: WhatsApp (friendly), read, no action','Touchpoint 2: Voice call, requested more time','Touchpoint 3: WhatsApp (plan offer), accepted','Outcome: Plan active, \u20b922,500 of \u20b945,000 recovered so far'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: RESOLVED, payment plan active','Audit trail: 13 steps, 3 touchpoints','','Thank you for experiencing Kollect.'],
       nba:{
-        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:"Standard opening tone \u2014 the system doesn\u2019t presume hardship before any response.", metric:'91% response rate for this profile'},
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:"Standard opening tone, the system doesn\u2019t presume hardship before any response.", metric:'91% response rate for this profile'},
         s5:{label:'ACTION TAKEN', state:'taken', title:'Friendly voice call placed', reason:'Following up after WhatsApp was read with no action.', metric:'Call duration: 1m 48s'},
-        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower signaled financial strain \u2014 evaluating a structured plan instead of repeating the same ask.', metric:'Confidence: 0.71'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower signaled financial strain, evaluating a structured plan instead of repeating the same ask.', metric:'Confidence: 0.71'},
         s8:{label:'ACTION TAKEN', state:'taken', title:'Payment plan offered', reason:'Highest expected recovery given a soft promise-to-pay with a real constraint.', metric:'Plan acceptance rate: 68% historically'},
-        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Activate plan \u2014 skip escalation', reason:'Borrower engaged constructively and accepted terms; no need for human involvement.', metric:'Escalation threshold not met'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Activate plan, skip escalation', reason:'Borrower engaged constructively and accepted terms; no need for human involvement.', metric:'Escalation threshold not met'},
         s10:{label:'ACTION TAKEN', state:'taken', title:'Installment schedule confirmed', reason:'Locking in the agreed plan immediately to reduce any chance of drop-off.', metric:'2 installments over 7 days'},
       },
     },
@@ -90,69 +90,69 @@ function personaPacks(nm, agent, lang){
       w1Lines:[`Namaste ${nm} ji,`,``,`Aapki EMI \u20b945,000 kal due thi.`,``,`Abhi pay karein: https://pay.link/45k`],
       w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
       callType:'chat',
-      callLines:[`[AI Voice Agent \u2014 FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, Predixion Fincorp ki taraf se.`,``,`${nm}: Ye charge galat hai. Maine ye pehle hi customer care ko bataya tha. Mujhe insaan se baat karni hai.`],
-      callAction:'Call answered \u2014 borrower disputes the charge', callDetails:`AI Voice Agent \u2014 Friendly mode (${agent})`,
+      callLines:[`[AI Voice Agent, FRIENDLY MODE]`,``,`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, Predixion Fincorp ki taraf se.`,``,`${nm}: Ye charge galat hai. Maine ye pehle hi customer care ko bataya tha. Mujhe insaan se baat karni hai.`],
+      callAction:'Call answered, borrower disputes the charge', callDetails:`AI Voice Agent, Friendly mode (${agent})`,
       sentLines:['Outcome: Dispute raised, distrust of automated contact','Sentiment: Skeptical, defensive','Escalation flag: borrower requested human','','Recalculating next best action...'],
       sentAction:'Call ended: borrower disputed the charge', sentDetails:'Sentiment: skeptical, defensive',
-      nbaAction:'Escalate to human agent immediately', nbaDetails:'Selected over retry / plan \u2014 borrower explicitly requested a person',
-      w2Title:'Round 2: WhatsApp', w2Subtitle:'Dispute acknowledgement \u2014 WhatsApp',
+      nbaAction:'Escalate to human agent immediately', nbaDetails:'Selected over retry / plan, borrower explicitly requested a person',
+      w2Title:'Round 2: WhatsApp', w2Subtitle:'Dispute acknowledgement, WhatsApp',
       w2Lines:[`${nm} ji,`,``,`Hum aapki dispute note kar rahe hain.`,`Hamari team jald aapse contact karegi is charge ko clarify karne ke liye.`],
       w2Action:'Acknowledgement sent 3:00 PM', w2Details:'Confirms dispute logged, sets expectation for human contact',
-      s9Title:'Escalation Check', s9Subtitle:'Explicit human request \u2014 evaluating hand-off',
+      s9Title:'Escalation Check', s9Subtitle:'Explicit human request, evaluating hand-off',
       s9Lines:['Escalation trigger: explicit human request (not confidence-based)','Dispute flag: charge validity questioned','','Escalating to human collections agent...','Preparing case summary + dispute context'],
-      s9Action:'Borrower explicitly requested human \u2014 immediate escalation', s9Details:'Not a confidence-threshold escalation \u2014 trust/dispute issue',
+      s9Action:'Borrower explicitly requested human, immediate escalation', s9Details:'Not a confidence-threshold escalation, trust/dispute issue',
       s10Title:'Human Handoff', s10Subtitle:'WhatsApp summary sent to collections executive', s10Audience:'agent', s10Contact:'Kollect Escalations', s10ContactSub:'Automated alert',
-      s10Lines:(nmFull, phone)=>[`\u26a0 Dispute \u2014 ${nmFull} (\u20b945,000, overdue)`,'','Borrower disputes charge validity.','Requested human contact explicitly.','Sentiment: skeptical, defensive.',``,`Contact: ${phone || '+91 98xxxxxxx0'}`,'Please call within 2 hours \u2014 dispute context attached.'],
+      s10Lines:(nmFull, phone)=>[`\u26a0 Dispute, ${nmFull} (\u20b945,000, overdue)`,'','Borrower disputes charge validity.','Requested human contact explicitly.','Sentiment: skeptical, defensive.',``,`Contact: ${phone || '+91 98xxxxxxx0'}`,'Please call within 2 hours, dispute context attached.'],
       s10Action:'Summary + phone number sent to human agent', s10Details:'Human takes over from here, Kollect stands by',
       escalate:true,
       f11Title:'Escalation Confirmed', f11Subtitle:'Case now owned by a human collections executive',
       f11Action:'Handoff acknowledged by Collections Exec #4 at 4:10 PM', f11Details:'Kollect resumes automated contact only if the case returns to queue',
       f11Lines:['Case owner: Collections Exec #4','Dispute context: attached','Automated contact: paused','','Awaiting human resolution'],
-      f12Action:'Escalated after 2 touchpoints \u2014 dispute could not be resolved automatically', f12Details:'Time to escalation: ~3h 45m from default',
-      f12Lines:['Touchpoint 1: WhatsApp (friendly) \u2014 read, no action','Touchpoint 2: Voice call \u2014 borrower disputed charge','Touchpoint 3: WhatsApp (acknowledgement)','Outcome: Escalated to human, \u20b945,000 still outstanding'],
-      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: ESCALATED \u2014 with human collections team','Audit trail: 13 steps, 3 touchpoints','','Kollect remains available if the case returns to automation.'],
+      f12Action:'Escalated after 2 touchpoints, dispute could not be resolved automatically', f12Details:'Time to escalation: ~3h 45m from default',
+      f12Lines:['Touchpoint 1: WhatsApp (friendly), read, no action','Touchpoint 2: Voice call, borrower disputed charge','Touchpoint 3: WhatsApp (acknowledgement)','Outcome: Escalated to human, \u20b945,000 still outstanding'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: ESCALATED, with human collections team','Audit trail: 13 steps, 3 touchpoints','','Kollect remains available if the case returns to automation.'],
       nba:{
-        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Standard opening \u2014 no dispute signal exists yet at this point.', metric:'91% response rate for this profile'},
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Standard opening, no dispute signal exists yet at this point.', metric:'91% response rate for this profile'},
         s5:{label:'ACTION TAKEN', state:'taken', title:'Friendly voice call placed', reason:'Following up after WhatsApp was read with no reply.', metric:'Call duration: 2m 05s'},
-        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower disputed the charge and asked for a human \u2014 this overrides the standard reminder sequence.', metric:'Confidence: 0.38'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower disputed the charge and asked for a human, this overrides the standard reminder sequence.', metric:'Confidence: 0.38'},
         s8:{label:'ACTION TAKEN', state:'taken', title:'Dispute acknowledgement sent', reason:'Logging the dispute and setting expectations while escalation is prepared.', metric:'Escalation already in motion'},
-        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Escalate to human agent', reason:'Explicit request overrides confidence scoring \u2014 this is a policy rule, not a threshold call.', metric:'Trigger: explicit request, not confidence'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Escalate to human agent', reason:'Explicit request overrides confidence scoring, this is a policy rule, not a threshold call.', metric:'Trigger: explicit request, not confidence'},
         s10:{label:'ACTION TAKEN', state:'taken', title:'Case hand-off sent to human agent', reason:"Full dispute context attached so the human doesn\u2019t start from zero.", metric:'Routed to Collections Exec #4'},
       },
     },
     unreachable: {
       w1Lines:[`Namaste ${nm} ji,`,``,`Aapki EMI \u20b945,000 kal due thi.`,``,`Abhi pay karein: https://pay.link/45k`],
-      w1Action:'Message sent 10:15 AM \u2014 not yet read', w1Details:`${lang} friendly reminder with payment link`,
+      w1Action:'Message sent 10:15 AM, not yet read', w1Details:`${lang} friendly reminder with payment link`,
       callType:'terminal',
       callTitle:'Round 1: Call Attempt', callSubtitle:'No answer after 6 rings',
       callLines:['Dialing...','Ringing... (6 rings)','No answer','Voicemail: box full, cannot leave message','','Logging failed contact attempt'],
-      callAction:'Call attempted at 11:30 AM \u2014 no answer', callDetails:'Voicemail box full, call ended without contact',
+      callAction:'Call attempted at 11:30 AM, no answer', callDetails:'Voicemail box full, call ended without contact',
       sentTitle:'Contact Attempt Analysis',
       sentLines:['Outcome: No contact established','Both channels attempted (WhatsApp + call), no response','Risk delta: +5 (non-response is a risk signal)','','Recalculating next best action...'],
       sentAction:'No response across both channels', sentDetails:'Escalation being considered',
-      nbaAction:'Escalate \u2014 automated channels exhausted', nbaDetails:'Selected over retry \u2014 2 failed attempts already logged',
-      w2Title:'Round 2: WhatsApp', w2Subtitle:'Final attempt \u2014 WhatsApp',
+      nbaAction:'Escalate, automated channels exhausted', nbaDetails:'Selected over retry, 2 failed attempts already logged',
+      w2Title:'Round 2: WhatsApp', w2Subtitle:'Final attempt, WhatsApp',
       w2Lines:[`${nm} ji,`,``,`Hum aapse sampark karne ki koshish kar rahe hain.`,`Kripya jab possible ho, is number par reply karein ya call back karein.`,``,`Payment link: https://pay.link/45k`],
-      w2Action:'Final message sent 3:00 PM \u2014 not yet read', w2Details:'Last automated attempt before human escalation',
-      s9Title:'Escalation Check', s9Subtitle:'Channels exhausted \u2014 evaluating hand-off',
+      w2Action:'Final message sent 3:00 PM, not yet read', w2Details:'Last automated attempt before human escalation',
+      s9Title:'Escalation Check', s9Subtitle:'Channels exhausted, evaluating hand-off',
       s9Lines:['2 channels attempted, 0 responses','Automated contact exhausted','','Escalating to human for manual outreach...','Preparing case summary + alternate contact search'],
       s9Action:'No response across 2 channels, 2 attempts each', s9Details:'Escalating for manual follow-up, not a dispute',
       s10Title:'Human Handoff', s10Subtitle:'WhatsApp summary sent to collections executive', s10Audience:'agent', s10Contact:'Kollect Escalations', s10ContactSub:'Automated alert',
-      s10Lines:(nmFull, phone, days)=>[`\u26a0 Unreachable \u2014 ${nmFull} (\u20b945,000, ${days||''}d overdue)`,'','2 WhatsApp + 1 call attempted, zero response.','No dispute \u2014 simply unreachable via these channels.',``,`Contact: ${phone || '+91 98xxxxxxx0'}`,'Recommend alternate contact method or field visit.'],
+      s10Lines:(nmFull, phone, days)=>[`\u26a0 Unreachable, ${nmFull} (\u20b945,000, ${days||''}d overdue)`,'','2 WhatsApp + 1 call attempted, zero response.','No dispute, simply unreachable via these channels.',``,`Contact: ${phone || '+91 98xxxxxxx0'}`,'Recommend alternate contact method or field visit.'],
       s10Action:'Summary + phone number sent to human agent', s10Details:'Human takes over from here, Kollect stands by',
       escalate:true,
       f11Title:'Escalation Confirmed', f11Subtitle:'Case now owned by a human collections executive',
       f11Action:'Handoff acknowledged by Collections Exec #4 at 4:10 PM', f11Details:'Kollect resumes automated contact if the borrower re-engages',
       f11Lines:['Case owner: Collections Exec #4','Contact attempts: 4 (0 successful)','Automated contact: paused','','Awaiting manual outreach outcome'],
       f12Action:'Escalated after 4 contact attempts across 2 channels', f12Details:'Time to escalation: ~5h 30m from default',
-      f12Lines:['Touchpoint 1: WhatsApp (friendly) \u2014 sent, not read','Touchpoint 2: Voice call \u2014 no answer','Touchpoint 3: WhatsApp (final attempt) \u2014 sent, not read','Outcome: Escalated to human, \u20b945,000 still outstanding'],
-      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: ESCALATED \u2014 unreachable via automated channels','Audit trail: 13 steps, 4 contact attempts','','Kollect remains available if the borrower re-engages.'],
+      f12Lines:['Touchpoint 1: WhatsApp (friendly), sent, not read','Touchpoint 2: Voice call, no answer','Touchpoint 3: WhatsApp (final attempt), sent, not read','Outcome: Escalated to human, \u20b945,000 still outstanding'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: ESCALATED, unreachable via automated channels','Audit trail: 13 steps, 4 contact attempts','','Kollect remains available if the borrower re-engages.'],
       nba:{
-        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Standard opening tone \u2014 no signal yet that this account is hard to reach.', metric:'91% response rate for this profile'},
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Standard opening tone, no signal yet that this account is hard to reach.', metric:'91% response rate for this profile'},
         s5:{label:'ACTION TAKEN', state:'taken', title:'Voice call attempted', reason:'Following up after WhatsApp went unread.', metric:'No answer after 6 rings'},
-        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Zero response across two channels is itself a signal \u2014 reassessing contact strategy.', metric:'Confidence: 0.22'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Zero response across two channels is itself a signal, reassessing contact strategy.', metric:'Confidence: 0.22'},
         s8:{label:'ACTION TAKEN', state:'taken', title:'Final automated reminder sent', reason:'One last attempt before committing to a human hand-off, per policy.', metric:'2nd attempt, still unread'},
-        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Escalate \u2014 channels exhausted', reason:'Automated contact has a ceiling; a human can try alternate numbers or a field visit.', metric:'2 attempts each channel, 0 responses'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Escalate, channels exhausted', reason:'Automated contact has a ceiling; a human can try alternate numbers or a field visit.', metric:'2 attempts each channel, 0 responses'},
         s10:{label:'ACTION TAKEN', state:'taken', title:'Case handed to human agent', reason:'Manual outreach with alternate contact methods now has better odds than continuing to automate.', metric:'Routed to Collections Exec #4'},
       },
     },
@@ -162,22 +162,22 @@ function personaPacks(nm, agent, lang){
 function getNbaOptions(archId){
   const sets = {
     technical: [
-      { title:'Payment now \u2014 confirm & close', desc:'Borrower verbally agreed on the call. Fastest path, no further contact needed.', chosen:true },
-      { title:'Retry \u2014 friendly follow-up', desc:'Not needed given verbal confirmation.' },
-      { title:'Escalate to human', desc:'Not needed \u2014 cooperative borrower, no risk signal.' },
+      { title:'Payment now, confirm & close', desc:'Borrower verbally agreed on the call. Fastest path, no further contact needed.', chosen:true },
+      { title:'Retry, friendly follow-up', desc:'Not needed given verbal confirmation.' },
+      { title:'Escalate to human', desc:'Not needed, cooperative borrower, no risk signal.' },
     ],
     systemic: [
-      { title:'Retry \u2014 friendly voice call', desc:'Same tone, different channel. Lower urgency signal.' },
-      { title:'Payment plan \u2014 2 installments', desc:'Borrower asked for room. Highest expected recovery given soft P2P.', chosen:true },
-      { title:'Escalate to human', desc:'Premature \u2014 borrower is engaged and cooperative, just constrained.' },
+      { title:'Retry, friendly voice call', desc:'Same tone, different channel. Lower urgency signal.' },
+      { title:'Payment plan, 2 installments', desc:'Borrower asked for room. Highest expected recovery given soft P2P.', chosen:true },
+      { title:'Escalate to human', desc:'Premature, borrower is engaged and cooperative, just constrained.' },
     ],
     disputed: [
-      { title:'Retry \u2014 firm reminder', desc:'Unlikely to resolve a trust or dispute issue.' },
-      { title:'Payment plan', desc:'Not relevant \u2014 borrower disputes the charge itself.' },
+      { title:'Retry, firm reminder', desc:'Unlikely to resolve a trust or dispute issue.' },
+      { title:'Payment plan', desc:'Not relevant, borrower disputes the charge itself.' },
       { title:'Escalate to human', desc:'Borrower explicitly requested a person. More automated contact erodes trust further.', chosen:true },
     ],
     unreachable: [
-      { title:'Retry \u2014 voice call again', desc:'Already attempted twice with no pickup \u2014 diminishing returns.' },
+      { title:'Retry, voice call again', desc:'Already attempted twice with no pickup, diminishing returns.' },
       { title:'Wait 24h, re-attempt', desc:'Risk: promise window may lapse without any nudge.' },
       { title:'Escalate to human', desc:'Automated channels exhausted. Manual outreach has better reach for silent accounts.', chosen:true },
     ],
@@ -211,15 +211,15 @@ function steps(){
     action:'Merging LMS, CRM and bank feeds', details:'Cross-referencing 3 data sources in real time', classV:archTitle, status:'progress',
     live:{type:'terminal', tag:'AGGREGATING SIGNALS', voice:false, lines:['18-month repayment history: clean','Employment: Software Engineer, \u20b985k/mo','Bank balance: \u20b91.2L (sufficient)','App usage: daily active, high engagement','','Classifying borrower...']},
     agents:['Data Orchestration Agent','Classification Agent'], models:['Feature Extraction','Behavioral Scoring Model'],
-    signals:[{name:'CRM', tag:'profile', desc:'Employment & income verified'},{name:'Bank Feed', tag:'balance', desc:'\u20b91.2L available \u2014 funds present'},{name:'App Analytics', tag:'engagement', desc:'Daily active, WhatsApp preferred'}],
+    signals:[{name:'CRM', tag:'profile', desc:'Employment & income verified'},{name:'Bank Feed', tag:'balance', desc:'\u20b91.2L available, funds present'},{name:'App Analytics', tag:'engagement', desc:'Daily active, WhatsApp preferred'}],
   },
-  { tab:'strategy', pill:'Step 3/13', title:'Strategy Generation', subtitle:`${agent} Agent activated \u2014 reasoning over classification`,
+  { tab:'strategy', pill:'Step 3/13', title:'Strategy Generation', subtitle:`${agent} Agent activated, reasoning over classification`,
     action:'Omnichannel approach: WhatsApp + Voice', details:`Low pressure, friendly tone (${lang})`, classV:archTitle, status:'progress',
-    live:{type:'terminal', tag:'STRATEGY READY', voice:false, lines:['STRATEGY READY','',`Agent: ${agent} \u2014 Friendly Reminder`,'Channels: WhatsApp + Voice',`Tone: Friendly (${lang})`,'Urgency: Low','Time: 10:15 AM']},
+    live:{type:'terminal', tag:'STRATEGY READY', voice:false, lines:['STRATEGY READY','',`Agent: ${agent}, Friendly Reminder`,'Channels: WhatsApp + Voice',`Tone: Friendly (${lang})`,'Urgency: Low','Time: 10:15 AM']},
     agents:['Strategy Gen Agent','Friendly Reminder Agent'], models:['Strategy Recommender','Tone Calibration (GPT)'],
     signals:[{name:'Strategy Engine', tag:'recommendation', desc:'Omnichannel: 91% success rate'},{name:'RAG KB', tag:'policy', desc:`${archTitle} SOP retrieved`},{name:'Timing Model', tag:'optimal', desc:'10\u201311 AM: +32% response'}],
   },
-  { tab:'execution', pill:'Step 4/13', title:'Round 1: WhatsApp', subtitle:'Friendly Reminder \u2014 WhatsApp',
+  { tab:'execution', pill:'Step 4/13', title:'Round 1: WhatsApp', subtitle:'Friendly Reminder, WhatsApp',
     action:P.w1Action, details:P.w1Details, classV:archTitle, status:'progress',
     lastContact:{time:'10:15 AM', platform:'whatsapp', platformLabel:'WhatsApp', status: P.callType==='terminal' ? 'pending' : 'connected', statusLabel: P.callType==='terminal' ? 'Sent · Not Read' : 'Connected · Read'},
     live:{type:'chat', tag:'WHATSAPP', time:'10:15 AM', voice:false, contact:'Predixion Fincorp', contactSub:'Business Account', lines:P.w1Lines},
@@ -295,7 +295,7 @@ function steps(){
     agents:['Reporting Agent'], models:['Journey Summarization'],
     signals:[{name:'Analytics Engine', tag:'compiled', desc:'Full journey logged'},{name:'Recovery Model', tag:'logged', desc:'Contributes to portfolio recovery rate'}],
   },
-  { tab:'fulfilment', pill:'Step 13/13', title:P.escalate?'Case Handed Off':'Case Closed', subtitle:'Audit trail complete \u2014 ready for next case',
+  { tab:'fulfilment', pill:'Step 13/13', title:P.escalate?'Case Handed Off':'Case Closed', subtitle:'Audit trail complete, ready for next case',
     action:'All actions, timestamps and messages logged', details:'Available for compliance review at any time', classV:finalClassV, status:finalStatus,
     lastContact:{time:'3:46 PM', platform:'whatsapp', platformLabel: P.s10Audience==='agent' ? 'WhatsApp (Agent)' : 'WhatsApp', status:'connected', statusLabel: P.escalate ? 'Handoff \u00b7 Acknowledged' : 'Connected \u00b7 Confirmed'},
     live:{type:'terminal', tag:P.escalate?'CASE HANDED OFF':'CASE CLOSED', voice:false, lines:P.f13Lines(state.name)},
@@ -317,6 +317,11 @@ let realCallTriggered = false;
 let whatsappRound1Sent = false;
 let whatsappRound2Sent = false;
 let whatsappEscalationSent = false;
+// Drives the auto-play pause below — a real call/analysis in flight holds
+// auto-play on the current step instead of rushing past it on a fixed timer.
+// Manual next/prev always works regardless of these; only the play timer checks them.
+let realCallCompleted = false;
+let realCallAnswered = null;
 // Once a real call supplies a real NBA/summary, stop overwriting the panel
 // with the scripted per-step guess on every subsequent step render.
 let _nbaIsReal = false;
@@ -346,6 +351,8 @@ const UNUSUAL_SIGNALS = {
 function startDash(){
   stepData = steps();
   realCallTriggered = false;
+  realCallCompleted = false;
+  realCallAnswered = null;
   whatsappRound1Sent = false;
   whatsappRound2Sent = false;
   whatsappEscalationSent = false;
@@ -356,6 +363,8 @@ function startDash(){
   startIngestion();
   _nbaIsReal = false;
   _summaryIsReal = false;
+  const reasonEl = document.getElementById('nbaReason');
+  if(reasonEl) reasonEl.textContent = '';
   const callStatusEl = document.getElementById('realCallStatus');
   if(callStatusEl) callStatusEl.style.display = 'none';
 
@@ -480,6 +489,10 @@ const ICON_SPEAKER= `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
 const ICON_HANGUP = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 11.5c2.5-2.4 5.6-3.7 8.4-3.7s5.9 1.3 8.4 3.7c.4.4.4 1 0 1.4l-1.9 1.9c-.4.4-1 .4-1.4.1-.7-.5-1.5-.9-2.3-1.2-.4-.1-.6-.5-.6-.9v-1.7c-1.4-.4-2.9-.4-4.4 0v1.7c0 .4-.3.8-.6.9-.8.3-1.6.7-2.3 1.2-.4.3-1 .3-1.4-.1L3.6 12.9c-.4-.4-.4-1 0-1.4z"/></svg>`;
 const ICON_WA_VIDEOCALL = `<svg viewBox="0 0 24 24" fill="none" stroke="#aebac1" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>`;
 const ICON_WA_CALL = `<svg viewBox="0 0 24 24" fill="none" stroke="#aebac1" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`;
+const ICON_WA_EMOJI = `<svg viewBox="0 0 24 24" fill="none" stroke="#8696a0" stroke-width="1.8"><circle cx="12" cy="12" r="9.5"/><path d="M8.5 10.5h.01M15.5 10.5h.01M7.5 14.5c1 1.5 2.7 2.5 4.5 2.5s3.5-1 4.5-2.5"/></svg>`;
+const ICON_WA_ATTACH = `<svg viewBox="0 0 24 24" fill="#8696a0"><path d="M16.5 6.5v10a4 4 0 0 1-8 0v-11a2.5 2.5 0 0 1 5 0v10a1 1 0 0 1-2 0v-9h-1.5v9a2.5 2.5 0 0 0 5 0v-10a4 4 0 0 0-8 0v11a5.5 5.5 0 0 0 11 0v-10z"/></svg>`;
+const ICON_WA_CAMERA_SM = `<svg viewBox="0 0 24 24" fill="none" stroke="#8696a0" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+const ICON_WA_MIC = `<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4" stroke="#fff" stroke-width="2" fill="none"/></svg>`;
 
 function renderPhoneMockup(s){
   const lines = s.live.lines.filter(l => l.trim() !== '');
@@ -508,6 +521,15 @@ function renderPhoneMockup(s){
                 <div class="wa-text">${bodyText}</div>
                 <div class="wa-meta">${s.live.time || ''}</div>
               </div>
+            </div>
+            <div class="wa-inputbar">
+              <div class="wa-input-field">
+                <span class="wa-input-icon">${ICON_WA_EMOJI}</span>
+                <span class="wa-input-placeholder">Message</span>
+                <span class="wa-input-icon">${ICON_WA_ATTACH}</span>
+                <span class="wa-input-icon">${ICON_WA_CAMERA_SM}</span>
+              </div>
+              <span class="wa-input-mic">${ICON_WA_MIC}</span>
             </div>
           </div>
         </div>
@@ -548,12 +570,12 @@ function updateDockedPhone(s){
   if(bodyEl) bodyEl.innerHTML = renderPhoneMockup(s);
 }
 
-// Tracks whether the phone pane has shown any real content yet this run \u2014
+// Tracks whether the phone pane has shown any real content yet this run ,
 // pure analysis steps (no chat/nba/decision) leave it showing whatever it
 // last displayed instead of resetting to idle, like a real phone would.
 let _phoneHasContent = false;
 
-// Ideal/idle state \u2014 a real phone home screen, not an abstract "loading"
+// Ideal/idle state, a real phone home screen, not an abstract "loading"
 // message: shows the apps that will actually be used (the lender's own
 // app, WhatsApp, and the phone dialer), so it reads as a real device
 // waiting for something to happen, not a placeholder.
@@ -650,7 +672,6 @@ function renderContactHistory(){
         <span class="comm-time">${lc.time}</span>
         <span class="comm-platform ${lc.platform}">${lc.platformLabel}</span>
         <span class="comm-status">${lc.statusLabel}</span>
-        ${lc.real ? '<span class="comm-real-tag">REAL</span>' : ''}
       </div>`).join('');
 }
 
@@ -669,12 +690,12 @@ function markRealCallOutcome(update){
   entry.real = true;
   if(update.answered === true){
     entry.status = 'connected';
-    entry.statusLabel = 'Connected (real)' + (update.duration ? ` · ${Math.round(update.duration)}s` : '');
+    entry.statusLabel = 'Connected' + (update.duration ? ` · ${Math.round(update.duration)}s` : '');
   } else if(update.answered === false){
     entry.status = 'not-connected';
-    entry.statusLabel = 'Not answered (real)';
+    entry.statusLabel = 'Not answered';
   } else {
-    entry.statusLabel = 'Call ended (real) — outcome unclear';
+    entry.statusLabel = 'Call ended, outcome unclear';
   }
   renderContactHistory();
 }
@@ -720,7 +741,7 @@ function renderStep(instant){
   // supplied the actual recommendation yet (see renderRealCallSummary).
   if(!_nbaIsReal){
     const nbaEl = document.getElementById('nbaPointer');
-    if(nbaEl) nbaEl.textContent = s.nbaNow ? s.nbaNow.title : '—';
+    if(nbaEl) nbaEl.textContent = s.nbaNow ? s.nbaNow.title : '-';
   }
 
   // Signals
@@ -730,12 +751,12 @@ function renderStep(instant){
       <div class="sig-desc">${sg.desc}</div>
     </div>`).join('');
 
-  // Real-call WhatsApp copy override \u2014 steps 7 & 9 (borrower-facing
+  // Real-call WhatsApp copy override, steps 7 & 9 (borrower-facing
   // follow-up only, never the step-9 agent-escalation handoff, which is a
   // structurally different case-summary message) show Gemini's tailored
   // copy instead of the scripted template once it's ready. This mutates
   // s.live.lines BEFORE the phone-pane render below AND before the
-  // triggerWhatsApp call further down reads the same s.live.lines \u2014 the
+  // triggerWhatsApp call further down reads the same s.live.lines, the
   // displayed bubble and the actual send can never disagree. Gated on the
   // step's own one-shot sent-flag so re-visiting a step after its message
   // already went out (scripted, because Gemini wasn't ready yet at the
@@ -746,14 +767,14 @@ function renderStep(instant){
     s.live.lines = [state.geminiAnalysis.whatsappCopy];
   }
 
-  // Phone pane (right, persistent) \u2014 2026-09-07 redesign: the phone only
+  // Phone pane (right, persistent), 2026-09-07 redesign: the phone only
   // ever shows actual phone activity (a call or a WhatsApp thread). Next
-  // Best Action / decision-engine reasoning is NOT phone content \u2014 it
+  // Best Action / decision-engine reasoning is NOT phone content, it
   // already renders into the ACTION/DETAILS boxes above via s.action/
   // s.details (set unconditionally near the top of this function), so
   // 'nba' steps and analysis-only 'terminal' steps just leave the phone
   // showing whatever it last displayed (or the idle home screen, if
-  // nothing real has happened yet) \u2014 exactly like a real phone would.
+  // nothing real has happened yet), exactly like a real phone would.
   if(s.live.type === 'chat'){
     updateDockedPhone(s);
     _phoneHasContent = true;
@@ -815,11 +836,28 @@ const btnPlay = document.getElementById('btnPlay');
 btnPlay.addEventListener('click', () => {
   if(playTimer){ stopPlay(); } else { startPlay(); }
 });
+// Auto-play must not rush past a real call or its analysis on a fixed
+// timer — it waits for the real thing to actually finish. Manual next/prev
+// (above) always works regardless; this only gates the automatic advance.
+// Steps 4 (voice call) and 5 (call analysis, "Step 6/13") are the only ones
+// that ever wait on real backend work; everything else advances as before.
+function isWaitingOnRealData(){
+  if(!state.phone) return false; // mock/simulated run, nothing real to wait for
+  if(idx === 4) return !realCallCompleted;
+  if(idx === 5){
+    if(!realCallCompleted) return true;
+    if(!realCallAnswered) return false; // no-answer/failed calls have no transcript to analyze
+    const status = state.geminiAnalysis && state.geminiAnalysis.status;
+    return status !== 'ready' && status !== 'unavailable';
+  }
+  return false;
+}
 function startPlay(){
   if (window.track) track('dashboard_play_toggled', { playing: true });
   btnPlay.classList.add('play-active');
   btnPlay.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
   playTimer = setInterval(() => {
+    if(isWaitingOnRealData()) return; // stay put until the real call/analysis actually finishes
     if(idx < stepData.length-1){ goToStep(idx+1); }
     else { stopPlay(); }
   }, 3400);
@@ -860,12 +898,13 @@ async function triggerRealCall(){
     const data = await res.json();
     if(!res.ok){
       setCallStatusLine(`Call could not be placed (${data.error || res.status})`, 'err');
+      realCallCompleted = true; // nothing to wait for, unblock auto-play
       return;
     }
     state.callId = data.call_id;
     if (window.track) track('call_triggered', { callId: data.call_id, status: data.status, voiceId: state.voice ? state.voice.id : null });
     if(data.status === 'queued'){
-      setCallStatusLine('Booth is at capacity \u2014 your call is queued and will dial shortly.');
+      setCallStatusLine('Booth is at capacity, your call is queued and will dial shortly.');
     } else {
       setCallStatusLine('Call connecting\u2026', 'live');
     }
@@ -873,6 +912,7 @@ async function triggerRealCall(){
   } catch(err){
     console.error(err);
     setCallStatusLine('Could not reach the call backend.', 'err');
+    realCallCompleted = true; // nothing to wait for, unblock auto-play
   }
 }
 
@@ -889,7 +929,7 @@ async function triggerWhatsApp(templateKey, message, stepIdx){
     const data = await res.json();
     if(!res.ok){
       console.warn('[whatsapp]', templateKey, 'failed:', data.error || res.status);
-      markRealWhatsAppOutcome(stepIdx, { ok:false, label:`Failed — ${data.error || res.status}` });
+      markRealWhatsAppOutcome(stepIdx, { ok:false, label:`Failed: ${data.error || res.status}` });
       return;
     }
     console.log('[whatsapp]', templateKey, data.status, `(${data.mode})`);
@@ -902,8 +942,8 @@ async function triggerWhatsApp(templateKey, message, stepIdx){
     markRealWhatsAppOutcome(stepIdx, {
       ok: data.status === 'sent',
       mode: data.mode,
-      label: data.status === 'blocked' ? `Blocked — ${data.reason || 'rate limit'}`
-        : data.mode === 'mock' ? 'Not sent — mock mode'
+      label: data.status === 'blocked' ? `Blocked: ${data.reason || 'rate limit'}`
+        : data.mode === 'mock' ? 'Not sent (mock mode)'
         : 'Sent live',
     });
   } catch(err){
@@ -913,8 +953,8 @@ async function triggerWhatsApp(templateKey, message, stepIdx){
 }
 
 // The SSE connection used to close the instant `completed` arrived, which
-// meant geminiAnalysis \u2014 arriving as a second store.updateCase a beat later,
-// over the SAME bus event \u2014 could never reach the browser (see
+// meant geminiAnalysis, arriving as a second store.updateCase a beat later,
+// over the SAME bus event, could never reach the browser (see
 // implementation_plan.md, "A real blocker found while planning this").
 // Fix: stay open through a first `completed` wave with no geminiAnalysis
 // yet, close only once it lands or a 5s ceiling is hit.
@@ -922,19 +962,29 @@ function subscribeToCallEvents(callId){
   const source = new EventSource(`/api/call/${callId}/events`);
   let analysisTimer = null;
   let outcomeTracked = false;
+  // Safety ceiling matching server/lib/callPoller.js's own MAX_POLL_MS (3
+  // minutes) plus buffer — if a 'completed' event genuinely never arrives
+  // (VOIZ dropped it, dispatch got stuck), auto-play must not wait forever.
+  const giveUpTimer = setTimeout(() => { realCallCompleted = true; }, 3.5 * 60 * 1000);
   source.onmessage = (evt) => {
     const update = JSON.parse(evt.data);
     if(update.status === 'initiated') setCallStatusLine('Call in progress\u2026', 'live');
-    if(update.status === 'queued')    setCallStatusLine('Queued \u2014 waiting for a free line\u2026');
+    if(update.status === 'queued')    setCallStatusLine('Queued, waiting for a free line\u2026');
     if(update.status === 'completed'){
       // No single "disposition" field exists (confirmed against the real
-      // API) \u2014 outcome comes from separate boolean flags instead.
+      // API), outcome comes from separate boolean flags instead.
       const outcome = update.escalation_flag || update.dispute_flag ? 'escalated'
         : update.call_success ? 'resolved'
         : 'completed';
-      setCallStatusLine(`Call completed \u2014 ${outcome}`, 'live');
+      setCallStatusLine(`Call completed, ${outcome}`, 'live');
       renderRealCallSummary(update);
       markRealCallOutcome(update);
+      // Unblocks the auto-play pause below the instant the real call is
+      // actually done (this fires once per call; later waves for
+      // geminiAnalysis re-set the same values, harmless).
+      clearTimeout(giveUpTimer);
+      realCallCompleted = true;
+      realCallAnswered = update.answered === true;
       if(!outcomeTracked){
         outcomeTracked = true;
         if (window.track) track('call_outcome', {
@@ -973,7 +1023,7 @@ function subscribeToCallEvents(callId){
 }
 
 /* =========================================================
-   REAL CALL TRANSCRIPT & OUTCOME \u2014 real data from GET /calls/{id}
+   REAL CALL TRANSCRIPT & OUTCOME, real data from GET /calls/{id}
    polling (server/lib/callPoller.js), not the scripted narrative.
    Hidden until a call actually completes.
 ========================================================= */
@@ -993,9 +1043,6 @@ function renderRealCallSummary(update){
   }
   if(update.customer_sentiment) badges.push(['neutral', `Sentiment: ${update.customer_sentiment}`]);
   if(update.ptp_flag)           badges.push(['resolved', 'Promise to pay']);
-  if(typeof update.answered === 'boolean'){
-    badges.push([update.answered ? 'resolved' : 'neutral', update.answered ? 'Answered' : 'No answer']);
-  }
   if(!badges.length) badges.push(['neutral', update.call_end_reason || 'Call ended']);
 
   outcomeEl.innerHTML = badges.map(([cls, label]) =>
@@ -1031,7 +1078,7 @@ function renderRealCallSummary(update){
   if(update.next_best_action){
     const nbaEl = document.getElementById('nbaPointer');
     if(nbaEl){
-      nbaEl.innerHTML = `${update.next_best_action} <span class="comm-real-tag">REAL</span>`;
+      nbaEl.textContent = update.next_best_action;
       _nbaIsReal = true;
     }
   }
@@ -1045,13 +1092,11 @@ function renderRealCallSummary(update){
    is the fallback that fills those same slots — never a second, competing
    set of fields. See implementation_plan.md.
 ========================================================= */
-function setAnalysisPending(){
-  const outcomeEl = document.getElementById('rtOutcome');
-  if(!outcomeEl) return;
-  const existing = document.getElementById('aiStatusBadge');
-  if(existing) existing.remove();
-  outcomeEl.insertAdjacentHTML('afterbegin', '<span class="rt-badge ai-pending" id="aiStatusBadge">✨ Analyzing…</span>');
-}
+// No visible badge for this anymore (kept as a function since subscribeTo-
+// CallEvents calls it) — the auto-play pause (isWaitingOnRealData) and the
+// call-status line already communicate "still working on it" without a
+// dedicated pill cluttering the transcript header.
+function setAnalysisPending(){}
 
 // Called once per wave — 'streaming' (0 or more times, each with whatever
 // new fields just finished generating), then exactly one terminal 'ready'
@@ -1075,7 +1120,7 @@ function renderGeminiAnalysis(analysis){
   if(!_summaryIsReal && analysis.summary){
     const summaryEl = document.getElementById('summaryPointer');
     if(summaryEl){
-      summaryEl.innerHTML = `${analysis.summary} <span class="comm-real-tag">REAL</span>`;
+      summaryEl.textContent = analysis.summary;
       _summaryIsReal = true;
     }
   }
@@ -1083,9 +1128,17 @@ function renderGeminiAnalysis(analysis){
   if(!_nbaIsReal && analysis.nextBestAction){
     const nbaEl = document.getElementById('nbaPointer');
     if(nbaEl){
-      nbaEl.innerHTML = `${analysis.nextBestAction} <span class="comm-real-tag">REAL</span>`;
+      nbaEl.textContent = analysis.nextBestAction;
       _nbaIsReal = true;
     }
+  }
+
+  // Why the AI picked this action, not just what it is — the "re-strategy"
+  // moment made visible. Only shown once the real NBA itself has landed
+  // (a reason with no action to attach to reads as orphaned).
+  if(_nbaIsReal && analysis.nextBestActionReason){
+    const reasonEl = document.getElementById('nbaReason');
+    if(reasonEl && !reasonEl.textContent) reasonEl.textContent = analysis.nextBestActionReason;
   }
 
   if(analysis.status === 'streaming'){
@@ -1093,23 +1146,12 @@ function renderGeminiAnalysis(analysis){
     return;
   }
 
-  // Terminal states below — remove the pending pulse either way.
-  const pending = document.getElementById('aiStatusBadge');
-  if(pending) pending.remove();
-
   // 'unavailable': real VOIZ data (transcript, duration, connection status)
   // is already on screen and stays exactly as it is. Never falls back to
   // scripted archetype text for a call that genuinely happened.
   if(analysis.status !== 'ready') return;
 
   state.geminiAnalysis = analysis; // read by the WhatsApp-copy override in renderStep (steps 7/9)
-
-  const outcomeEl = document.getElementById('rtOutcome');
-  if(outcomeEl && !document.getElementById('aiSpeedBadge')){
-    const latencyS = typeof analysis.latencyMs === 'number' ? (analysis.latencyMs / 1000).toFixed(1) : null;
-    outcomeEl.insertAdjacentHTML('afterbegin',
-      `<span class="rt-badge ai-badge" id="aiSpeedBadge">✨ AI${latencyS ? ` · ${latencyS}s` : ''}</span>`);
-  }
 }
 
 /* =========================================================
@@ -1237,7 +1279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
         if(res.ok){
           resultStatus.className  = 'rh';
-          resultStatus.textContent= `SUCCESS (HTTP ${data.httpStatus || 200}) \u2014 Status: ${data.status}`;
+          resultStatus.textContent= `SUCCESS (HTTP ${data.httpStatus || 200}), Status: ${data.status}`;
           resultDetails.textContent = JSON.stringify({
             call_id: data.call_id,
             status: data.status,
@@ -1266,7 +1308,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* =========================================================
-   DETAILS EXPAND MODAL \u2014 the compact DETAILS box in the
+   DETAILS EXPAND MODAL, the compact DETAILS box in the
    action-details row got shorter to make room for the phone
    mockup; clicking it opens the same text large and readable
    instead of losing it to the smaller box.

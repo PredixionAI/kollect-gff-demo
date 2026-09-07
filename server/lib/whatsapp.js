@@ -123,7 +123,7 @@ async function sendHandoffMessage({ borrowerName, borrowerPhone, summary }) {
   return sendTemplate('escalation', {
     to: config.whatsapp.humanAgentNumber,
     caseKey: borrowerPhone,
-    vars: { message: `Escalation — ${borrowerName}. ${summary} Contact: ${borrowerPhone}. Please follow up within 2 hours.` },
+    vars: { message: `Escalation: ${borrowerName}. ${summary} Contact: ${borrowerPhone}. Please follow up within 2 hours.` },
   });
 }
 

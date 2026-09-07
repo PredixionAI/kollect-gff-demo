@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kollect &mdash; Live Agentic Collections Demo</title>
+<title>Kollect: Live Agentic Collections Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.7"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
       </div>
       <h1>You&#x2019;re about to meet Kollect</h1>
-      <p class="lead">Kollect is Predixion AI&#x2019;s voice agent for loan recovery. In a moment, it&#x2019;ll build a live case around <em>you</em> &mdash; enter your details and it&#x2019;ll actually reach out.</p>
+      <p class="lead">Kollect is Predixion AI&#x2019;s voice agent for loan recovery. In a moment, it&#x2019;ll build a live case around <em>you</em>: enter your details and it&#x2019;ll actually reach out.</p>
       <div class="field">
         <label>Your name</label>
         <input type="text" id="inputName" placeholder="e.g. Vatsal" autocomplete="off" value="Vatsal">
@@ -37,7 +37,7 @@
         <label for="consentBox">I agree to be contacted on WhatsApp / voice by the Kollect demo agent for this live simulation only. No real debt, no real data retained beyond this event.</label>
       </div>
       <button class="btn-primary" id="btnStart">Start the simulation</button>
-      <button class="btn-ghost" id="btnBypass" type="button">Skip &mdash; use demo defaults (Vatsal &middot; +91 8879185247)</button>
+      <button class="btn-ghost" id="btnBypass" type="button">Skip: use demo defaults (Vatsal &middot; +91 8879185247)</button>
       <div class="foot-note">Step 1 of 5 &middot; Identity capture</div>
     </div>
   </div>
@@ -72,7 +72,7 @@
     <div class="orbs-head">
       <div class="eyebrow">Step 2 of 5 &middot; Voice selection</div>
       <h1>Choose your agent&#x2019;s voice</h1>
-      <p>Scroll, drag, or tap either side to browse &mdash; each orb is a different voice, tone and language.</p>
+      <p>Scroll, drag, or tap either side to browse. Each orb is a different voice, tone and language.</p>
     </div>
     <div class="orb-carousel-wrap">
       <div class="orb-nav" id="orbPrev">&#8249;</div>
@@ -93,7 +93,7 @@
     <div class="arch-head">
       <div class="eyebrow">Step 3 of 5 &middot; Choose your role</div>
       <h1>Which borrower are you today?</h1>
-      <p>Pick how you&#x2019;ll respond when Kollect reaches out &mdash; this shapes how the demo plays out.</p>
+      <p>Pick how you&#x2019;ll respond when Kollect reaches out. This shapes how the demo plays out.</p>
     </div>
     <div class="arch-grid" id="archGrid"></div>
     <div class="arch-actions">
@@ -109,7 +109,7 @@
       <div class="persona-numbers" id="personaNumbers">
         <div class="persona-num-box"><div class="k">Debt</div><div class="v" id="numDebt">&#x20b9;0</div></div>
         <div class="persona-num-box"><div class="k">Overdue</div><div class="v" style="color:var(--red)" id="numOverdue">0d</div></div>
-        <div class="persona-num-box" id="bucketBox"><div class="k">Bucket</div><div class="v" id="numBucket">&mdash;</div></div>
+        <div class="persona-num-box" id="bucketBox"><div class="k">Bucket</div><div class="v" id="numBucket">-</div></div>
         <div class="persona-num-box"><div class="k">Risk score</div><div class="v" style="color:var(--amber)" id="numRisk">0</div></div>
       </div>
       <div class="persona-bucket-caption" id="personaBucketCaption"></div>
@@ -224,25 +224,13 @@
               <div class="section-label">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15h6M9 11h6"/></svg>Unstructured Data
               </div>
-              <div class="unstructured-grid">
-                <div class="unstructured-col transcript-col">
-                  <div class="gh">Call Transcript</div>
-                  <!-- Real call transcript & outcome — populated from GET /calls/{id}
-                       polling once a real call ends (server/lib/callPoller.js). Shows
-                       a placeholder until then; this is real data, not scripted copy. -->
-                  <div class="real-transcript-card" id="realTranscriptCard">
-                    <div class="rt-outcome" id="rtOutcome"></div>
-                    <div class="rt-transcript" id="rtTranscript">Awaiting first call.</div>
-                  </div>
-                </div>
-                <div class="unstructured-col">
-                  <div class="gh">Summary</div>
-                  <div class="summary-pointer" id="summaryPointer">&mdash;</div>
-                </div>
-                <div class="unstructured-col">
-                  <div class="gh">Next Best Action</div>
-                  <div class="nba-pointer" id="nbaPointer">&mdash;</div>
-                </div>
+              <div class="gh">Call Transcript</div>
+              <!-- Real call transcript & outcome — populated from GET /calls/{id}
+                   polling once a real call ends (server/lib/callPoller.js). Shows
+                   a placeholder until then; this is real data, not scripted copy. -->
+              <div class="real-transcript-card" id="realTranscriptCard">
+                <div class="rt-outcome" id="rtOutcome"></div>
+                <div class="rt-transcript" id="rtTranscript">Awaiting first call.</div>
               </div>
             </div>
           </div>
@@ -277,11 +265,21 @@
 
             <div class="data-group unusual" id="unusualGroup">
               <div class="gh">Unusual Activity</div>
-              <div class="unusual-flag" id="unusualFlag">&mdash;</div>
+              <div class="unusual-flag" id="unusualFlag">-</div>
             </div>
             <div class="data-group assumed" id="assumedGroup">
               <div class="gh">Assumed Reason</div>
-              <div class="unusual-conclusion" id="unusualConclusion">&mdash;</div>
+              <div class="unusual-conclusion" id="unusualConclusion">-</div>
+            </div>
+
+            <div class="data-group strategy">
+              <div class="gh">Summary</div>
+              <div class="summary-pointer" id="summaryPointer">-</div>
+            </div>
+            <div class="data-group strategy">
+              <div class="gh">Next Best Action</div>
+              <div class="nba-pointer" id="nbaPointer">-</div>
+              <div class="nba-reason" id="nbaReason"></div>
             </div>
           </div>
         </div>
