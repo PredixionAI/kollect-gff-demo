@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Environment variables & secrets (CRITICAL: Never commit credentials)
+.env
+.env*.local
+.env.development
+.env.test
+.env.production
+
+# Logs & debugging
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Live attendee telemetry / session data (Contains PII)
+server/data/*.json
+!server/data/.gitkeep
+
+# Real attendee call audio recordings (Contains PII)
+recordings/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/
+.gemini/
+*.tmp

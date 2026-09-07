@@ -1,0 +1,883 @@
+
+/* =========================================================
+   STATE
+========================================================= */
+const state = { name:'Ramesh Patil', phone:'', voice:null, archetype:null };
+let softLaunchTimer = null;
+let personaTypeTimer = null;
+
+/* =========================================================
+   SCREEN 1 — CAPTURE
+========================================================= */
+const inputName = document.getElementById('inputName');
+const inputPhone = document.getElementById('inputPhone');
+const consentBox = document.getElementById('consentBox');
+const btnStart = document.getElementById('btnStart');
+
+function validateCapture(){
+  const ok = inputName.value.trim().length > 1 && inputPhone.value.trim().length >= 7 && consentBox.checked;
+  btnStart.disabled = !ok;
+}
+[inputName, inputPhone].forEach(el => el.addEventListener('input', validateCapture));
+consentBox.addEventListener('change', validateCapture);
+
+btnStart.addEventListener('click', () => {
+  state.name = inputName.value.trim();
+  state.phone = inputPhone.value.trim();
+  enterSoftLaunch();
+});
+document.getElementById('btnBypass').addEventListener('click', () => {
+  state.name = 'Ramesh Patil';
+  state.phone = '+91 98765 43210';
+  enterSoftLaunch();
+});
+
+/* =========================================================
+   SCREEN 2 — SOFT LAUNCH (cinematic intro)
+========================================================= */
+function enterSoftLaunch(){
+  goTo('screen-softlaunch');
+  runSoftLaunch();
+}
+
+function runSoftLaunch(){
+  const firstName = (state.name || '').split(' ')[0] || 'there';
+  const mark = document.getElementById('slMark');
+  const line1 = document.getElementById('slLine1');
+  const line2 = document.getElementById('slLine2');
+
+  mark.classList.remove('show'); line1.classList.remove('show'); line2.classList.remove('show');
+  line1.textContent = `Welcome, ${firstName}.`;
+  line2.textContent = 'This is what it feels like to be our client.';
+
+  // Best-effort narration — runs from a click handler so autoplay policies allow it.
+  // If speech synthesis isn't available, the visuals proceed on their own regardless.
+  try {
+    if('speechSynthesis' in window){
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(`Welcome, ${firstName}. This is Predixion AI. What you're about to see is what it feels like to be a client of ours.`);
+      utter.rate = 0.95; utter.pitch = 1; utter.volume = 1;
+      window.speechSynthesis.speak(utter);
+    }
+  } catch(e) { /* narration unavailable — visuals still carry the moment */ }
+
+  clearTimeout(softLaunchTimer);
+  setTimeout(() => mark.classList.add('show'), 150);
+  setTimeout(() => line1.classList.add('show'), 750);
+  setTimeout(() => line2.classList.add('show'), 2300);
+  softLaunchTimer = setTimeout(() => { goTo('screen-orbs'); renderOrbCarousel(); }, 6200);
+}
+
+document.getElementById('btnSkipIntro').addEventListener('click', () => {
+  clearTimeout(softLaunchTimer);
+  try { if('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch(e) {}
+  goTo('screen-orbs');
+  renderOrbCarousel();
+});
+
+/* =========================================================
+   SCREEN 3 — ORB VOICE CAROUSEL
+========================================================= */
+const orbs = [
+  { id:'priya',   name:'Priya',   lang:'Hinglish', active:true,  pastel:'#ff9eb5', ttsLang:'hi-IN', sample:'Namaste! Main Priya bol rahi hoon, ABC Bank ki taraf se.' },
+  { id:'arjun',   name:'Arjun',   lang:'Hindi',    active:true,  pastel:'#8ecbff', ttsLang:'hi-IN', sample:'नमस्ते, मैं अर्जुन बोल रहा हूँ, ABC Bank की ओर से।' },
+  { id:'aditi',   name:'Aditi',   lang:'Marathi',  active:true,  pastel:'#8ef0c4', ttsLang:'mr-IN', sample:'नमस्कार, मी अदिती बोलतेय, ABC Bank कडून.' },
+  { id:'karthik', name:'Karthik', lang:'Tamil',    active:false, pastel:'#a99bd6' },
+  { id:'deepa',   name:'Deepa',   lang:'Kannada',  active:false, pastel:'#d6ab8e' },
+];
+let orbIndex = 0;
+
+function renderOrbCarousel(autoplay){
+  if(autoplay === undefined) autoplay = true;
+  const track = document.getElementById('orbCarousel');
+  track.innerHTML = '';
+  let frontOrb = null, frontEl = null;
+  orbs.forEach((o, i) => {
+    const offset = i - orbIndex;
+    const dist = Math.abs(offset);
+    const scale = offset === 0 ? 1 : Math.max(0.5, 1 - dist * 0.22);
+    const z = -dist * 70;
+    const x = offset * 122;
+    const opacity = Math.max(0.28, 1 - dist * 0.3);
+
+    const el = document.createElement('div');
+    el.className = 'orb' + (o.active ? '' : ' disabled') + (offset === 0 ? ' front' : '');
+    el.style.setProperty('--pastel', o.pastel);
+    el.style.transform = `translate(-50%,-50%) translate3d(${x}px,0,${z}px) scale(${scale})`;
+    el.style.opacity = opacity;
+    el.style.zIndex = 100 - dist;
+    el.innerHTML = `
+      <div class="orb-sphere"><div class="orb-glow"></div></div>
+      <div class="orb-label">
+        <div class="oname">${o.name}</div>
+        <div class="olang">${o.lang}</div>
+        ${o.active
+          ? (offset === 0 ? `<button class="orb-play" type="button" data-role="play">▸ Replay</button>` : '')
+          : '<div class="osoon">Coming soon</div>'}
+      </div>
+    `;
+    el.addEventListener('click', (e) => {
+      if(e.target.closest('[data-role="play"]')){ playOrbSample(o, el); return; }
+      if(offset !== 0){ orbIndex = i; renderOrbCarousel(); }
+    });
+    if(offset === 0){ frontOrb = o; frontEl = el; }
+    track.appendChild(el);
+  });
+  document.getElementById('btnOrbNext').disabled = !orbs[orbIndex].active;
+  state.voice = orbs[orbIndex];
+
+  // Auto-play the voice the moment it becomes the selected (front) orb — no click needed.
+  if(autoplay && frontOrb && frontOrb.active && frontOrb.sample){ playOrbSample(frontOrb, frontEl); }
+}
+
+function playOrbSample(o, el){
+  const sphere = el.querySelector('.orb-sphere');
+  const btn = el.querySelector('[data-role="play"]');
+  document.querySelectorAll('.orb-sphere').forEach(s => s.classList.remove('speaking'));
+  sphere.classList.add('speaking');
+  if(btn) btn.classList.add('playing');
+
+  let done = false;
+  function stopGlow(){
+    if(done) return; done = true;
+    sphere.classList.remove('speaking');
+    if(btn) btn.classList.remove('playing');
+  }
+  setTimeout(stopGlow, 1900); // guaranteed visual duration even if speech synthesis is unavailable
+
+  try {
+    if('speechSynthesis' in window && o.sample){
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(o.sample);
+      utter.lang = o.ttsLang || 'hi-IN';
+      utter.rate = 1; utter.pitch = 1;
+      utter.onend = stopGlow;
+      utter.onerror = stopGlow;
+      window.speechSynthesis.speak(utter);
+    }
+  } catch(e) { /* fallback timeout above already covers the visual */ }
+}
+
+renderOrbCarousel(false); // initial DOM build at page load, screen isn't visible yet — don't autoplay here
+
+function stepOrb(delta){
+  const next = Math.max(0, Math.min(orbs.length - 1, orbIndex + delta));
+  if(next !== orbIndex){ orbIndex = next; renderOrbCarousel(); }
+}
+document.getElementById('orbPrev').addEventListener('click', () => stepOrb(-1));
+document.getElementById('orbNext').addEventListener('click', () => stepOrb(1));
+
+const orbCarousel = document.getElementById('orbCarousel');
+let orbWheelLock = false;
+orbCarousel.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  if(Math.abs(delta) < 12 || orbWheelLock) return;
+  orbWheelLock = true;
+  stepOrb(delta > 0 ? 1 : -1);
+  setTimeout(() => orbWheelLock = false, 260);
+}, { passive:false });
+
+let orbDragStartX = null;
+orbCarousel.addEventListener('pointerdown', (e) => { orbDragStartX = e.clientX; });
+orbCarousel.addEventListener('pointerup', (e) => {
+  if(orbDragStartX === null) return;
+  const dx = e.clientX - orbDragStartX;
+  if(Math.abs(dx) > 40){ stepOrb(dx < 0 ? 1 : -1); }
+  orbDragStartX = null;
+});
+
+document.getElementById('btnOrbNext').addEventListener('click', () => {
+  goTo('screen-archetype');
+});
+
+/* =========================================================
+   SCREEN 4 — ARCHETYPE / CLASSIFICATION SELECT
+========================================================= */
+const ICON_PAYER = '<circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/>';
+const ICON_NEGOTIATOR = '<path d="M12 3v18M6 8l-3 5.5a3 3 0 0 0 6 0zM18 8l-3 5.5a3 3 0 0 0 6 0zM6 8h12"/>';
+const ICON_SKEPTIC = '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 0 1 4.9.6c0 1.6-2.4 2-2.4 3.4"/><circle cx="12" cy="16.7" r=".6" fill="currentColor" stroke="none"/>';
+const ICON_GHOST = '<circle cx="7" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" opacity="0.6"/><circle cx="17" cy="12" r="1.6" fill="currentColor" stroke="none" opacity="0.25"/>';
+
+// overdueDays drives which bucket this archetype lands in — see getBucket()
+const archetypes = [
+  { id:'technical', title:'Technical Defaulter', desc:'Clean history, single missed payment — likely a genuine slip.', icon:ICON_PAYER,
+    overdueDays:3, risk:35,
+    persona:(nm) => `I'm ${nm}, a software engineer in Pune with an eighteen-month clean repayment history. This EMI slipped through during a busy week, nothing more. The moment someone reminds me, I'll pay. I just need a nudge, not a lecture. Let's see how fast this gets sorted out.` },
+  { id:'systemic', title:'Systemic Defaulter', desc:'A pattern of late payments — this isn\u2019t the first time.', icon:ICON_NEGOTIATOR,
+    overdueDays:45, risk:58,
+    persona:(nm) => `I'm ${nm}, and this month has been tight. Rent went up, a few bills landed at once, and my EMI slipped through the cracks. Honestly, this keeps happening — I'm not avoiding it, I just need a little breathing room.` },
+  { id:'disputed', title:'Disputed Case', desc:'Questions the charge and wants a real person, not a bot.', icon:ICON_SKEPTIC,
+    overdueDays:75, risk:72,
+    persona:(nm) => `I'm ${nm}, and honestly, I'm not fully convinced this charge is even correct. I want it explained properly before I pay anything. Automated reminders don't reassure me much — I want a real person on the line.` },
+  { id:'unreachable', title:'Unreachable', desc:'Short replies, missed calls — hard to pin down.', icon:ICON_GHOST,
+    overdueDays:135, risk:88,
+    persona:(nm) => `I'm ${nm}. Between work and everything else going on, this EMI reminder is easy to miss, or easy to ignore. I might not pick up the first call. I might reply with one word, or nothing at all.` },
+];
+
+function buildArchetypes(){
+  const grid = document.getElementById('archGrid');
+  grid.innerHTML = '';
+  archetypes.forEach(a => {
+    const el = document.createElement('div');
+    el.className = 'arch-card';
+    el.innerHTML = `
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <div class="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${a.icon}</svg></div>
+      <div class="a-title">${a.title}</div>
+      <div class="a-desc">${a.desc}</div>
+    `;
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.arch-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      state.archetype = a;
+      document.getElementById('btnArchNext').disabled = false;
+    });
+    grid.appendChild(el);
+  });
+}
+buildArchetypes();
+
+document.getElementById('btnArchNext').addEventListener('click', () => {
+  goTo('screen-persona');
+  runPersonaScreen();
+});
+
+/* =========================================================
+   BUCKET CLASSIFICATION (by days overdue)
+========================================================= */
+function getBucket(days){
+  if(days <= 30)  return { cls:'bucket-x',   label:'X',   name:'Bucket X', range:'1\u201330 days overdue' };
+  if(days <= 60)  return { cls:'bucket-1',   label:'1',   name:'Bucket 1', range:'30\u201360 days overdue' };
+  if(days <= 90)  return { cls:'bucket-2',   label:'2',   name:'Bucket 2', range:'60\u201390 days overdue' };
+  if(days <= 120) return { cls:'bucket-3',   label:'3',   name:'Bucket 3', range:'90\u2013120 days overdue' };
+  return                 { cls:'bucket-npa', label:'NPA', name:'NPA',      range:'120+ days overdue' };
+}
+
+/* =========================================================
+   SCREEN 5 — PERSONA TYPEWRITER + NUMBERS
+========================================================= */
+function runPersonaScreen(){
+  const tag = document.getElementById('personaTag');
+  const typeEl = document.getElementById('personaTypewriter');
+  const numsEl = document.getElementById('personaNumbers');
+  const actionsEl = document.getElementById('personaActions');
+  const bucketBox = document.getElementById('bucketBox');
+  const captionEl = document.getElementById('personaBucketCaption');
+  numsEl.classList.remove('show');
+  actionsEl.classList.remove('show');
+  captionEl.classList.remove('show');
+  bucketBox.className = 'persona-num-box';
+
+  const a = state.archetype || archetypes[0];
+  tag.textContent = a.title.toUpperCase();
+  const text = a.persona((state.name || 'Ramesh Patil').split(' ')[0]);
+  typeEl.innerHTML = '<span class="cursor"></span>';
+
+  const DURATION = 5200; // stays in the 4-6s window regardless of exact word count
+  const perChar = DURATION / text.length;
+  let i = 0;
+  clearTimeout(personaTypeTimer);
+  function typeNext(){
+    if(i >= text.length){ setTimeout(revealNumbers, 400); return; }
+    i++;
+    typeEl.innerHTML = escapeHtml(text.slice(0, i)) + '<span class="cursor"></span>';
+    personaTypeTimer = setTimeout(typeNext, perChar);
+  }
+  typeNext();
+
+  function revealNumbers(){
+    const bucket = getBucket(a.overdueDays);
+    numsEl.classList.add('show');
+    animateNumber('numDebt', 0, 45000, 900, v => '₹' + Math.round(v).toLocaleString('en-IN'));
+    animateNumber('numOverdue', 0, a.overdueDays, 900, v => Math.round(v) + 'd');
+    animateNumber('numRisk', 0, a.risk, 900, v => Math.round(v));
+    document.getElementById('numBucket').textContent = bucket.label;
+    bucketBox.classList.add(bucket.cls);
+    captionEl.innerHTML = `<b>${bucket.name}</b> · ${bucket.range}`;
+    setTimeout(() => captionEl.classList.add('show'), 300);
+    setTimeout(() => actionsEl.classList.add('show'), 1100);
+  }
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function animateNumber(id, from, to, duration, formatter){
+  const el = document.getElementById(id);
+  const start = performance.now();
+  function step(now){
+    const t = Math.min(1, (now - start) / duration);
+    el.textContent = formatter(from + (to - from) * t);
+    if(t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+document.getElementById('btnPersonaNext').addEventListener('click', () => {
+  const a = state.archetype || archetypes[0];
+  const bucket = getBucket(a.overdueDays);
+  document.getElementById('dashBorrowerName').textContent = state.name;
+  document.getElementById('leftName').textContent = state.name;
+  document.getElementById('dashBorrowerSub').textContent = `₹45,000 · ${a.overdueDays}d overdue`;
+  document.getElementById('leftOverdue').textContent = a.overdueDays + 'd';
+  document.getElementById('leftRisk').textContent = a.risk;
+  goTo('screen-dash');
+  startDash();
+});
+
+/* =========================================================
+   SCREEN TRANSITIONS
+========================================================= */
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* =========================================================
+   SCREEN 4 — DASHBOARD DATA
+========================================================= */
+const TABS = [
+  { key:'b360', label:'Borrower 360', sub:'Profile Analysis', icon:`<path d="M20 7h-3V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a1 1 0 0 0-1-1z"/>` },
+  { key:'strategy', label:'Strategy', sub:'AI Optimization', icon:`<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>` },
+  { key:'execution', label:'Execution', sub:'Omnichannel', icon:`<path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>` },
+  { key:'fulfilment', label:'Fulfilment', sub:'Resolution', icon:`<path d="M20 6L9 17l-5-5"/>` },
+];
+
+function personaTone(){ return state.voice ? state.voice.name : 'Priya'; }
+function personaLang(){ return (state.voice && state.voice.lang) ? state.voice.lang : 'Hinglish'; }
+
+function personaPacks(nm, agent, lang){
+  return {
+    technical: {
+      w1Lines:[`Namaste ${nm} ji,`,'',`Aapki EMI ₹45,000 kal due thi.`,'',`Abhi pay karein: https://pay.link/45k`],
+      w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
+      callType:'chat',
+      callLines:[`[AI Voice Agent — FRIENDLY MODE]`,'',`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, ABC Bank ki taraf se.`,'',`${nm}: Haan bilkul, main abhi hi pay kar deta hoon!`],
+      callAction:'Call answered — borrower agreed to pay immediately', callDetails:`AI Voice Agent — Friendly mode (${agent})`,
+      sentLines:['Outcome: Payment agreed verbally','Sentiment: Cooperative, high confidence','Risk delta: -20 (improving)','','Recalculating next best action...'],
+      sentAction:'Call ended: borrower confirmed payment', sentDetails:'Sentiment: cooperative, high confidence',
+      nbaAction:'Confirm & close — no further contact needed', nbaDetails:'Selected over retry / escalate — borrower already committed',
+      w2Title:'Payment Confirmation', w2Subtitle:'Thank-you message with receipt link',
+      w2Lines:[`Dhanyawad ${nm} ji!`,'','Aapka payment safaltapoorvak mil gaya hai.','','Receipt: https://pay.link/receipt/45k'],
+      w2Action:'Confirmation sent 11:35 AM', w2Details:'Auto-triggered after payment gateway confirms receipt',
+      s9Title:'Payment Verification', s9Subtitle:'Confirming funds cleared, no escalation needed',
+      s9Lines:['Payment gateway: confirmed','LMS: reconciling balance','Account status updating to CURRENT','','No escalation required — case will auto-close'],
+      s9Action:'Funds verified — reconciling with LMS', s9Details:'Escalation protocol not triggered',
+      s10Title:'Case Resolved Early', s10Subtitle:'No human hand-off needed', s10Audience:'borrower', s10Contact:'ABC Bank', s10ContactSub:'Business Account',
+      s10Lines:[`Aapka account ab up-to-date hai, ${nm} ji.`,'','Dhanyawad samay par jawab dene ke liye!'],
+      s10Action:'Final confirmation sent 11:40 AM', s10Details:'Case closed without human involvement',
+      escalate:false,
+      f11Title:'Payment Confirmed', f11Subtitle:'Borrower paid in full during the call window',
+      f11Action:'₹45,000 received at 11:38 AM', f11Details:'Payment gateway confirms full settlement',
+      f11Lines:['Amount: ₹45,000','Channel: Payment link (UPI)','Time: 11:38 AM','','Reconciling with LMS...','Case marked RESOLVED'],
+      f12Action:'Recovery achieved in 2 touchpoints, no escalation', f12Details:'Time to resolution: ~28 minutes from default',
+      f12Lines:['Touchpoint 1: WhatsApp (friendly) — read, no action yet','Touchpoint 2: Voice call (friendly) — borrower agreed immediately','No escalation needed','Outcome: Paid in full, ₹45,000, UPI'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: RESOLVED — paid in full','Audit trail: 13 steps, 2 touchpoints','','Thank you for experiencing Kollect.'],
+      nba:{
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Low-pressure tone selected for a Technical Defaulter — clean history means no need to escalate urgency.', metric:'91% response rate for this profile'},
+        s5:{label:'ACTION TAKEN', state:'taken', title:'Friendly voice call placed', reason:'Following up warmly since WhatsApp was read but no reply yet.', metric:'Call duration: 1m 12s'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower verbally confirmed payment — reassessing whether further contact is needed.', metric:'Confidence: 0.94'},
+        s8:{label:'ACTION TAKEN', state:'taken', title:'Confirmation message sent', reason:'Closing the loop immediately rather than waiting for payment gateway polling.', metric:'Sent within 90s of call ending'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Verify and close — skip escalation', reason:'Funds already confirmed by the gateway; a human hand-off adds no value here.', metric:'Escalation threshold not met'},
+        s10:{label:'ACTION TAKEN', state:'taken', title:'Case closed, borrower notified', reason:'Fastest possible resolution — one call, one message, no escalation.', metric:'Resolved in ~25 minutes'},
+      },
+    },
+    systemic: {
+      w1Lines:[`Namaste ${nm} ji,`,'',`Aapki EMI ₹45,000 kal due thi.`,'',`Abhi pay karein: https://pay.link/45k`],
+      w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
+      callType:'chat',
+      callLines:[`[AI Voice Agent — FRIENDLY MODE]`,'',`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, ABC Bank ki taraf se.`,'',`${nm}: Yaar, is mahine thoda tight hai. Kya thodi mohlat mil sakti hai?`],
+      callAction:'Call answered — borrower requested more time', callDetails:`AI Voice Agent — Friendly mode (${agent})`,
+      sentLines:['Outcome: Promise-to-pay (soft), needs structured plan','Sentiment: Receptive, financial strain detected','Risk delta: unchanged','','Recalculating next best action...'],
+      sentAction:'Call ended: borrower asked for more time', sentDetails:'Sentiment: receptive, financially constrained',
+      nbaAction:'Offer 2-installment payment plan', nbaDetails:'Selected over retry / escalate — borrower engaged but constrained',
+      w2Title:'Round 2: Payment Plan Offer', w2Subtitle:'Firm-but-fair plan offer — WhatsApp',
+      w2Lines:[`${nm} ji,`,'','Hum samajhte hain ki abhi thoda mushkil hai.','Aapke liye 2 installments ka option hai:','₹22,500 abhi + ₹22,500 agle hafte.','','Reply karein "SPLIT" confirm karne ke liye.'],
+      w2Action:'Plan offer sent 3:00 PM', w2Details:'Offers 2-installment split, empathetic tone',
+      s9Title:'Plan Acceptance Check', s9Subtitle:'Borrower reviewing installment offer',
+      s9Lines:['Reply received: "SPLIT"','Plan accepted — 2 installments confirmed','No escalation needed','','Scheduling first installment reminder'],
+      s9Action:'Borrower replied SPLIT at 3:22 PM', s9Details:'Plan accepted — scheduling installments',
+      s10Title:'Plan Activated', s10Subtitle:'Installment schedule confirmed via WhatsApp', s10Audience:'borrower', s10Contact:'ABC Bank', s10ContactSub:'Business Account',
+      s10Lines:[`Perfect, ${nm} ji!`,'','Installment 1: ₹22,500 — due today','Installment 2: ₹22,500 — due in 7 days','','Hum aapko reminder bhejenge har installment se pehle.'],
+      s10Action:'Schedule confirmed 3:25 PM', s10Details:'Case closed without human involvement',
+      escalate:false,
+      f11Title:'Plan Confirmed', f11Subtitle:'First installment received, second scheduled',
+      f11Action:'First installment ₹22,500 received at 3:45 PM', f11Details:'Second installment scheduled for 7 days',
+      f11Lines:['Amount: ₹22,500 (installment 1 of 2)','Channel: Payment link (UPI)','Time: 3:45 PM','','Second installment scheduled','Case marked RESOLVED (plan active)'],
+      f12Action:'Recovery structured across 2 installments, no human needed', f12Details:'Time to first payment: ~5h 30m from default',
+      f12Lines:['Touchpoint 1: WhatsApp (friendly) — read, no action','Touchpoint 2: Voice call — requested more time','Touchpoint 3: WhatsApp (plan offer) — accepted','Outcome: Plan active, ₹22,500 of ₹45,000 recovered so far'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: RESOLVED — payment plan active','Audit trail: 13 steps, 3 touchpoints','','Thank you for experiencing Kollect.'],
+      nba:{
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:"Standard opening tone — the system doesn't presume hardship before any response.", metric:'91% response rate for this profile'},
+        s5:{label:'ACTION TAKEN', state:'taken', title:'Friendly voice call placed', reason:'Following up after WhatsApp was read with no action.', metric:'Call duration: 1m 48s'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower signaled financial strain — evaluating a structured plan instead of repeating the same ask.', metric:'Confidence: 0.71'},
+        s8:{label:'ACTION TAKEN', state:'taken', title:'Payment plan offered', reason:'Highest expected recovery given a soft promise-to-pay with a real constraint.', metric:'Plan acceptance rate: 68% historically'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Activate plan — skip escalation', reason:'Borrower engaged constructively and accepted terms; no need for human involvement.', metric:'Escalation threshold not met'},
+        s10:{label:'ACTION TAKEN', state:'taken', title:'Installment schedule confirmed', reason:'Locking in the agreed plan immediately to reduce any chance of drop-off.', metric:'2 installments over 7 days'},
+      },
+    },
+    disputed: {
+      w1Lines:[`Namaste ${nm} ji,`,'',`Aapki EMI ₹45,000 kal due thi.`,'',`Abhi pay karein: https://pay.link/45k`],
+      w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
+      callType:'chat',
+      callLines:[`[AI Voice Agent — FRIENDLY MODE]`,'',`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, ABC Bank ki taraf se.`,'',`${nm}: Ye charge galat hai. Maine ye pehle hi customer care ko bataya tha. Mujhe insaan se baat karni hai.`],
+      callAction:'Call answered — borrower disputes the charge', callDetails:`AI Voice Agent — Friendly mode (${agent})`,
+      sentLines:['Outcome: Dispute raised, distrust of automated contact','Sentiment: Skeptical, defensive','Escalation flag: borrower requested human','','Recalculating next best action...'],
+      sentAction:'Call ended: borrower disputed the charge', sentDetails:'Sentiment: skeptical, defensive',
+      nbaAction:'Escalate to human agent immediately', nbaDetails:'Selected over retry / plan — borrower explicitly requested a person',
+      w2Title:'Round 2: WhatsApp', w2Subtitle:'Dispute acknowledgement — WhatsApp',
+      w2Lines:[`${nm} ji,`,'','Hum aapki dispute note kar rahe hain.','Hamari team jald aapse contact karegi is charge ko clarify karne ke liye.'],
+      w2Action:'Acknowledgement sent 3:00 PM', w2Details:'Confirms dispute logged, sets expectation for human contact',
+      s9Title:'Escalation Check', s9Subtitle:'Explicit human request — evaluating hand-off',
+      s9Lines:['Escalation trigger: explicit human request (not confidence-based)','Dispute flag: charge validity questioned','','Escalating to human collections agent...','Preparing case summary + dispute context'],
+      s9Action:'Borrower explicitly requested human — immediate escalation', s9Details:'Not a confidence-threshold escalation — trust/dispute issue',
+      s10Title:'Human Handoff', s10Subtitle:'WhatsApp summary sent to collections executive', s10Audience:'agent', s10Contact:'Kollect Escalations', s10ContactSub:'Automated alert',
+      s10Lines:(nmFull, phone)=>[`⚠ Dispute — ${nmFull} (₹45,000, overdue)`,'','Borrower disputes charge validity.','Requested human contact explicitly.','Sentiment: skeptical, defensive.','',`Contact: ${phone || '+91 98xxxxxxx0'}`,'Please call within 2 hours — dispute context attached.'],
+      s10Action:'Summary + phone number sent to human agent', s10Details:'Human takes over from here, Kollect stands by',
+      escalate:true,
+      f11Title:'Escalation Confirmed', f11Subtitle:'Case now owned by a human collections executive',
+      f11Action:'Handoff acknowledged by Collections Exec #4 at 4:10 PM', f11Details:'Kollect resumes automated contact only if the case returns to queue',
+      f11Lines:['Case owner: Collections Exec #4','Dispute context: attached','Automated contact: paused','','Awaiting human resolution'],
+      f12Action:'Escalated after 2 touchpoints — dispute could not be resolved automatically', f12Details:'Time to escalation: ~3h 45m from default',
+      f12Lines:['Touchpoint 1: WhatsApp (friendly) — read, no action','Touchpoint 2: Voice call — borrower disputed charge','Touchpoint 3: WhatsApp (acknowledgement)','Outcome: Escalated to human, ₹45,000 still outstanding'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: ESCALATED — with human collections team','Audit trail: 13 steps, 3 touchpoints','','Kollect remains available if the case returns to automation.'],
+      nba:{
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Standard opening — no dispute signal exists yet at this point.', metric:'91% response rate for this profile'},
+        s5:{label:'ACTION TAKEN', state:'taken', title:'Friendly voice call placed', reason:'Following up after WhatsApp was read with no reply.', metric:'Call duration: 2m 05s'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower disputed the charge and asked for a human — this overrides the standard reminder sequence.', metric:'Confidence: 0.38'},
+        s8:{label:'ACTION TAKEN', state:'taken', title:'Dispute acknowledgement sent', reason:'Logging the dispute and setting expectations while escalation is prepared.', metric:'Escalation already in motion'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Escalate to human agent', reason:'Explicit request overrides confidence scoring — this is a policy rule, not a threshold call.', metric:'Trigger: explicit request, not confidence'},
+        s10:{label:'ACTION TAKEN', state:'taken', title:'Case hand-off sent to human agent', reason:"Full dispute context attached so the human doesn't start from zero.", metric:'Routed to Collections Exec #4'},
+      },
+    },
+    unreachable: {
+      w1Lines:[`Namaste ${nm} ji,`,'',`Aapki EMI ₹45,000 kal due thi.`,'',`Abhi pay karein: https://pay.link/45k`],
+      w1Action:'Message sent 10:15 AM — not yet read', w1Details:`${lang} friendly reminder with payment link`,
+      callType:'terminal',
+      callTitle:'Round 1: Call Attempt', callSubtitle:'No answer after 6 rings',
+      callLines:['Dialing...','Ringing... (6 rings)','No answer','Voicemail: box full, cannot leave message','','Logging failed contact attempt'],
+      callAction:'Call attempted at 11:30 AM — no answer', callDetails:'Voicemail box full, call ended without contact',
+      sentTitle:'Contact Attempt Analysis',
+      sentLines:['Outcome: No contact established','Both channels attempted (WhatsApp + call), no response','Risk delta: +5 (non-response is a risk signal)','','Recalculating next best action...'],
+      sentAction:'No response across both channels', sentDetails:'Escalation being considered',
+      nbaAction:'Escalate — automated channels exhausted', nbaDetails:'Selected over retry — 2 failed attempts already logged',
+      w2Title:'Round 2: WhatsApp', w2Subtitle:'Final attempt — WhatsApp',
+      w2Lines:[`${nm} ji,`,'','Hum aapse sampark karne ki koshish kar rahe hain.','Kripya jab possible ho, is number par reply karein ya call back karein.','','Payment link: https://pay.link/45k'],
+      w2Action:'Final message sent 3:00 PM — not yet read', w2Details:'Last automated attempt before human escalation',
+      s9Title:'Escalation Check', s9Subtitle:'Channels exhausted — evaluating hand-off',
+      s9Lines:['2 channels attempted, 0 responses','Automated contact exhausted','','Escalating to human for manual outreach...','Preparing case summary + alternate contact search'],
+      s9Action:'No response across 2 channels, 2 attempts each', s9Details:'Escalating for manual follow-up, not a dispute',
+      s10Title:'Human Handoff', s10Subtitle:'WhatsApp summary sent to collections executive', s10Audience:'agent', s10Contact:'Kollect Escalations', s10ContactSub:'Automated alert',
+      s10Lines:(nmFull, phone, days)=>[`⚠ Unreachable — ${nmFull} (₹45,000, ${days||''}d overdue)`,'','2 WhatsApp + 1 call attempted, zero response.','No dispute — simply unreachable via these channels.','',`Contact: ${phone || '+91 98xxxxxxx0'}`,'Recommend alternate contact method or field visit.'],
+      s10Action:'Summary + phone number sent to human agent', s10Details:'Human takes over from here, Kollect stands by',
+      escalate:true,
+      f11Title:'Escalation Confirmed', f11Subtitle:'Case now owned by a human collections executive',
+      f11Action:'Handoff acknowledged by Collections Exec #4 at 4:10 PM', f11Details:'Kollect resumes automated contact if the borrower re-engages',
+      f11Lines:['Case owner: Collections Exec #4','Contact attempts: 4 (0 successful)','Automated contact: paused','','Awaiting manual outreach outcome'],
+      f12Action:'Escalated after 4 contact attempts across 2 channels', f12Details:'Time to escalation: ~5h 30m from default',
+      f12Lines:['Touchpoint 1: WhatsApp (friendly) — sent, not read','Touchpoint 2: Voice call — no answer','Touchpoint 3: WhatsApp (final attempt) — sent, not read','Outcome: Escalated to human, ₹45,000 still outstanding'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: ESCALATED — unreachable via automated channels','Audit trail: 13 steps, 4 contact attempts','','Kollect remains available if the borrower re-engages.'],
+      nba:{
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Standard opening tone — no signal yet that this account is hard to reach.', metric:'91% response rate for this profile'},
+        s5:{label:'ACTION TAKEN', state:'taken', title:'Voice call attempted', reason:'Following up after WhatsApp went unread.', metric:'No answer after 6 rings'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Zero response across two channels is itself a signal — reassessing contact strategy.', metric:'Confidence: 0.22'},
+        s8:{label:'ACTION TAKEN', state:'taken', title:'Final automated reminder sent', reason:'One last attempt before committing to a human hand-off, per policy.', metric:'2nd attempt, still unread'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Escalate — channels exhausted', reason:'Automated contact has a ceiling; a human can try alternate numbers or a field visit.', metric:'2 attempts each channel, 0 responses'},
+        s10:{label:'ACTION TAKEN', state:'taken', title:'Case handed to human agent', reason:'Manual outreach with alternate contact methods now has better odds than continuing to automate.', metric:'Routed to Collections Exec #4'},
+      },
+    },
+  };
+}
+
+function steps(){
+  const nm = state.name.split(' ')[0];
+  const agent = personaTone();
+  const lang = personaLang();
+  const arch = state.archetype || archetypes[0];
+  const archId = arch.id;
+  const archTitle = arch.title;
+  const overdueDays = arch.overdueDays || 1;
+  const P = personaPacks(nm, agent, lang)[archId];
+  const finalStatus = P.escalate ? 'escalated' : 'done';
+  const finalClassV = archTitle;
+
+  return [
+  { tab:'b360', pill:'Step 1/13', title:'Default Detection', subtitle:`Payment of ₹45,000 missed on due date`,
+    action:'Initiating Borrower 360 analysis', details:'System triggers workflow automation', classV:'Analyzing…', status:'progress',
+    live:{type:'terminal', tag:'DEFAULT DETECTED', voice:false, lines:[`Borrower: ${state.name}`,`Amount: ₹45,000`,`Days Past Due: ${overdueDays}`,'',`Initiating 360° analysis...`]},
+    agents:['Default Detection Agent','Data Orchestration Agent'], models:['Anomaly Detection (XGBoost)','Priority Scoring Model'],
+    signals:[{name:'Payment Gateway', tag:'miss', desc:'Payment failure at 11:59 PM'},{name:'LMS', tag:'status', desc:'Account status: OVERDUE'}],
+  },
+  { tab:'b360', pill:'Step 2/13', title:'Signal Aggregation', subtitle:'Pulling structured + behavioral data across systems',
+    action:'Merging LMS, CRM and bank feeds', details:'Cross-referencing 3 data sources in real time', classV:archTitle, status:'progress',
+    live:{type:'terminal', tag:'AGGREGATING SIGNALS', voice:false, lines:['18-month repayment history: clean','Employment: Software Engineer, ₹85k/mo','Bank balance: ₹1.2L (sufficient)','App usage: daily active, high engagement','','Classifying borrower...']},
+    agents:['Data Orchestration Agent','Classification Agent'], models:['Feature Extraction','Behavioral Scoring Model'],
+    signals:[{name:'CRM', tag:'profile', desc:'Employment & income verified'},{name:'Bank Feed', tag:'balance', desc:'₹1.2L available — funds present'},{name:'App Analytics', tag:'engagement', desc:'Daily active, WhatsApp preferred'}],
+  },
+  { tab:'strategy', pill:'Step 3/13', title:'Strategy Generation', subtitle:`${agent} Agent activated — reasoning over classification`,
+    action:'Omnichannel approach: WhatsApp + Voice', details:`Low pressure, friendly tone (${lang})`, classV:archTitle, status:'progress',
+    live:{type:'terminal', tag:'STRATEGY READY', voice:false, lines:['STRATEGY READY','',`Agent: ${agent} — Friendly Reminder`,'Channels: WhatsApp + Voice',`Tone: Friendly (${lang})`,'Urgency: Low','Time: 10:15 AM']},
+    agents:['Strategy Gen Agent','Friendly Reminder Agent'], models:['Strategy Recommender','Tone Calibration (GPT)'],
+    signals:[{name:'Strategy Engine', tag:'recommendation', desc:'Omnichannel: 91% success rate'},{name:'RAG KB', tag:'policy', desc:`${archTitle} SOP retrieved`},{name:'Timing Model', tag:'optimal', desc:'10–11 AM: +32% response'}],
+  },
+  { tab:'execution', pill:'Step 4/13', title:'Round 1: WhatsApp', subtitle:'Friendly Reminder — WhatsApp',
+    action:P.w1Action, details:P.w1Details, classV:archTitle, status:'progress',
+    live:{type:'chat', tag:'WHATSAPP', time:'10:15 AM', voice:false, contact:'ABC Bank', contactSub:'Business Account', lines:P.w1Lines},
+    nbaNow:P.nba.s4,
+    agents:['Friendly Reminder Agent','Tracking Agent'], models:['Template Generator (GPT-4)'],
+    signals:[{name:'WhatsApp API', tag:'sent', desc:'Dispatched: 10:15:03 AM'},{name:'WhatsApp API', tag:P.callType==='terminal'?'pending':'read', desc:P.callType==='terminal'?'Not yet read':'Read: 10:17:23 AM'}],
+  },
+  { tab:'execution', pill:'Step 5/13', title:P.callTitle || 'Round 1: Voice Agent', subtitle:P.callSubtitle || 'Friendly Voice Agent call',
+    action:P.callAction, details:P.callDetails, classV:archTitle, status:'progress',
+    live: P.callType==='terminal'
+      ? {type:'terminal', tag:'CALL ATTEMPT', voice:false, lines:P.callLines}
+      : {type:'chat', tag:'VOICE AGENT', time:'11:30 AM', voice:true, contact:'ABC Bank Collections', lines:P.callLines},
+    nbaNow:P.nba.s5,
+    agents:[`Friendly Reminder Agent (${agent})`,'Speech Analyzer'], models:['Conversational AI (GPT-4)','Sentiment Detection'],
+    signals:[{name:'RAG KB', tag:'script', desc:'Friendly reminder script loaded'},{name:'Voice Agent', tag:P.callType==='terminal'?'no-answer':'connected', desc:P.callType==='terminal'?'6 rings, no pickup':'Duration: 1m 23s'}],
+  },
+  { tab:'execution', pill:'Step 6/13', title:P.sentTitle || 'Sentiment & Outcome Analysis', subtitle:'Reading outcome, updating borrower state',
+    action:P.sentAction, details:P.sentDetails, classV:archTitle, status:'progress',
+    live:{type:'terminal', tag:'CALL ANALYSIS', voice:false, lines:P.sentLines},
+    nbaNow:P.nba.s6,
+    agents:['Speech Analyzer','Outcome Classifier'], models:['Sentiment Detection','Promise-to-Pay Classifier'],
+    signals:[{name:'Speech Analyzer', tag:'nlu', desc:'Outcome classified'},{name:'CRM', tag:'update', desc:'Sentiment score updated'}],
+  },
+  { tab:'strategy', pill:'Step 7/13', title:'Next Best Action', subtitle:'Strategy engine ranks 3 fixed actions, selects one',
+    action:P.nbaAction, details:P.nbaDetails, classV:archTitle, status:'progress',
+    live:{type:'nba', nbaChosen:0},
+    agents:['Strategy Gen Agent','NBA Ranking Agent'], models:['Strategy Recommender','Expected Value Model'],
+    signals:[{name:'NBA Engine', tag:'ranked', desc:'3 candidate actions scored'},{name:'Policy Guard', tag:'check', desc:'Decision within SOP bounds'}],
+  },
+  { tab:'execution', pill:'Step 8/13', title:P.w2Title, subtitle:P.w2Subtitle,
+    action:P.w2Action, details:P.w2Details, classV:archTitle, status:'progress',
+    live:{type:'chat', tag:'WHATSAPP', time:'3:00 PM', voice:false, contact:'ABC Bank', contactSub:'Business Account', lines:P.w2Lines},
+    nbaNow:P.nba.s8,
+    agents:['Firm Reminder Agent','Payment Plan Agent'], models:['Template Generator (GPT-4)','Plan Structuring Model'],
+    signals:[{name:'WhatsApp API', tag:'sent', desc:'Dispatched: 3:00:00 PM'},{name:'WhatsApp API', tag:'delivered', desc:'Delivered: 3:00:04 PM'}],
+  },
+  { tab:'execution', pill:'Step 9/13', title:P.s9Title, subtitle:P.s9Subtitle,
+    action:P.s9Action, details:P.s9Details, classV:archTitle, status:'progress',
+    live:{type:'terminal', tag:'ESCALATION CHECK', voice:false, lines:P.s9Lines},
+    nbaNow:P.nba.s9,
+    agents:['Escalation Agent','Case Summary Agent'], models:['Confidence Scoring','Summarization (GPT-4)'],
+    signals:[{name:'Confidence Model', tag:'evaluated', desc:P.escalate?'Escalation triggered':'No escalation needed'},{name:'Escalation Rules', tag:'policy', desc:'SOP applied'}],
+  },
+  { tab:'execution', pill:'Step 10/13', title:P.s10Title, subtitle:P.s10Subtitle,
+    action:P.s10Action, details:P.s10Details, classV:archTitle, status:P.escalate ? 'escalated' : 'progress',
+    live:{type:'chat', tag:P.s10Audience==='agent'?'HANDOFF · TO HUMAN AGENT':'WHATSAPP', time:'3:46 PM', voice:false,
+      audience:P.s10Audience, contact:P.s10Contact, contactSub:P.s10ContactSub,
+      lines: typeof P.s10Lines === 'function' ? P.s10Lines(state.name, state.phone, overdueDays) : P.s10Lines},
+    nbaNow:P.nba.s10,
+    agents:['Escalation Agent','Human Routing Agent'], models:['Summarization (GPT-4)'],
+    signals:[{name:'WhatsApp API', tag:'sent', desc:P.escalate?'Handoff card sent to agent desk':'Confirmation sent to borrower'},{name:'Routing Engine', tag:P.escalate?'assigned':'closed', desc:P.escalate?'Routed to: Collections Exec #4':'No routing needed'}],
+  },
+  { tab:'fulfilment', pill:'Step 11/13', title:P.f11Title, subtitle:P.f11Subtitle,
+    action:P.f11Action, details:P.f11Details, classV:finalClassV, status:finalStatus,
+    live:{type:'terminal', tag:P.escalate?'ESCALATION CONFIRMED':'PAYMENT CONFIRMED', voice:false, lines:P.f11Lines},
+    agents:[P.escalate?'Routing Agent':'Reconciliation Agent'], models:[P.escalate?'Case Assignment':'Payment Matching'],
+    signals:[{name:P.escalate?'Routing Engine':'Payment Gateway', tag:P.escalate?'assigned':'success', desc:P.escalate?'Case owner: human agent':'₹ settled via UPI'},{name:'LMS', tag:'update', desc:P.escalate?'Automated contact paused':'Account status: CURRENT'}],
+  },
+  { tab:'fulfilment', pill:'Step 12/13', title:'Outcome Summary', subtitle:'Full journey compiled for reporting',
+    action:P.f12Action, details:P.f12Details, classV:finalClassV, status:finalStatus,
+    live:{type:'terminal', tag:'JOURNEY SUMMARY', voice:false, lines:P.f12Lines},
+    agents:['Reporting Agent'], models:['Journey Summarization'],
+    signals:[{name:'Analytics Engine', tag:'compiled', desc:'Full journey logged'},{name:'Recovery Model', tag:'logged', desc:'Contributes to portfolio recovery rate'}],
+  },
+  { tab:'fulfilment', pill:'Step 13/13', title:P.escalate?'Case Handed Off':'Case Closed', subtitle:'Audit trail complete — ready for next case',
+    action:'All actions, timestamps and messages logged', details:'Available for compliance review at any time', classV:finalClassV, status:finalStatus,
+    live:{type:'terminal', tag:P.escalate?'CASE HANDED OFF':'CASE CLOSED', voice:false, lines:P.f13Lines(state.name)},
+    agents:['Audit Agent'], models:['Compliance Logger'],
+    signals:[{name:'Audit Log', tag:'sealed', desc:'Immutable record created'},{name:'Compliance', tag:'ready', desc:'Available for lender review'}],
+  },
+  ];
+}
+
+function getNbaOptions(archId){
+  const sets = {
+    technical: [
+      { title:'Payment now — confirm & close', desc:'Borrower verbally agreed on the call. Fastest path, no further contact needed.', chosen:true },
+      { title:'Retry — friendly follow-up', desc:'Not needed given verbal confirmation.' },
+      { title:'Escalate to human', desc:'Not needed — cooperative borrower, no risk signal.' },
+    ],
+    systemic: [
+      { title:'Retry — friendly voice call', desc:'Same tone, different channel. Lower urgency signal.' },
+      { title:'Payment plan — 2 installments', desc:'Borrower asked for room. Highest expected recovery given soft P2P.', chosen:true },
+      { title:'Escalate to human', desc:'Premature — borrower is engaged and cooperative, just constrained.' },
+    ],
+    disputed: [
+      { title:'Retry — firm reminder', desc:'Unlikely to resolve a trust or dispute issue.' },
+      { title:'Payment plan', desc:'Not relevant — borrower disputes the charge itself.' },
+      { title:'Escalate to human', desc:'Borrower explicitly requested a person. More automated contact erodes trust further.', chosen:true },
+    ],
+    unreachable: [
+      { title:'Retry — voice call again', desc:'Already attempted twice with no pickup — diminishing returns.' },
+      { title:'Wait 24h, re-attempt', desc:'Risk: promise window may lapse without any nudge.' },
+      { title:'Escalate to human', desc:'Automated channels exhausted. Manual outreach has better reach for silent accounts.', chosen:true },
+    ],
+  };
+  return sets[archId] || sets.technical;
+}
+
+let stepData = [];
+let idx = 0;
+let playTimer = null;
+let typeTimer = null;
+let ingestTimer = null;
+let behaviorIngestTimer = null;
+
+function startDash(){
+  stepData = steps();
+  goToStep(0, true);
+  startIngestion();
+  const leftCard = document.getElementById('leftPanelCard');
+  if(leftCard) leftCard.scrollTop = 0;
+}
+
+function startIngestionGroup(groupSelector, counterId, intervalMs, existingTimer){
+  clearInterval(existingTimer);
+  const items = document.querySelectorAll(groupSelector);
+  items.forEach(el => el.classList.remove('show', 'flash'));
+  const counter = document.getElementById(counterId);
+  const total = items.length;
+  if(counter) counter.textContent = `0/${total}`;
+  let n = 0;
+  let timer = null;
+  function revealNext(){
+    if(n >= items.length){ clearInterval(timer); return; }
+    const el = items[n];
+    el.classList.add('show', 'flash');
+    setTimeout(() => el.classList.remove('flash'), 700);
+    n++;
+    if(counter) counter.textContent = `${n}/${total}`;
+    if(n >= items.length) clearInterval(timer);
+  }
+  revealNext(); // first signal appears immediately, rest follow every ~4s in the background
+  timer = setInterval(revealNext, intervalMs);
+  return timer;
+}
+
+function startIngestion(){
+  ingestTimer = startIngestionGroup('[data-ingest="structured"]', 'ingestCounter', 4000, ingestTimer);
+  behaviorIngestTimer = startIngestionGroup('[data-ingest="behavioral"]', 'behaviorCounter', 4600, behaviorIngestTimer);
+}
+
+function goToStep(newIdx, instant){
+  idx = newIdx;
+  renderStep(instant);
+}
+
+function renderTabs(){
+  const row = document.getElementById('tabRow');
+  row.innerHTML = '';
+  TABS.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'tab' + (stepData[idx].tab === t.key ? ' active' : '');
+    el.innerHTML = `<div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${t.icon}</svg></div><div><div class="tab-title">${t.label}</div><div class="tab-sub">${t.sub}</div></div>`;
+    row.appendChild(el);
+  });
+}
+
+const ICON_MIC = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>`;
+const ICON_SPEAKER = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.5 8.5a5.5 5.5 0 0 1 0 7"/></svg>`;
+const ICON_HANGUP = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 11.5c2.5-2.4 5.6-3.7 8.4-3.7s5.9 1.3 8.4 3.7c.4.4.4 1 0 1.4l-1.9 1.9c-.4.4-1 .4-1.4.1-.7-.5-1.5-.9-2.3-1.2-.4-.1-.6-.5-.6-.9v-1.7c-1.4-.4-2.9-.4-4.4 0v1.7c0 .4-.3.8-.6.9-.8.3-1.6.7-2.3 1.2-.4.3-1 .3-1.4-.1L3.6 12.9c-.4-.4-.4-1 0-1.4z"/></svg>`;
+
+function renderPhoneMockup(s){
+  const lines = s.live.lines.filter(l => l.trim() !== '');
+  if(!s.live.voice){
+    const contact = s.live.contact || 'ABC Bank';
+    const contactSub = s.live.contactSub || 'Business Account';
+    const initials = contact.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    const bodyText = lines.join('<br>');
+    return `
+      <div class="phone-wrap">
+        <div class="phone-mockup">
+          <div class="phone-notch"></div>
+          <div class="phone-statusbar"><span>9:41</span><span>100%</span></div>
+          <div class="phone-screen">
+            <div class="wa-header">
+              <span class="wa-back">‹</span>
+              <div class="wa-avatar">${initials}</div>
+              <div class="wa-title"><div class="wa-name">${contact}</div><div class="wa-sub">${contactSub}</div></div>
+            </div>
+            <div class="wa-body">
+              <div class="wa-bubble-in">
+                <div class="wa-text">${bodyText}</div>
+                <div class="wa-meta">${s.live.time || ''}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+  const dialogue = lines.filter(l => /:\s/.test(l) && !l.startsWith('['));
+  const captions = dialogue.slice(-2);
+  const personaName = state.voice ? state.voice.name : 'Priya';
+  const personaInit = personaName.charAt(0).toUpperCase();
+  return `
+    <div class="phone-wrap">
+      <div class="phone-mockup">
+        <div class="phone-notch"></div>
+        <div class="phone-statusbar"><span>9:41</span><span>100%</span></div>
+        <div class="call-screen">
+          <div class="call-top">
+            <div class="call-avatar">${personaInit}</div>
+            <div class="call-name">${personaName}</div>
+            <div class="call-status"><span class="live-blip"></span>${s.live.contact || 'ABC Bank'} · ${s.live.time || ''}</div>
+          </div>
+          <div class="call-captions">${captions.map(l => `<div class="cap-line">${l}</div>`).join('')}</div>
+          <div class="call-controls">
+            <div class="call-btn">${ICON_MIC}</div>
+            <div class="call-btn end">${ICON_HANGUP}</div>
+            <div class="call-btn">${ICON_SPEAKER}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function updateDockedPhone(s){
+  const titleEl = document.getElementById('phoneDockTitle');
+  if(titleEl){
+    titleEl.textContent = (s.live.audience === 'agent') ? "Human agent's phone" : (s.live.voice ? 'Incoming call' : "Borrower's phone");
+  }
+  const bodyEl = document.getElementById('phoneDockBody');
+  if(bodyEl) bodyEl.innerHTML = renderPhoneMockup(s);
+}
+
+function setRightColumnMode(isExecutionTab){
+  document.getElementById('rightDataPanels').style.display = isExecutionTab ? 'none' : 'flex';
+  const phonePanel = document.getElementById('rightPhonePanel');
+  phonePanel.style.display = isExecutionTab ? 'flex' : 'none';
+  if(isExecutionTab){
+    const bodyEl = document.getElementById('phoneDockBody');
+    if(!bodyEl.innerHTML.trim()){
+      bodyEl.innerHTML = '<div class="phone-dock-empty">Waiting for channel activity…</div>';
+    }
+  }
+}
+
+function renderStep(instant){
+  const s = stepData[idx];
+  clearTimeout(typeTimer);
+  renderTabs();
+
+  document.getElementById('stepPill').textContent = s.pill + ' · ' + TABS.find(t=>t.key===s.tab).label;
+  document.getElementById('stepTitle').textContent = s.title;
+  document.getElementById('stepSubtitle').textContent = s.subtitle;
+  document.getElementById('actionText').textContent = s.action;
+  document.getElementById('detailsText').textContent = s.details;
+  document.getElementById('classValue').textContent = s.classV;
+  document.getElementById('progressFill').style.width = ((idx+1)/stepData.length*100).toFixed(1)+'%';
+  document.getElementById('footStep').textContent = `Step ${idx+1} of ${stepData.length}`;
+  document.getElementById('footClass').textContent = s.classV;
+
+  const badge = document.getElementById('statusBadge');
+  badge.classList.remove('done', 'escalated');
+  if(s.status === 'done'){ badge.textContent='RESOLVED'; badge.classList.add('done'); }
+  else if(s.status === 'escalated'){ badge.textContent='ESCALATED'; badge.classList.add('escalated'); }
+  else { badge.textContent='IN PROGRESS'; }
+
+  // infra — compact one-line strip instead of a full card
+  document.getElementById('infraStripText').textContent = s.agents.join(', ') + '  ·  ' + s.models.join(', ');
+  // signals
+  document.getElementById('signalsList').innerHTML = s.signals.map(sg=>`
+    <div class="signal-item">
+      <div class="sig-top"><div class="sig-dot"></div><div class="sig-name">${sg.name}</div><div class="sig-tag">${sg.tag}</div></div>
+      <div class="sig-desc">${sg.desc}</div>
+    </div>`).join('');
+
+  // live area
+  const wrap = document.getElementById('liveContent');
+  const headEl = document.getElementById('liveHead');
+  const liveCard = document.getElementById('liveCardWrap');
+
+  if(s.live.type === 'nba'){
+    const archId = (state.archetype || archetypes[0]).id;
+    const nbaOpts = getNbaOptions(archId);
+    headEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>NEXT BEST ACTIONS — RANKED`;
+    wrap.innerHTML = `<div class="nba-row">${nbaOpts.map(o=>`
+      <div class="nba-box ${o.chosen?'chosen':''}">
+        <div class="nb-k"><span>Option</span>${o.chosen?'<span class="pick">✓ SELECTED</span>':''}</div>
+        <div class="nb-t">${o.title}</div>
+        <div class="nb-d">${o.desc}</div>
+      </div>`).join('')}</div>`;
+    liveCard.style.background = 'var(--panel)';
+  } else if(s.live.type === 'chat' || s.live.type === 'terminal'){
+    const isChat = s.live.type === 'chat';
+    const isExecution = s.tab === 'execution';
+
+    if(isExecution && s.nbaNow){
+      headEl.innerHTML = `<span class="live-head-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>DECISION ENGINE</span>`;
+      const n = s.nbaNow;
+      wrap.innerHTML = `
+        <div class="nba-now-card">
+          <div class="nba-now-eyebrow ${n.state}">${n.label}</div>
+          <div class="nba-now-title">${n.title}</div>
+          <div class="nba-now-reason">${n.reason}</div>
+          ${n.metric ? `<div class="nba-now-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><span>${n.metric}</span></div>` : ''}
+        </div>`;
+    } else {
+      const label = !isChat ? 'LIVE INTERACTION'
+        : (s.live.audience === 'agent' ? "SENT — HUMAN AGENT'S PHONE" : (s.live.voice ? 'LIVE — INCOMING CALL' : "SENT — BORROWER'S PHONE"));
+      headEl.innerHTML = `<span class="live-head-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${label}</span>`;
+      wrap.innerHTML = `<div class="terminal" style="flex:1;"><span class="term-tag">⚡ ${s.live.tag}</span><br><br><span id="typedLines"></span></div>`;
+      typeLines(s.live.lines, instant);
+    }
+
+    if(isChat){ updateDockedPhone(s); }
+  }
+
+  // Right column shows the docked phone throughout the Execution tab, data panels otherwise.
+  setRightColumnMode(s.tab === 'execution');
+
+  document.getElementById('btnPrev').style.opacity = idx===0 ? .35 : 1;
+  document.getElementById('btnNext').style.opacity = idx===stepData.length-1 ? .35 : 1;
+}
+
+function typeLines(lines, instant){
+  const target = document.getElementById('typedLines');
+  if(!target) return;
+  if(instant === false){ target.innerHTML = lines.join('<br>'); return; }
+  let html = '';
+  let li = 0;
+  function step(){
+    if(li >= lines.length){ return; }
+    html += (li>0?'<br>':'') + lines[li];
+    target.innerHTML = html;
+    li++;
+    typeTimer = setTimeout(step, 90);
+  }
+  step();
+}
+
+/* controls */
+document.getElementById('btnNext').addEventListener('click', () => {
+  if(idx < stepData.length-1){ goToStep(idx+1); }
+});
+document.getElementById('btnPrev').addEventListener('click', () => {
+  if(idx > 0){ goToStep(idx-1); }
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  stopPlay(); goToStep(0); startIngestion();
+});
+const btnPlay = document.getElementById('btnPlay');
+btnPlay.addEventListener('click', () => {
+  if(playTimer){ stopPlay(); } else { startPlay(); }
+});
+function startPlay(){
+  btnPlay.classList.add('play-active');
+  btnPlay.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+  playTimer = setInterval(() => {
+    if(idx < stepData.length-1){ goToStep(idx+1); }
+    else { stopPlay(); }
+  }, 3400);
+}
+function stopPlay(){
+  clearInterval(playTimer);
+  playTimer = null;
+  btnPlay.classList.remove('play-active');
+  btnPlay.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+}

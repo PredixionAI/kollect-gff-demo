@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kollect &mdash; Live Agentic Collections Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ SCREEN 1: CAPTURE ============ -->
+  <div class="screen active" id="screen-capture">
+    <div class="brand">
+      <div class="mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
+      <div><div class="name">Predixion AI</div><div class="sub">Agentic Collections</div></div>
+    </div>
+    <div class="capture-box">
+      <div class="pulse-ring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.7"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
+      </div>
+      <h1>You&#x2019;re about to meet Kollect</h1>
+      <p class="lead">Kollect is Predixion AI&#x2019;s voice agent for loan recovery. In a moment, it&#x2019;ll build a live case around <em>you</em> &mdash; enter your details and it&#x2019;ll actually reach out.</p>
+      <div class="field">
+        <label>Your name</label>
+        <input type="text" id="inputName" placeholder="e.g. Vatsal" autocomplete="off" value="Vatsal">
+      </div>
+      <div class="field">
+        <label>Phone number</label>
+        <input type="tel" id="inputPhone" placeholder="+91 8879185247" autocomplete="off" value="+918879185247">
+      </div>
+      <div class="consent">
+        <input type="checkbox" id="consentBox" checked>
+        <label for="consentBox">I agree to be contacted on WhatsApp / voice by the Kollect demo agent for this live simulation only. No real debt, no real data retained beyond this event.</label>
+      </div>
+      <button class="btn-primary" id="btnStart">Start the simulation</button>
+      <button class="btn-ghost" id="btnBypass" type="button">Skip &mdash; use demo defaults (Vatsal &middot; +91 8879185247)</button>
+      <div class="foot-note">Step 1 of 5 &middot; Identity capture</div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2: SOFT LAUNCH (cinematic marketing intro) ============ -->
+  <div class="screen" id="screen-softlaunch">
+    <div class="sl-glow"></div>
+    <div class="ib-agents-bg" id="ibAgentsBg"></div>
+    <div class="sl-content">
+      <div id="ibStage"></div>
+      <div class="ib-journey" id="ibJourney">
+        <div class="ib-journey-orb">
+          <svg viewBox="0 0 150 150">
+            <circle class="ib-journey-track" cx="75" cy="75" r="66"/>
+            <circle class="ib-journey-progress" id="ibJourneyProgress" cx="75" cy="75" r="66"/>
+          </svg>
+          <div class="ib-journey-sphere" id="ibJourneySphere"></div>
+        </div>
+        <div class="ib-journey-chips" id="ibJourneyChips"></div>
+      </div>
+      <div class="ib-waveform-constant" id="ibWaveformConstant"></div>
+    </div>
+    <button class="sl-skip" id="btnSkipIntro" type="button">Skip intro &#x2192;</button>
+  </div>
+
+  <!-- ============ SCREEN 3: ORB VOICE CAROUSEL ============ -->
+  <div class="screen" id="screen-orbs">
+    <div class="brand">
+      <div class="mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
+      <div><div class="name">Predixion AI</div><div class="sub">Agentic Collections</div></div>
+    </div>
+    <div class="orbs-head">
+      <div class="eyebrow">Step 2 of 5 &middot; Voice selection</div>
+      <h1>Choose your agent&#x2019;s voice</h1>
+      <p>Scroll, drag, or tap either side to browse &mdash; each orb is a different voice, tone and language.</p>
+    </div>
+    <div class="orb-carousel-wrap">
+      <div class="orb-nav" id="orbPrev">&#8249;</div>
+      <div class="orb-carousel" id="orbCarousel"></div>
+      <div class="orb-nav" id="orbNext">&#8250;</div>
+    </div>
+    <div class="orbs-actions">
+      <button class="btn-primary" id="btnOrbNext" disabled>Confirm agent</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 4: ARCHETYPE SELECT ============ -->
+  <div class="screen" id="screen-archetype">
+    <div class="brand">
+      <div class="mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
+      <div><div class="name">Predixion AI</div><div class="sub">Agentic Collections</div></div>
+    </div>
+    <div class="arch-head">
+      <div class="eyebrow">Step 3 of 5 &middot; Choose your role</div>
+      <h1>Which borrower are you today?</h1>
+      <p>Pick how you&#x2019;ll respond when Kollect reaches out &mdash; this shapes how the demo plays out.</p>
+    </div>
+    <div class="arch-grid" id="archGrid"></div>
+    <div class="arch-actions">
+      <button class="btn-primary" id="btnArchNext" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 5: PERSONA TYPEWRITER ============ -->
+  <div class="screen" id="screen-persona">
+    <div class="persona-box">
+      <div class="persona-tag" id="personaTag">YOUR ROLE</div>
+      <div class="persona-typewriter" id="personaTypewriter"><span class="cursor"></span></div>
+      <div class="persona-numbers" id="personaNumbers">
+        <div class="persona-num-box"><div class="k">Debt</div><div class="v" id="numDebt">&#x20b9;0</div></div>
+        <div class="persona-num-box"><div class="k">Overdue</div><div class="v" style="color:var(--red)" id="numOverdue">0d</div></div>
+        <div class="persona-num-box" id="bucketBox"><div class="k">Bucket</div><div class="v" id="numBucket">&mdash;</div></div>
+        <div class="persona-num-box"><div class="k">Risk score</div><div class="v" style="color:var(--amber)" id="numRisk">0</div></div>
+      </div>
+      <div class="persona-bucket-caption" id="personaBucketCaption"></div>
+      <div class="persona-actions" id="personaActions">
+        <button class="btn-primary" id="btnPersonaNext">Enter the live dashboard &#x2192;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 6: DASHBOARD ============ -->
+  <div class="screen" id="screen-dash">
+    <div class="topbar">
+      <div class="tb-item">
+        <div class="tb-icon tb-icon-brand"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
+        <div><div class="tb-title">Predixion AI</div><div class="tb-sub">Agentic Collections</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="tb-item">
+        <div class="tb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 18h6"/></svg></div>
+        <div><div class="tb-title">Predixion Fincorp</div></div>
+      </div>
+      <div class="status-flex">
+        <button class="btn-direct-trigger" id="btnOpenDirectCallModal">&#128222; Direct VOIZ Call</button>
+        <button class="btn-direct-trigger" id="btnWhatsappModeToggle" title="Toggle real WhatsApp sends on/off">&#128241; WhatsApp: &hellip;</button>
+        <div style="display:flex;align-items:center;gap:7px;"><div class="live-dot"></div><span class="live-label">Live</span></div>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <!-- LEFT PANE: DASHBOARD / PROCESS VIEW -->
+      <div class="col dash-pane">
+        <div class="call-status-line" id="realCallStatus" style="display:none;"><span class="dot"></span><span id="realCallStatusText"></span></div>
+
+        <div class="dash-pane-top">
+          <div class="card" id="leftPanelCard">
+            <div class="persona-head">
+              <div class="profile-row">
+                <div class="profile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><path d="M20 7h-3V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a1 1 0 0 0-1-1z"/></svg></div>
+                <div>
+                  <div class="profile-name" id="leftName">Vatsal</div>
+                  <div class="profile-loc">&#128205; Pune, MH &middot; Age 29</div>
+                </div>
+              </div>
+              <div class="persona-badges">
+                <div class="status-badge" id="statusBadge">IN PROGRESS</div>
+                <div class="arch-badge" id="classValue">Analyzing&hellip;</div>
+              </div>
+            </div>
+            <div class="stat-row">
+              <div class="stat-box"><div class="k">Debt</div><div class="v">&#x20b9;45,000</div></div>
+              <div class="stat-box"><div class="k">Overdue</div><div class="v" style="color:var(--red)" id="leftOverdue">1d</div></div>
+              <div class="stat-box"><div class="k">Risk</div><div class="v risk" id="leftRisk">65</div></div>
+            </div>
+
+            <div class="b360-grid">
+              <div class="b360-col">
+                <div class="section-label">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg>Borrower 360&deg;
+                  <span class="ingest-counter" id="ingestCounter">0/3</span>
+                </div>
+                <div class="data-group structured">
+                  <div class="gh">Structured Data</div>
+                  <div class="dot-item" data-ingest="structured">LMS: 18-month clean history</div>
+                  <div class="dot-item" data-ingest="structured">CRM: Software engineer, &#x20b9;85k/mo</div>
+                  <div class="dot-item" data-ingest="structured">Bank: Savings &#x20b9;1.2L</div>
+                </div>
+                <div class="data-group unstructured">
+                  <div class="gh">Unstructured Data</div>
+                  <!-- Real call transcript & outcome — populated from GET /calls/{id}
+                       polling once a real call ends (server/lib/callPoller.js). Shows
+                       a placeholder until then; this is real data, not scripted copy. -->
+                  <div class="real-transcript-card" id="realTranscriptCard">
+                    <div class="rt-outcome" id="rtOutcome"></div>
+                    <div class="rt-transcript" id="rtTranscript">Awaiting first call.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="b360-col">
+                <div class="section-label">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17z"/></svg>Communication History
+                </div>
+                <div class="comm-history" id="commHistory">
+                  <div class="comm-empty" id="commEmpty">No contact yet</div>
+                  <div class="comm-list" id="commList"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="rightDataPanels">
+            <div class="infra-strip">
+              <span class="infra-strip-label">INFRA</span>
+              <span id="infraStripText"></span>
+            </div>
+            <div class="section-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>SIGNALS</div>
+            <div class="data-group realtime-group">
+              <div class="gh">Real-Time Activity</div>
+              <div id="signalsList"></div>
+            </div>
+            <div class="signal-quad">
+              <div class="data-group purchasing">
+                <div class="gh">Purchasing Signals</div>
+                <div class="dot-item">&#x20b9;18,400 peak/day &middot; &#x20b9;2,150 avg/day</div>
+              </div>
+              <div class="data-group appweb">
+                <div class="gh">App / Web Activity<span class="ingest-counter" id="behaviorCounter">0/2</span></div>
+                <div class="dot-item" data-ingest="behavioral">Daily active &middot; High engagement</div>
+              </div>
+              <div class="data-group commbehaviour">
+                <div class="gh">Communication Behaviour</div>
+                <div class="dot-item" data-ingest="behavioral">Prefers WhatsApp</div>
+              </div>
+              <div class="data-group unusual">
+                <div class="gh">Unusual Activity</div>
+                <div class="unusual-flag">Diverges from history &mdash; <span id="unusualConclusion">&mdash;</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="state-machine">
+          <div class="sm-top">
+            <div class="tab-row" id="tabRow"></div>
+            <div class="step-controls">
+              <div class="ctrl-btn" id="btnPrev" title="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div class="ctrl-btn" id="btnPlay" title="Play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+              <div class="ctrl-btn" id="btnNext" title="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div>
+              <div class="ctrl-btn" id="btnReset" title="Restart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v6h-6"/></svg></div>
+            </div>
+          </div>
+          <div class="sm-current">
+            <div class="step-title" id="stepTitle">Default Detection</div>
+            <div class="step-subtitle" id="stepSubtitle">Payment of &#x20b9;45,000 missed on due date</div>
+          </div>
+        </div>
+        <div class="action-details">
+          <div class="ad-box">
+            <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>ACTION</div>
+            <div class="ad-body" id="actionText">Initiating Borrower 360 analysis</div>
+          </div>
+          <div class="ad-box">
+            <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>DETAILS</div>
+            <div class="ad-body" id="detailsText">System triggers workflow automation</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANE: PHONE MOCKUP — always visible, the real focus:
+           calls, transcripts, WhatsApp, Next Best Action. -->
+      <div class="col phone-pane" id="phonePane">
+        <div id="rightPhonePanel" class="card right-phone-card">
+          <div class="phone-dock-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+            <span id="phoneDockTitle">Borrower&#x2019;s phone</span>
+          </div>
+          <div class="phone-dock-body" id="phoneDockBody"></div>
+        </div>
+        <div class="footer-status">
+          <span id="footStep">Step 1 of 13</span>
+          <span id="footClass">Technical Defaulter</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DIRECT CALL TRIGGER MODAL ============ -->
+  <div class="modal-backdrop" id="directCallModal" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="icon">&#128222;</span>
+          <div>
+            <h3>VOIZ API Direct Call Trigger</h3>
+            <p>Captures exact parameters &amp; dispatches directly to VOIZ backend</p>
+          </div>
+        </div>
+        <button class="modal-close" id="btnCloseDirectCallModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="dc-grid">
+          <div class="dc-field">
+            <label>Customer Phone Number (E.164)</label>
+            <input type="text" id="dcPhone" value="+918879185247" placeholder="+91XXXXXXXXXX">
+          </div>
+          <div class="dc-field">
+            <label>Customer Name</label>
+            <input type="text" id="dcName" value="Vatsal" placeholder="Customer Name">
+          </div>
+          <div class="dc-field">
+            <label>Agent ID</label>
+            <select id="dcAgentId">
+              <option value="agent_2af4da0ae2f6" selected>Priya (agent_2af4da0ae2f6)</option>
+              <option value="agent_3fbc55c03700">Smoke Test (agent_3fbc55c03700)</option>
+            </select>
+          </div>
+          <div class="dc-field">
+            <label>SIP Trunk ID</label>
+            <input type="text" id="dcSipId" value="ST_jtDDZVvDLDxb" placeholder="ST_xxxxxxxxx">
+          </div>
+          <div class="dc-field">
+            <label>Due Amount (&#x20b9;)</label>
+            <input type="text" id="dcAmount" value="45000">
+          </div>
+          <div class="dc-field">
+            <label>Due Date</label>
+            <input type="text" id="dcDate" value="2026-09-05">
+          </div>
+        </div>
+        <div class="dc-json-preview">
+          <div class="jh">POST Payload Preview (Sent to VOIZ API)</div>
+          <pre id="dcPayloadPreview"></pre>
+        </div>
+        <button class="btn-primary btn-call-now" id="btnSendDirectCall">&#9889; Dispatch Call Now via VOIZ API</button>
+        <div class="dc-result-box" id="dcResultBox" style="display:none;">
+          <div class="rh" id="dcResultStatus">STATUS: PENDING</div>
+          <div class="rb" id="dcResultDetails"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="/js/telemetry.js"></script>
+<script src="/js/state.js"></script>
+
+<script src="/js/capture.js"></script>
+<script src="/js/softlaunch.js"></script>
+<script src="/js/orbs.js"></script>
+<script src="/js/archetype.js"></script>
+<script src="/js/persona.js"></script>
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

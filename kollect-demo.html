@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kollect — Live Agentic Collections Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #08090c;
+    --panel: #101216;
+    --panel-2: #14171d;
+    --border: #22262e;
+    --border-soft: #1a1d24;
+    --text: #eef0f3;
+    --text-dim: #9aa1ad;
+    --text-faint: #5c6270;
+    --blue: #3b82f6;
+    --blue-dim: #1d3a63;
+    --green: #34d399;
+    --amber: #f5b942;
+    --purple: #a78bfa;
+    --red: #f56565;
+    --orange: #f5924a;
+    --whatsapp: #25d366;
+    --mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-feature-settings:'ss01' 1, 'cv05' 1;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  #app{height:100vh; width:100vw; position:relative;}
+  .screen{
+    position:absolute; inset:0;
+    display:none;
+    animation:fadeIn .45s ease both;
+  }
+  .screen.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ---------- shared ---------- */
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    position:fixed; top:28px; left:32px; z-index:5;
+  }
+  .brand .mark{
+    width:34px; height:34px; border-radius:8px; background:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:17px; color:#0a0a0a; font-style:italic;
+  }
+  .brand .name{font-weight:700; font-size:15px; letter-spacing:.2px;}
+  .brand .sub{font-size:11px; color:var(--text-faint); margin-top:1px;}
+
+  /* ---------- CAPTURE SCREEN ---------- */
+  #screen-capture{
+    flex-direction:column; align-items:center; justify-content:center;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(59,130,246,.14), transparent 60%),
+      var(--bg);
+  }
+  .capture-box{width:420px; max-width:90vw; text-align:center;}
+  .pulse-ring{
+    width:64px; height:64px; margin:0 auto 28px; border-radius:50%;
+    border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .pulse-ring::before{
+    content:''; position:absolute; inset:-6px; border-radius:50%;
+    border:1px solid var(--blue-dim);
+    animation:ring 2.2s ease-out infinite;
+  }
+  @keyframes ring{0%{transform:scale(.85); opacity:.9;} 100%{transform:scale(1.5); opacity:0;}}
+  .pulse-ring svg{width:26px; height:26px;}
+  .capture-box h1{font-size:26px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px;}
+  .capture-box p.lead{color:var(--text-dim); font-size:14.5px; margin-bottom:36px; line-height:1.5;}
+  .field{text-align:left; margin-bottom:16px;}
+  .field label{font-size:11.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.6px; display:block; margin-bottom:8px;}
+  .field input{
+    width:100%; background:var(--panel); border:1px solid var(--border);
+    border-radius:10px; padding:14px 16px; color:var(--text); font-size:15px;
+    font-family:var(--sans); transition:border-color .15s;
+  }
+  .field input:focus{outline:none; border-color:var(--blue);}
+  .field input::placeholder{color:var(--text-faint);}
+  .consent{
+    display:flex; gap:10px; align-items:flex-start; text-align:left;
+    font-size:12px; color:var(--text-faint); margin:18px 0 26px; line-height:1.55;
+  }
+  .consent input{margin-top:3px; accent-color:var(--blue);}
+  .btn-primary{
+    width:100%; background:var(--blue); color:#fff; border:none; border-radius:10px;
+    padding:15px; font-size:14.5px; font-weight:600; cursor:pointer; font-family:var(--sans);
+    transition:background .15s, transform .1s; letter-spacing:.1px;
+  }
+  .btn-primary:hover{background:#2f6fdb;}
+  .btn-primary:active{transform:scale(.99);}
+  .btn-primary:disabled{background:#20242c; color:var(--text-faint); cursor:not-allowed;}
+  .btn-ghost{
+    width:100%; background:transparent; color:var(--text-faint); border:none;
+    padding:12px; font-size:12.5px; cursor:pointer; font-family:var(--sans); margin-top:6px;
+    text-decoration:underline; text-underline-offset:3px; transition:color .15s;
+  }
+  .btn-ghost:hover{color:var(--text-dim);}
+  .foot-note{margin-top:18px; font-size:11.5px; color:var(--text-faint);}
+
+  /* ---------- SOFT LAUNCH (cinematic marketing intro) ---------- */
+  #screen-softlaunch{flex-direction:column; align-items:center; justify-content:center; background:#000; overflow:hidden;}
+  .sl-glow{position:absolute; inset:0; background:radial-gradient(ellipse 700px 460px at 50% 45%, rgba(59,130,246,.10), transparent 70%); animation:slPulse 4s ease-in-out infinite; z-index:0;}
+  @keyframes slPulse{0%,100%{opacity:.5;} 50%{opacity:1;}}
+  .sl-content{position:relative; z-index:2; text-align:center; max-width:640px; padding:40px; min-height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .sl-mark{width:52px; height:52px; border-radius:13px; background:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:24px; color:#0a0a0a; font-style:italic; margin:0 auto 36px; opacity:0; transition:opacity 1s ease; flex-shrink:0;}
+  .sl-mark.show{opacity:1;}
+  .sl-skip{position:fixed; bottom:32px; right:32px; font-size:12px; color:var(--text-faint); background:transparent; border:1px solid var(--border-soft); border-radius:8px; padding:8px 16px; cursor:pointer; font-family:var(--sans); transition:all .15s; z-index:5;}
+  .sl-skip:hover{color:var(--text); border-color:var(--blue);}
+
+  .intro-progress{position:fixed; bottom:0; left:0; right:0; height:2px; background:rgba(255,255,255,.06); z-index:4;}
+  .intro-progress-fill{height:100%; background:var(--blue); width:0%; transition:width .1s linear;}
+
+  /* persistent background layer — a cluster of glass agent-orbs, each visibly doing a different job */
+  .ib-agents-bg{position:absolute; inset:0; z-index:1; pointer-events:none; opacity:0; transition:opacity 1.4s ease; perspective:900px;}
+  .ib-agents-bg.show{opacity:1;}
+  .ib-agent-cluster{
+    position:absolute; inset:4% 3%;
+    transform-style:preserve-3d; transition:transform .25s ease-out;
+  }
+  .ib-agent-orb{
+    position:absolute; border-radius:50%;
+    background:radial-gradient(circle at 32% 26%, rgba(255,255,255,.42), rgba(59,130,246,.16) 52%, rgba(255,255,255,.03) 100%);
+    border:1px solid rgba(255,255,255,.16);
+    box-shadow:inset 0 1px 2px rgba(255,255,255,.35), 0 10px 22px rgba(0,0,0,.45);
+    animation:ibOrbFloat 6s ease-in-out infinite, ibOrbGlow 3.4s ease-in-out infinite;
+  }
+  @keyframes ibOrbFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-9px);}}
+  @keyframes ibOrbGlow{0%,100%{opacity:.5;} 50%{opacity:.9;}}
+  /* type: spin — a partial ring rotating around the orb, reads as "actively processing" */
+  .ib-agent-orb.type-spin::after{
+    content:''; position:absolute; inset:-3px; border-radius:50%;
+    border:1.5px solid transparent; border-top-color:rgba(255,255,255,.55); border-right-color:rgba(255,255,255,.16);
+    animation:ibOrbSpin 2.1s linear infinite;
+  }
+  @keyframes ibOrbSpin{to{transform:rotate(360deg);}}
+  /* type: blink — an inner status light, reads as "signal / indicator" */
+  .ib-agent-orb.type-blink::before{
+    content:''; position:absolute; top:32%; left:32%; width:24%; height:24%; border-radius:50%;
+    background:rgba(255,255,255,.9); animation:ibOrbBlink 1.5s ease-in-out infinite;
+  }
+  @keyframes ibOrbBlink{0%,100%{opacity:.85;} 50%{opacity:.1;}}
+  /* type: orbit — a satellite dot circling the orb, reads as "routing / dispatching" */
+  .ib-agent-orb.type-orbit::after{
+    content:''; position:absolute; width:5px; height:5px; margin:-2.5px 0 0 -2.5px; top:50%; left:50%;
+    border-radius:50%; background:rgba(255,255,255,.85);
+    animation:ibOrbOrbit 2.6s linear infinite;
+  }
+  @keyframes ibOrbOrbit{from{transform:rotate(0deg) translateX(var(--orbit-r,18px)) rotate(0deg);} to{transform:rotate(360deg) translateX(var(--orbit-r,18px)) rotate(-360deg);}}
+
+  /* mini-card rows — refined previews of real dashboard cards, foreground per beat */
+  .ib-mini-card-row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; max-width:540px; position:relative; z-index:2;}
+  .ib-mini-card{
+    background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px 15px; text-align:left;
+    min-width:118px; opacity:0; transform:translateY(10px); animation:ibCardIn .5s ease forwards;
+  }
+  .ib-mc-label{display:flex; align-items:center; gap:6px; font-size:9px; text-transform:uppercase; letter-spacing:.4px; color:var(--text-faint); margin-bottom:5px;}
+  .ib-mc-dot{width:6px; height:6px; border-radius:50%; flex-shrink:0;}
+  .ib-mc-value{font-size:12.5px; color:var(--text); font-weight:600; line-height:1.3;}
+  @keyframes ibCardIn{to{opacity:1; transform:translateY(0);}}
+
+  /* big card — one refined panel, rows fly in from opposite screen edges instead of fading up in place */
+  .ib-bigcard{
+    background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:18px 24px;
+    width:400px; max-width:82vw; text-align:left; position:relative; z-index:2; overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,.5);
+  }
+  .ib-bigcard-header{
+    display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:.6px;
+    color:var(--blue); text-transform:uppercase; margin-bottom:12px; padding-bottom:11px; border-bottom:1px solid var(--border-soft);
+  }
+  .ib-bigcard-dot{width:6px; height:6px; border-radius:50%; background:var(--blue); flex-shrink:0;}
+  .ib-fly-row{display:flex; justify-content:space-between; align-items:center; padding:7px 0; opacity:0;}
+  .ib-fly-row.from-left{animation:ibFlyInLeft .65s cubic-bezier(.22,1,.36,1) forwards;}
+  .ib-fly-row.from-right{animation:ibFlyInRight .65s cubic-bezier(.22,1,.36,1) forwards;}
+  @keyframes ibFlyInLeft{from{opacity:0; transform:translateX(-360px);} to{opacity:1; transform:translateX(0);}}
+  @keyframes ibFlyInRight{from{opacity:0; transform:translateX(360px);} to{opacity:1; transform:translateX(0);}}
+  .ib-fr-label{font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.3px;}
+  .ib-fr-value{font-size:13px; color:var(--text); font-weight:600;}
+
+  /* funnel — classification narrows down, then splits into the two outreach channels */
+  .ib-funnel-wrap{width:300px; max-width:82vw; position:relative; z-index:2;}
+  .ib-funnel-wrap svg{width:100%; height:auto; overflow:visible;}
+
+  .ib-beat{opacity:0; transform:translateY(10px); transition:opacity .6s ease, transform .6s ease;}
+  .ib-beat.show{opacity:1; transform:translateY(0);}
+  .ib-headline{font-size:22px; color:var(--text); font-weight:600; line-height:1.5;}
+  .ib-sub{font-size:12px; color:var(--text-faint); margin-top:6px; letter-spacing:.2px;}
+  .ib-visual{margin-top:22px; display:flex; align-items:center; justify-content:center; position:relative; z-index:2;}
+
+  /* the constant waveform — the voice channel, always live during the opening beats.
+     Red while the problem is being framed, blue once the platform beat lands, then fades
+     out once the cards start (it was competing with them for attention). */
+  .ib-waveform-constant{margin-top:26px; display:flex; align-items:center; justify-content:center; gap:4px; height:34px; position:relative; z-index:2; opacity:1; transition:opacity .8s ease;}
+  .ib-waveform-constant.wave-hidden{opacity:0;}
+  .ib-waveform-constant .ib-wave-bar{width:4px; border-radius:2.5px; background:var(--red); transform-origin:center; transition:background-color 1.2s ease; animation:ibWaveBar 1.3s ease-in-out infinite;}
+  .ib-waveform-constant.wave-blue .ib-wave-bar{background:var(--blue);}
+  @keyframes ibWaveBar{0%,100%{transform:scaleY(.4);} 50%{transform:scaleY(1);}}
+
+  /* beat: always working badge */
+  .ib-badge{display:inline-flex; align-items:center; gap:8px; background:var(--panel-2); border:1px solid var(--border-soft); border-radius:20px; padding:8px 16px; font-size:11px; font-weight:700; letter-spacing:.6px; color:var(--green);}
+  .ib-live-dot{width:7px; height:7px; border-radius:50%; background:var(--green); animation:blip 1.4s ease-in-out infinite;}
+
+  /* ---------- ORB VOICE CAROUSEL ---------- */
+  #screen-orbs{flex-direction:column; align-items:center; justify-content:center; padding:40px;}
+  .orbs-head{text-align:center; margin-bottom:6px; position:relative; z-index:2;}
+  .orbs-head .eyebrow{font-size:11.5px; color:var(--blue); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:10px;}
+  .orbs-head h1{font-size:24px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px;}
+  .orbs-head p{color:var(--text-dim); font-size:14px;}
+  .orb-carousel-wrap{display:flex; align-items:center; gap:16px; width:100%; max-width:820px; margin:16px 0;}
+  .orb-nav{
+    width:38px; height:38px; border-radius:50%; background:var(--panel-2); border:1px solid var(--border-soft);
+    color:var(--text-dim); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+    font-size:17px; transition:all .15s; user-select:none; position:relative; z-index:200;
+  }
+  .orb-nav:hover{border-color:var(--blue); color:var(--blue);}
+  .orb-carousel{
+    position:relative; flex:1; height:270px; perspective:1100px; touch-action:pan-y; cursor:grab; overflow:visible;
+  }
+  .orb-carousel:active{cursor:grabbing;}
+  .orb{
+    position:absolute; left:50%; top:50%; display:flex; flex-direction:column; align-items:center;
+    cursor:pointer; transition:transform .45s cubic-bezier(.22,1,.36,1), opacity .45s ease; user-select:none;
+  }
+  .orb.disabled{cursor:not-allowed;}
+  .orb-sphere{
+    width:104px; height:104px; border-radius:50%; position:relative;
+    background:radial-gradient(circle at 32% 28%, rgba(255,255,255,.65), var(--pastel) 46%, rgba(255,255,255,.06) 100%);
+    box-shadow:0 16px 32px rgba(0,0,0,.5);
+    animation:orbFloat 5s ease-in-out infinite;
+  }
+  .orb.disabled .orb-sphere{filter:grayscale(.65) brightness(.65);}
+  .orb-glow{
+    position:absolute; inset:-16px; border-radius:50%; background:var(--pastel);
+    filter:blur(26px); opacity:.38; z-index:-1; transition:opacity .3s, filter .3s; pointer-events:none;
+  }
+  .orb.front .orb-glow{opacity:.6;}
+  .orb-sphere.speaking .orb-glow{opacity:1; filter:blur(34px); animation:orbPulse .9s ease-in-out infinite, orbFloat 5s ease-in-out infinite;}
+  @keyframes orbPulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.2);}}
+  @keyframes orbFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-9px);}}
+  .orb-label{margin-top:12px; text-align:center;}
+  .orb .oname{font-size:13px; font-weight:700; color:#fff;}
+  .orb .olang{font-size:9.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px; margin-top:2px;}
+  .orb .osoon{font-size:8.5px; color:var(--text-faint); margin-top:5px;}
+  .orb-play{
+    margin-top:8px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); border-radius:16px;
+    padding:4px 13px; font-size:9.5px; color:#fff; cursor:pointer; font-family:var(--sans); transition:all .15s;
+  }
+  .orb-play:hover{border-color:var(--pastel);}
+  .orb-play.playing{border-color:var(--pastel); color:var(--pastel);}
+  .orbs-actions{margin-top:6px; width:100%; max-width:300px; position:relative; z-index:2;}
+
+  /* ---------- ARCHETYPE SELECT ---------- */
+  #screen-archetype{flex-direction:column; align-items:center; justify-content:center; padding:40px;}
+  .arch-head{text-align:center; margin-bottom:28px;}
+  .arch-head .eyebrow{font-size:11.5px; color:var(--blue); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:10px;}
+  .arch-head h1{font-size:24px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px;}
+  .arch-head p{color:var(--text-dim); font-size:14px;}
+  .arch-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; width:100%; max-width:600px;}
+  .arch-card{background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:20px; cursor:pointer; transition:all .15s; text-align:left; position:relative;}
+  .arch-card:hover{border-color:#3a4150; transform:translateY(-2px);}
+  .arch-card.selected{border-color:var(--blue); background:#0f1a2c;}
+  .arch-card .a-icon{width:36px; height:36px; border-radius:10px; background:var(--panel-2); border:1px solid var(--border-soft); display:flex; align-items:center; justify-content:center; margin-bottom:12px;}
+  .arch-card .a-icon svg{width:17px;height:17px; color:var(--text-dim);}
+  .arch-card.selected .a-icon{background:var(--blue-dim);}
+  .arch-card.selected .a-icon svg{color:var(--blue);}
+  .arch-card .a-title{font-size:14.5px; font-weight:700; margin-bottom:5px;}
+  .arch-card .a-desc{font-size:11.5px; color:var(--text-faint); line-height:1.45;}
+  .arch-card .check{position:absolute; top:14px; right:14px; width:18px; height:18px; border-radius:50%; background:var(--blue); display:none; align-items:center; justify-content:center;}
+  .arch-card.selected .check{display:flex;}
+  .arch-card .check svg{width:10px;height:10px;}
+  .arch-actions{margin-top:24px; width:100%; max-width:300px;}
+
+  /* ---------- PERSONA TYPEWRITER ---------- */
+  #screen-persona{flex-direction:column; align-items:center; justify-content:center; padding:40px;}
+  .persona-box{width:560px; max-width:90vw; text-align:center;}
+  .persona-tag{
+    display:inline-flex; align-items:center; gap:6px; background:#241a08; color:var(--amber);
+    border:1px solid #3a2c10; font-size:10.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:6px 12px; border-radius:6px; margin-bottom:22px;
+  }
+  .persona-typewriter{font-size:19px; line-height:1.7; color:var(--text); font-weight:500; min-height:150px; text-align:left; margin-bottom:8px;}
+  .persona-typewriter .cursor{display:inline-block; width:2px; height:1.1em; background:var(--blue); margin-left:2px; vertical-align:text-bottom; animation:blinkCursor .8s step-end infinite;}
+  @keyframes blinkCursor{50%{opacity:0;}}
+  .persona-numbers{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:20px 0 8px; opacity:0; transform:translateY(6px); transition:opacity .5s ease, transform .5s ease;}
+  .persona-numbers.show{opacity:1; transform:translateY(0);}
+  .persona-num-box{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px 8px;}
+  .persona-num-box .k{font-size:10px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px; margin-bottom:7px;}
+  .persona-num-box .v{font-size:20px; font-weight:700;}
+  .persona-num-box.bucket-x .v{color:var(--green);}
+  .persona-num-box.bucket-1 .v{color:var(--amber);}
+  .persona-num-box.bucket-2 .v{color:var(--orange);}
+  .persona-num-box.bucket-3 .v, .persona-num-box.bucket-npa .v{color:var(--red);}
+  .persona-bucket-caption{
+    font-size:11.5px; color:var(--text-faint); text-align:center; margin-bottom:14px; opacity:0; transition:opacity .5s ease;
+  }
+  .persona-bucket-caption.show{opacity:1;}
+  .persona-bucket-caption b{color:var(--text-dim);}
+  .persona-actions{margin-top:8px; width:100%; max-width:300px; opacity:0; transition:opacity .5s ease; pointer-events:none;}
+  .persona-actions.show{opacity:1; pointer-events:auto;}
+
+  /* ================= DASHBOARD ================= */
+  #screen-dash{flex-direction:column; padding:14px 18px; gap:10px;}
+  .topbar{
+    display:flex; align-items:center; gap:14px; background:var(--panel);
+    border:1px solid var(--border); border-radius:14px; padding:10px 16px;
+  }
+  .topbar .divider{width:1px; height:26px; background:var(--border);}
+  .tb-item{display:flex; align-items:center; gap:10px;}
+  .tb-icon{width:32px; height:32px; border-radius:8px; background:var(--panel-2); border:1px solid var(--border-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .tb-icon svg{width:16px;height:16px;}
+  .tb-title{font-size:14px; font-weight:700; line-height:1.2;}
+  .tb-sub{font-size:11.5px; color:var(--text-faint);}
+  .borrower-chip{
+    display:flex; align-items:center; gap:10px; background:var(--panel-2); border:1px solid var(--border-soft);
+    border-radius:10px; padding:8px 14px;
+  }
+  .borrower-chip .bi{font-size:13.5px; font-weight:700;}
+  .borrower-chip .bs{font-size:11px; color:var(--text-faint);}
+  .status-flex{flex:1; display:flex; justify-content:flex-end; align-items:center; gap:14px;}
+  .sync-pill{display:flex; align-items:center; gap:7px; font-size:12px; color:var(--green); font-weight:600;}
+  .sync-pill svg{width:13px; height:13px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .sync-detail{font-size:12px; color:var(--text-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;}
+  .live-dot{width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 0 3px rgba(52,211,153,.15);}
+  .live-label{font-size:12px; color:var(--text-dim); font-weight:600;}
+  .avatar-round{width:34px; height:34px; border-radius:50%; background:var(--panel-2); border:1px solid var(--border-soft); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;}
+
+  .main-grid{flex:1; display:grid; grid-template-columns:250px 1fr 300px; gap:10px; min-height:0;}
+  .col{display:flex; flex-direction:column; gap:10px; min-height:0; overflow:hidden;}
+  .card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px;}
+  .scroll{overflow-y:auto;}
+  .scroll::-webkit-scrollbar{width:5px;}
+  .scroll::-webkit-scrollbar-thumb{background:var(--border); border-radius:10px;}
+
+  .status-badge{
+    display:inline-block; background:#241a08; color:var(--amber); border:1px solid #3a2c10;
+    font-size:11px; font-weight:700; letter-spacing:.5px; padding:5px 12px; border-radius:6px; margin-bottom:16px;
+  }
+  .status-badge.done{background:#0c2419; color:var(--green); border-color:#164430;}
+  .status-badge.escalated{background:#2a1414; color:var(--red); border-color:#4a2020;}
+  .profile-row{display:flex; gap:12px; align-items:center; margin-bottom:16px;}
+  .profile-icon{width:44px; height:44px; border-radius:10px; background:var(--blue-dim); display:flex; align-items:center; justify-content:center;}
+  .profile-icon svg{width:20px;height:20px; color:var(--blue);}
+  .profile-name{font-size:16px; font-weight:700;}
+  .profile-loc{font-size:12px; color:var(--text-faint); display:flex; align-items:center; gap:4px; margin-top:2px;}
+  .class-box{background:var(--blue-dim); border:1px solid #2a4d80; border-radius:10px; padding:12px 14px; margin-bottom:14px;}
+  .class-box .k{font-size:10.5px; color:#8fb3f0; text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px;}
+  .class-box .v{font-size:14.5px; font-weight:700; color:#a8c8f5;}
+  .stat-row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px;}
+  .stat-box{background:var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; padding:10px 6px; text-align:center;}
+  .stat-box .k{font-size:10px; color:var(--text-faint); margin-bottom:5px;}
+  .stat-box .v{font-size:15px; font-weight:700;}
+  .stat-box .v.risk{color:var(--amber);}
+  .section-label{display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:700; color:var(--text-dim); margin-bottom:12px;}
+  .section-label svg{width:14px;height:14px;}
+  .data-group{margin-bottom:14px;}
+  .data-group .gh{display:flex; align-items:center; font-size:10.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; margin-bottom:8px;}
+  .data-group.structured .gh{color:var(--green);}
+  .data-group.behavioral .gh{color:var(--amber);}
+  .data-group.realtime-group .gh{color:var(--blue);}
+  .data-group.spending .gh{color:var(--text-dim);}
+  .spend-stat-row{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:2px;}
+  .dot-item{display:flex; gap:8px; align-items:flex-start; font-size:12.5px; color:var(--text-dim); padding:3px 0; line-height:1.4;}
+  .dot-item::before{content:''; width:5px; height:5px; border-radius:50%; margin-top:6px; flex-shrink:0;}
+  .data-group.structured .dot-item::before{background:var(--green);}
+  .data-group.behavioral .dot-item::before{background:var(--amber);}
+  .dot-item[data-ingest]{opacity:0; transform:translateX(-6px); transition:opacity .5s ease, transform .5s ease, background-color .6s ease; border-radius:4px;}
+  .dot-item[data-ingest].show{opacity:1; transform:translateX(0);}
+  .dot-item[data-ingest].flash{background-color:rgba(59,130,246,.14);}
+  .ingest-counter{
+    margin-left:auto; font-size:9.5px; font-weight:700; color:var(--text-faint); background:var(--panel-2);
+    border:1px solid var(--border-soft); border-radius:5px; padding:2px 7px; letter-spacing:.3px; font-family:var(--mono);
+  }
+  .sys-sync{display:flex; gap:8px; margin-top:10px;}
+  .sync-chip{flex:1; background:var(--panel-2); border:1px solid var(--border-soft); border-radius:8px; padding:8px 10px; font-size:11px; display:flex; align-items:center; gap:6px; color:var(--text-dim);}
+  .sync-chip .d{width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0;}
+
+  /* center column */
+  .tab-row{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  .tab{
+    background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:14px;
+    display:flex; align-items:center; gap:10px; transition:all .2s;
+  }
+  .tab.active{border-color:var(--blue); background:#0f1a2c;}
+  .tab-icon{width:32px; height:32px; border-radius:8px; background:var(--panel-2); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .tab.active .tab-icon{background:var(--blue-dim);}
+  .tab-icon svg{width:15px; height:15px; color:var(--text-faint);}
+  .tab.active .tab-icon svg{color:var(--blue);}
+  .tab-title{font-size:13px; font-weight:700;}
+  .tab-sub{font-size:10.5px; color:var(--text-faint);}
+
+  .step-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px 18px;}
+  .step-top{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .step-pill{background:var(--panel-2); border:1px solid var(--border-soft); border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700;}
+  .step-pill.tag{color:var(--text-dim); font-weight:600;}
+  .step-controls{margin-left:auto; display:flex; gap:8px;}
+  .ctrl-btn{
+    width:30px; height:30px; border-radius:8px; background:var(--panel-2); border:1px solid var(--border-soft);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-dim); transition:all .15s;
+  }
+  .ctrl-btn:hover{border-color:var(--blue); color:var(--blue);}
+  .ctrl-btn svg{width:13px; height:13px;}
+  .ctrl-btn.play-active{background:var(--blue); border-color:var(--blue); color:#fff;}
+  .progress-track{height:3px; background:var(--panel-2); border-radius:4px; overflow:hidden; margin-bottom:12px;}
+  .progress-fill{height:100%; background:var(--blue); transition:width .4s ease; border-radius:4px;}
+  .step-title{font-size:18px; font-weight:700; margin-bottom:4px; letter-spacing:-.2px;}
+  .step-subtitle{font-size:12.5px; color:var(--text-dim);}
+
+  .action-details{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .ad-box{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:12px 14px;}
+  .ad-head{display:flex; align-items:center; gap:7px; font-size:10.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.5px; font-weight:700; margin-bottom:6px;}
+  .ad-head svg{width:12px;height:12px;}
+  .ad-body{font-size:13px; color:var(--text); line-height:1.4; font-weight:500;}
+
+  .live-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px 16px; flex:1; display:flex; flex-direction:column; min-height:0;}
+  .live-head{display:flex; align-items:center; justify-content:space-between; font-size:10.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.5px; font-weight:700; margin-bottom:10px;}
+  .live-head-label{display:flex; align-items:center; gap:8px;}
+  .live-head svg{width:12px;height:12px;}
+  .terminal{
+    background:#0a0d12; border:1px solid var(--border-soft); border-radius:10px; padding:14px 16px;
+    font-family:var(--mono); font-size:12.5px; line-height:1.55; color:#d7dbe2; flex:1; overflow-y:auto;
+  }
+  .nba-now-card{
+    flex:1; display:flex; flex-direction:column; justify-content:center; gap:14px; min-height:0;
+  }
+  .nba-now-eyebrow{
+    display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+    padding:5px 11px; border-radius:6px; width:fit-content;
+  }
+  .nba-now-eyebrow.taken{background:#0c2419; color:var(--green); border:1px solid #164430;}
+  .nba-now-eyebrow.analyzing{background:#1a1330; color:var(--purple); border:1px solid #3a2a5c;}
+  .nba-now-eyebrow.deciding{background:#241a08; color:var(--amber); border:1px solid #3a2c10;}
+  .nba-now-title{font-size:22px; font-weight:700; letter-spacing:-.3px; line-height:1.3;}
+  .nba-now-reason{font-size:14px; color:var(--text-dim); line-height:1.65; max-width:520px;}
+  .nba-now-metric{
+    display:inline-flex; align-items:center; gap:9px; background:var(--panel-2); border:1px solid var(--border-soft);
+    border-radius:10px; padding:11px 15px; font-size:12.5px; color:var(--text-dim); width:fit-content; margin-top:2px;
+  }
+  .nba-now-metric svg{width:14px; height:14px; color:var(--text-faint); flex-shrink:0;}
+  .nba-now-metric b{color:var(--text); font-weight:700;}
+  .chat-bubble{
+    background:var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; padding:14px 16px;
+    font-family:var(--mono); font-size:12.5px; line-height:1.55; color:#dfe2e7; flex:1; overflow-y:auto;
+  }
+  .chat-bubble.voice{background:var(--panel-2); border-color:var(--border-soft); color:#dfe2e7;}
+  .term-tag{color:var(--text); font-weight:700; letter-spacing:.4px;}
+  .term-tag.voice{color:var(--text);}
+  .term-label{color:var(--text-faint);}
+
+  /* ---------- DOCKED PHONE PANEL (right column, Execution tab only) ---------- */
+  .right-panels-group{display:flex; flex-direction:column; gap:10px; flex:1; min-height:0;}
+  .right-phone-card{flex:1; min-height:0; display:flex; flex-direction:column;}
+  .phone-dock-head{
+    display:flex; align-items:center; gap:7px; font-size:11px; font-weight:700; color:var(--text-dim);
+    text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px; flex-shrink:0;
+  }
+  .phone-dock-head svg{width:13px; height:13px; color:var(--blue);}
+  .phone-dock-body{flex:1; display:flex; align-items:center; justify-content:center; min-height:0;}
+  .phone-dock-empty{font-size:11.5px; color:var(--text-faint); text-align:center; padding:0 10px;}
+
+  /* ---------- PHONE MOCKUP (real device proportions) ---------- */
+  .phone-wrap{flex:1; display:flex; align-items:center; justify-content:center; min-height:0; padding:6px 0;}
+  .phone-mockup{
+    position:relative; width:auto; height:100%; max-height:500px; max-width:250px; aspect-ratio:9/19.5;
+    background:#000; border-radius:38px; border:4px solid #2c2c2e;
+    box-shadow:0 24px 48px rgba(0,0,0,.55), 0 0 0 1px #1a1a1a, inset 0 0 0 2px #050505;
+    display:flex; flex-direction:column; overflow:hidden; flex-shrink:0;
+    animation:phoneOpen .5s cubic-bezier(.32,1.4,.55,1) both;
+  }
+  @keyframes phoneOpen{ 0%{opacity:0; transform:scale(.85) translateX(14px);} 100%{opacity:1; transform:scale(1) translateX(0);} }
+  /* side buttons for a convincing device silhouette */
+  .phone-mockup::before{ content:''; position:absolute; right:-4px; top:22%; width:4px; height:64px; background:#232323; border-radius:2px; }
+  .phone-mockup::after{ content:''; position:absolute; left:-4px; top:16%; width:4px; height:38px; background:#232323; border-radius:2px; box-shadow:0 56px 0 0 #232323, 0 98px 0 0 #232323; }
+  .phone-notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:44%; height:24px; background:#000; border-radius:0 0 16px 16px; z-index:6;}
+  .phone-statusbar{
+    flex-shrink:0; height:32px; background:#000; color:#fff; display:flex; align-items:center; justify-content:space-between;
+    padding:0 22px; font-size:11.5px; font-weight:700; letter-spacing:.2px; position:relative; z-index:5; white-space:nowrap;
+  }
+  .phone-screen{flex:1; display:flex; flex-direction:column; min-height:0; background:#0b141a;}
+
+  /* WhatsApp variant */
+  .wa-header{flex-shrink:0; background:#202c33; display:flex; align-items:center; gap:10px; padding:12px 14px;}
+  .wa-back{color:#8696a0; font-size:18px;}
+  .wa-avatar{width:34px; height:34px; border-radius:50%; background:#3b4a54; color:#cfd7dd; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0;}
+  .wa-title .wa-name{font-size:13.5px; font-weight:700; color:#e9edef; line-height:1.25;}
+  .wa-title .wa-sub{font-size:10.5px; color:#8696a0; line-height:1.2;}
+  .wa-body{flex:1; padding:14px 12px; overflow-y:auto; display:flex; flex-direction:column; justify-content:flex-end;}
+  .wa-bubble-in{
+    background:#202c33; border-radius:10px 10px 10px 2px; padding:9px 11px; max-width:90%;
+    align-self:flex-start; box-shadow:0 1px 2px rgba(0,0,0,.3); flex-shrink:0;
+  }
+  .wa-bubble-in .wa-text{font-size:12px; line-height:1.55; color:#e9edef; white-space:pre-wrap;}
+  .wa-bubble-in .wa-meta{font-size:9px; color:#8696a0; text-align:right; margin-top:4px;}
+
+  /* Call variant */
+  .call-screen{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:30px 14px 22px; background:linear-gradient(180deg,#111417 0%,#0a0d10 100%); min-height:0;}
+  .call-top{display:flex; flex-direction:column; align-items:center; gap:9px; margin-top:6px;}
+  .call-avatar{width:68px; height:68px; border-radius:50%; background:var(--blue-dim); color:#a8c8f5; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; border:2px solid #2c3e5c;}
+  .call-name{font-size:16px; font-weight:700; color:#fff;}
+  .call-status{font-size:11px; color:#8fa0b3; display:flex; align-items:center; gap:6px;}
+  .call-status .live-blip{width:6px; height:6px; border-radius:50%; background:var(--green); animation:blip 1.4s ease-in-out infinite; flex-shrink:0;}
+  @keyframes blip{0%,100%{opacity:1;} 50%{opacity:.3;}}
+  .call-captions{width:100%; font-family:var(--mono); font-size:10.5px; line-height:1.6; color:#c7cdd4; text-align:center; padding:0 6px; max-height:130px; overflow-y:auto;}
+  .call-captions .cap-line{margin-bottom:5px; opacity:.85;}
+  .call-controls{display:flex; gap:20px; align-items:center;}
+  .call-btn{width:42px; height:42px; border-radius:50%; background:#2a2f36; display:flex; align-items:center; justify-content:center; color:#fff;}
+  .call-btn svg{width:16px; height:16px;}
+  .call-btn.end{background:#e5484d; width:50px; height:50px;}
+  .call-btn.end svg{width:19px; height:19px;}
+  .nba-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:2px;}
+  .nba-box{border-radius:12px; padding:14px; border:1px solid var(--border-soft); background:var(--panel-2);}
+  .nba-box.chosen{border-color:var(--green); background:#0c2419;}
+  .nba-box .nb-k{font-size:10px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;}
+  .nba-box .nb-k .pick{color:var(--green); font-weight:700; font-size:9.5px;}
+  .nba-box .nb-t{font-size:13px; font-weight:700; margin-bottom:3px;}
+  .nba-box .nb-d{font-size:11px; color:var(--text-faint); line-height:1.4;}
+
+  /* right column */
+  .infra-strip{
+    background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:8px 12px;
+    font-size:10px; color:var(--text-faint); line-height:1.5; display:flex; gap:8px; align-items:baseline; flex-shrink:0;
+  }
+  .infra-strip-label{flex-shrink:0; font-weight:700; color:var(--text-dim); letter-spacing:.5px; font-size:9.5px;}
+  .signal-item{margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--border-soft);}
+  .signal-item:last-child{border:none; margin-bottom:0; padding-bottom:0;}
+  .sig-top{display:flex; align-items:center; gap:7px; margin-bottom:4px;}
+  .sig-dot{width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0;}
+  .sig-name{font-size:12.5px; font-weight:700; color:var(--blue);}
+  .sig-tag{font-size:9.5px; background:var(--panel-2); border:1px solid var(--border-soft); color:var(--text-faint); padding:2px 7px; border-radius:5px; text-transform:uppercase; letter-spacing:.3px;}
+  .sig-desc{font-size:12px; color:var(--text-dim); margin-left:13px;}
+  .data-sync-item{display:flex; gap:8px; font-size:12px; padding:5px 0;}
+  .data-sync-item .d{width:6px; height:6px; border-radius:50%; background:var(--blue); margin-top:5px; flex-shrink:0;}
+  .data-sync-item b{color:var(--text-dim); margin-right:4px;}
+  .footer-status{display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-faint); padding:2px 4px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ SCREEN 1: CAPTURE ============ -->
+  <div class="screen active" id="screen-capture">
+    <div class="brand">
+      <div class="mark">α</div>
+      <div><div class="name">Predixion AI</div><div class="sub">Agentic Collections</div></div>
+    </div>
+    <div class="capture-box">
+      <div class="pulse-ring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.7"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
+      </div>
+      <h1>You're about to meet Kollect</h1>
+      <p class="lead">Kollect is Predixion AI's platform for loan recovery — AI agents working every account in parallel, around the clock. In a moment, it'll build a live case around <em>you</em> — enter your details and it'll actually reach out.</p>
+      <div class="field">
+        <label>Your name</label>
+        <input type="text" id="inputName" placeholder="e.g. Ramesh Patil" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Phone number</label>
+        <input type="tel" id="inputPhone" placeholder="+91 98765 43210" autocomplete="off">
+      </div>
+      <div class="consent">
+        <input type="checkbox" id="consentBox">
+        <label for="consentBox">I agree to be contacted on WhatsApp / voice by the Kollect demo agent for this live simulation only. No real debt, no real data retained beyond this event.</label>
+      </div>
+      <button class="btn-primary" id="btnStart" disabled>Start the simulation</button>
+      <button class="btn-ghost" id="btnBypass" type="button">Skip — use demo defaults (Ramesh Patil)</button>
+      <div class="foot-note">Step 1 of 5 · Identity capture</div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 2: SOFT LAUNCH (marketing intro) ============ -->
+  <div class="screen" id="screen-softlaunch">
+    <div class="sl-glow"></div>
+    <div class="ib-agents-bg" id="ibAgentsBg"></div>
+    <div class="sl-content">
+      <div class="sl-mark" id="slMark">α</div>
+      <div id="ibStage"></div>
+      <div class="ib-waveform-constant" id="ibWaveformConstant"></div>
+    </div>
+    <div class="intro-progress"><div class="intro-progress-fill" id="introProgressFill"></div></div>
+    <button class="sl-skip" id="btnSkipIntro" type="button">Skip intro →</button>
+  </div>
+
+  <!-- ============ SCREEN 3: ORB VOICE SELECT ============ -->
+  <div class="screen" id="screen-orbs">
+    <div class="brand">
+      <div class="mark">α</div>
+      <div><div class="name">Predixion AI</div><div class="sub">Agentic Collections</div></div>
+    </div>
+    <div class="orbs-head">
+      <div class="eyebrow">Step 2 of 5 · Voice selection</div>
+      <h1>Choose your agent's voice</h1>
+      <p>Scroll, drag, or tap either side to browse — each orb is a different voice, tone and language.</p>
+    </div>
+    <div class="orb-carousel-wrap">
+      <div class="orb-nav" id="orbPrev">‹</div>
+      <div class="orb-carousel" id="orbCarousel"></div>
+      <div class="orb-nav" id="orbNext">›</div>
+    </div>
+    <div class="orbs-actions">
+      <button class="btn-primary" id="btnOrbNext" disabled>Confirm agent</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 4: ARCHETYPE SELECT ============ -->
+  <div class="screen" id="screen-archetype">
+    <div class="brand">
+      <div class="mark">α</div>
+      <div><div class="name">Predixion AI</div><div class="sub">Agentic Collections</div></div>
+    </div>
+    <div class="arch-head">
+      <div class="eyebrow">Step 3 of 5 · Choose your role</div>
+      <h1>Which borrower are you today?</h1>
+      <p>Pick how you'll respond when Kollect reaches out — this shapes how the demo plays out.</p>
+    </div>
+    <div class="arch-grid" id="archGrid"></div>
+    <div class="arch-actions">
+      <button class="btn-primary" id="btnArchNext" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 5: PERSONA TYPEWRITER ============ -->
+  <div class="screen" id="screen-persona">
+    <div class="persona-box">
+      <div class="persona-tag" id="personaTag">YOUR ROLE</div>
+      <div class="persona-typewriter" id="personaTypewriter"><span class="cursor"></span></div>
+      <div class="persona-numbers" id="personaNumbers">
+        <div class="persona-num-box"><div class="k">Debt</div><div class="v" id="numDebt">₹0</div></div>
+        <div class="persona-num-box"><div class="k">Overdue</div><div class="v" style="color:var(--red)" id="numOverdue">0d</div></div>
+        <div class="persona-num-box" id="bucketBox"><div class="k">Bucket</div><div class="v" id="numBucket">—</div></div>
+        <div class="persona-num-box"><div class="k">Risk score</div><div class="v" style="color:var(--amber)" id="numRisk">0</div></div>
+      </div>
+      <div class="persona-bucket-caption" id="personaBucketCaption"></div>
+      <div class="persona-actions" id="personaActions">
+        <button class="btn-primary" id="btnPersonaNext">Enter the live dashboard →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 6: DASHBOARD ============ -->
+  <div class="screen" id="screen-dash">
+    <div class="topbar">
+      <div class="tb-item">
+        <div><div class="tb-title">Predixion AI</div><div class="tb-sub">Agentic Collections</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="tb-item">
+        <div class="tb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 18h6"/></svg></div>
+        <div><div class="tb-title">ABC Bank</div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="borrower-chip">
+        <div class="tb-icon" style="background:var(--blue-dim); border:none;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><path d="M20 7h-3V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a1 1 0 0 0-1-1z"/></svg></div>
+        <div><div class="bi" id="dashBorrowerName">Ramesh Patil</div><div class="bs" id="dashBorrowerSub">₹45,000 · 1d overdue</div></div>
+      </div>
+      <div class="status-flex">
+        <div class="sync-pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>SYNCED</div>
+        <div class="sync-detail">3 mins ago</div>
+        <div style="display:flex;align-items:center;gap:7px;"><div class="live-dot"></div><span class="live-label">Live</span></div>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <!-- LEFT COLUMN -->
+      <div class="col">
+        <div class="card scroll" id="leftPanelCard">
+          <div class="status-badge" id="statusBadge">IN PROGRESS</div>
+          <div class="profile-row">
+            <div class="profile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><path d="M20 7h-3V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a1 1 0 0 0-1-1z"/></svg></div>
+            <div>
+              <div class="profile-name" id="leftName">Ramesh Patil</div>
+              <div class="profile-loc">📍 Pune, MH</div>
+            </div>
+          </div>
+          <div class="class-box">
+            <div class="k">Classification</div>
+            <div class="v" id="classValue">Analyzing…</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-box"><div class="k">Debt</div><div class="v" id="leftDebt">₹45,000</div></div>
+            <div class="stat-box"><div class="k">Overdue</div><div class="v" id="leftOverdue" style="color:var(--red)">1d</div></div>
+            <div class="stat-box"><div class="k">Risk</div><div class="v risk" id="leftRisk">65</div></div>
+          </div>
+          <div class="section-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg>Borrower 360°
+            <span class="ingest-counter" id="ingestCounter">0/3</span>
+          </div>
+          <div class="data-group structured">
+            <div class="gh">Structured Data · History</div>
+            <div class="dot-item" data-ingest="structured">LMS: 18-month clean history</div>
+            <div class="dot-item" data-ingest="structured">CRM: Software engineer, ₹85k/mo</div>
+            <div class="dot-item" data-ingest="structured">Bank: Savings ₹1.2L</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER COLUMN -->
+      <div class="col">
+        <div class="tab-row" id="tabRow"></div>
+        <div class="step-card">
+          <div class="step-top">
+            <div class="step-pill" id="stepPill">Step 1/13 · Borrower 360</div>
+            <div class="step-controls">
+              <div class="ctrl-btn" id="btnPrev" title="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div class="ctrl-btn" id="btnPlay" title="Play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+              <div class="ctrl-btn" id="btnNext" title="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div>
+              <div class="ctrl-btn" id="btnReset" title="Restart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v6h-6"/></svg></div>
+            </div>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:7.6%"></div></div>
+          <div class="step-title" id="stepTitle">Default Detection</div>
+          <div class="step-subtitle" id="stepSubtitle">Payment of ₹45,000 missed on due date</div>
+        </div>
+        <div class="action-details">
+          <div class="ad-box">
+            <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>ACTION</div>
+            <div class="ad-body" id="actionText">Initiating Borrower 360 analysis</div>
+          </div>
+          <div class="ad-box">
+            <div class="ad-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>DETAILS</div>
+            <div class="ad-body" id="detailsText">System triggers workflow automation</div>
+          </div>
+        </div>
+        <div class="live-card" id="liveCardWrap">
+          <div class="live-head" id="liveHead"><span class="live-head-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>LIVE INTERACTION</span></div>
+          <div id="liveContent" style="flex:1; display:flex; flex-direction:column; min-height:0;"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="col">
+        <div id="rightDataPanels" class="right-panels-group">
+          <div class="infra-strip">
+            <span class="infra-strip-label">INFRA</span>
+            <span id="infraStripText"></span>
+          </div>
+          <div class="card scroll" style="flex:1;">
+            <div class="section-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>SIGNALS</div>
+
+            <div class="data-group realtime-group">
+              <div class="gh">Real-Time Activity</div>
+              <div id="signalsList"></div>
+            </div>
+
+            <div class="data-group behavioral">
+              <div class="gh">Behavioral Signals<span class="ingest-counter" id="behaviorCounter">0/3</span></div>
+              <div class="dot-item" data-ingest="behavioral">App: Daily active user</div>
+              <div class="dot-item" data-ingest="behavioral">Prefers WhatsApp</div>
+              <div class="dot-item" data-ingest="behavioral">High engagement score</div>
+            </div>
+
+            <div class="data-group spending">
+              <div class="gh">Spending Patterns</div>
+              <div class="spend-stat-row">
+                <div class="stat-box"><div class="k">Highest / Day</div><div class="v">₹18,400</div></div>
+                <div class="stat-box"><div class="k">Avg Daily Spend</div><div class="v">₹2,150</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="rightPhonePanel" class="card right-phone-card" style="display:none;">
+          <div class="phone-dock-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+            <span id="phoneDockTitle">Borrower's phone</span>
+          </div>
+          <div class="phone-dock-body" id="phoneDockBody"></div>
+        </div>
+        <div class="footer-status">
+          <span id="footStep">Step 1 of 13</span>
+          <span id="footClass">Technical Defaulter</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   STATE
+========================================================= */
+const state = { name:'Ramesh Patil', phone:'', voice:null, archetype:null };
+let softLaunchTimer = null;
+let introBeatTimers = [];
+let personaTypeTimer = null;
+
+/* =========================================================
+   SCREEN 1 — CAPTURE
+========================================================= */
+const inputName = document.getElementById('inputName');
+const inputPhone = document.getElementById('inputPhone');
+const consentBox = document.getElementById('consentBox');
+const btnStart = document.getElementById('btnStart');
+
+function validateCapture(){
+  const ok = inputName.value.trim().length > 1 && inputPhone.value.trim().length >= 7 && consentBox.checked;
+  btnStart.disabled = !ok;
+}
+[inputName, inputPhone].forEach(el => el.addEventListener('input', validateCapture));
+consentBox.addEventListener('change', validateCapture);
+
+btnStart.addEventListener('click', () => {
+  state.name = inputName.value.trim();
+  state.phone = inputPhone.value.trim();
+  enterSoftLaunch();
+});
+document.getElementById('btnBypass').addEventListener('click', () => {
+  state.name = 'Ramesh Patil';
+  state.phone = '+91 98765 43210';
+  enterSoftLaunch();
+});
+
+/* =========================================================
+   SCREEN 2 — SOFT LAUNCH (cinematic intro)
+========================================================= */
+function enterSoftLaunch(){
+  goTo('screen-softlaunch');
+  runSoftLaunch();
+}
+
+/* Visual snippets for each marketing beat — refined mini-cards previewing the real dashboard */
+function renderWaveformConstant(){
+  const el = document.getElementById('ibWaveformConstant');
+  if(!el || el.dataset.built) return; // build once, colors/toggles from then on
+  el.dataset.built = '1';
+  const heights = [13, 25, 19, 33, 23, 16, 27, 12, 8, 6, 5, 4, 3, 3];
+  el.innerHTML = heights.map((h, i) => {
+    const opacity = Math.max(.32, 1 - i * 0.045).toFixed(2);
+    return `<div class="ib-wave-bar" style="height:${h}px; opacity:${opacity}; animation-delay:${(i*0.07).toFixed(2)}s"></div>`;
+  }).join('');
+}
+function visBadge(){ return `<div class="ib-badge"><span class="ib-live-dot"></span>ALWAYS WORKING</div>`; }
+
+function miniCard(label, value, dotColor, delay){
+  return `<div class="ib-mini-card" style="animation-delay:${delay}s">
+    <div class="ib-mc-label"><span class="ib-mc-dot" style="background:${dotColor}"></span>${label}</div>
+    <div class="ib-mc-value">${value}</div>
+  </div>`;
+}
+function visProfileCards(){
+  return `<div class="ib-mini-card-row">
+    ${miniCard('LMS','18-month history','var(--green)',0.05)}
+    ${miniCard('CRM','Income verified','var(--green)',0.16)}
+    ${miniCard('Bank Feed','₹1.2L available','var(--green)',0.27)}
+    ${miniCard('App','Daily active','var(--amber)',0.38)}
+  </div>`;
+}
+function flyRow(side, label, value){
+  return `<div class="ib-fly-row ${side}"><span class="ib-fr-label">${label}</span><span class="ib-fr-value">${value}</span></div>`;
+}
+function visProfileBigCard(){
+  return `<div class="ib-bigcard">
+    <div class="ib-bigcard-header"><span class="ib-bigcard-dot"></span>BORROWER 360</div>
+    ${flyRow('from-left','LMS','18-month history')}
+    ${flyRow('from-right','CRM','Income verified')}
+    ${flyRow('from-left','Bank Feed','₹1.2L available')}
+    ${flyRow('from-right','App','Daily active')}
+  </div>`;
+}
+function visClassifyCards(){
+  return `<div class="ib-mini-card-row">
+    ${miniCard('Case Type','Technical Defaulter','var(--green)',0.05)}
+    ${miniCard('Case Type','Systemic Defaulter','var(--amber)',0.16)}
+    ${miniCard('Case Type','Disputed Case','var(--orange)',0.27)}
+    ${miniCard('Case Type','Unreachable','var(--red)',0.38)}
+  </div>`;
+}
+function visFunnel(){
+  const waIcon = `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>`;
+  const callIcon = `<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>`;
+  return `<div class="ib-funnel-wrap"><svg viewBox="0 0 280 180">
+    <path d="M20 14 L260 14 L178 74 L102 74 Z" fill="rgba(59,130,246,.10)" stroke="var(--blue)" stroke-width="1.5"/>
+    <path d="M102 74 L52 148" stroke="var(--blue)" stroke-width="1.5" fill="none" opacity="0.55"/>
+    <path d="M178 74 L228 148" stroke="var(--blue)" stroke-width="1.5" fill="none" opacity="0.55"/>
+    <circle cx="52" cy="150" r="17" fill="var(--blue-dim)" stroke="var(--blue)" stroke-width="1.5"/>
+    <g transform="translate(45,143) scale(0.583)" fill="none" stroke="#dff0ff" stroke-width="2">${waIcon}</g>
+    <circle cx="228" cy="150" r="17" fill="var(--panel-2)" stroke="var(--border-soft)" stroke-width="1.5"/>
+    <g transform="translate(221,143) scale(0.583)" fill="none" stroke="var(--text-dim)" stroke-width="2">${callIcon}</g>
+    <text x="52" y="178" text-anchor="middle" font-size="10" fill="var(--text-dim)" font-family="inherit">WhatsApp</text>
+    <text x="228" y="178" text-anchor="middle" font-size="10" fill="var(--text-dim)" font-family="inherit">Calls</text>
+    <circle r="4" fill="var(--green)"><animateMotion path="M140 18 L120 74 L52 148" dur="2.2s" repeatCount="indefinite"/></circle>
+    <circle r="4" fill="var(--amber)"><animateMotion path="M140 18 L160 74 L228 148" dur="2.2s" begin="0.55s" repeatCount="indefinite"/></circle>
+    <circle r="4" fill="var(--red)"><animateMotion path="M140 18 L120 74 L52 148" dur="2.2s" begin="1.1s" repeatCount="indefinite"/></circle>
+    <circle r="4" fill="var(--blue)"><animateMotion path="M140 18 L160 74 L228 148" dur="2.2s" begin="1.65s" repeatCount="indefinite"/></circle>
+  </svg></div>`;
+}
+function visChannelCards(){
+  return `<div class="ib-mini-card-row">
+    ${miniCard('WhatsApp','Reminder sent','var(--blue)',0.05)}
+    ${miniCard('Voice Call','हिंदी · Hinglish · मराठी','var(--blue)',0.18)}
+  </div>`;
+}
+function visHandoffCards(){
+  return `<div class="ib-mini-card-row">
+    ${miniCard('Escalation Check','Confidence scored','var(--amber)',0.05)}
+    ${miniCard('Human Handoff','Full context attached','var(--blue)',0.18)}
+  </div>`;
+}
+
+/* Cluster of glass agent-orbs — each assigned a different behavior, so it reads as many
+   distinct processes running at once, not one animation repeated. Positioned as a halo
+   around the center text (top/bottom/sides), using the whole screen instead of one huddle. */
+const AGENT_ORB_LAYOUT = [
+  // top band, above the headline
+  {x:12, y:8,  s:32}, {x:30, y:4,  s:26}, {x:50, y:9,  s:36}, {x:70, y:5,  s:28}, {x:88, y:9,  s:24},
+  // side bands, level with the text but off to the edges
+  {x:4,  y:32, s:40}, {x:6,  y:52, s:34}, {x:94, y:30, s:38}, {x:93, y:54, s:44},
+  // bottom band, below the badge
+  {x:14, y:74, s:42}, {x:33, y:88, s:30}, {x:52, y:78, s:46}, {x:70, y:90, s:32}, {x:87, y:76, s:38},
+];
+const AGENT_ORB_TYPES = ['type-pulse','type-spin','type-blink','type-orbit'];
+function renderAgentBackground(){
+  const el = document.getElementById('ibAgentsBg');
+  if(!el || el.dataset.built) return; // build once, reused across the sequence
+  el.dataset.built = '1';
+  const cluster = document.createElement('div');
+  cluster.className = 'ib-agent-cluster';
+  cluster.id = 'ibAgentCluster';
+  cluster.innerHTML = AGENT_ORB_LAYOUT.map((o, i) => {
+    const delay = (i * 0.35).toFixed(2);
+    const glowDelay = (i * 0.25).toFixed(2);
+    const type = AGENT_ORB_TYPES[i % AGENT_ORB_TYPES.length];
+    const orbitR = (o.s / 2 + 4).toFixed(0);
+    return `<div class="ib-agent-orb ${type}" style="left:${o.x}%; top:${o.y}%; width:${o.s}px; height:${o.s}px; animation-delay:${delay}s, ${glowDelay}s; --orbit-r:${orbitR}px;"></div>`;
+  }).join('');
+  el.appendChild(cluster);
+
+  // 3D touch — the whole halo tilts toward the pointer, like the voice-orb carousel
+  document.addEventListener('pointermove', (e) => {
+    const screenEl = document.getElementById('screen-softlaunch');
+    if(!screenEl || !screenEl.classList.contains('active')) return;
+    const rect = screenEl.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    cluster.style.transform = `rotateY(${(px * 10).toFixed(1)}deg) rotateX(${(-py * 7).toFixed(1)}deg)`;
+  });
+}
+
+function runSoftLaunch(){
+  const firstName = (state.name || '').split(' ')[0] || 'there';
+  const mark = document.getElementById('slMark');
+  const stage = document.getElementById('ibStage');
+  const fill = document.getElementById('introProgressFill');
+  const agentsBg = document.getElementById('ibAgentsBg');
+  const waveEl = document.getElementById('ibWaveformConstant');
+  mark.classList.remove('show');
+  stage.innerHTML = '';
+  fill.style.width = '0%';
+  agentsBg.classList.remove('show');
+  waveEl.classList.remove('wave-blue');
+  renderAgentBackground();
+  renderWaveformConstant();
+
+  const beats = [
+    { text:'Every year, lenders lose crores to accounts that simply go quiet.', dur:4800 },
+    { text:'Kollect is a platform where AI agents work in parallel — around the clock, never stopping.', visual:visBadge(), dur:4800, revealAgents:true },
+    { text:'It builds a complete borrower profile in seconds.', sub:'Credit history · Income · Behavior · Spend patterns', visual:visProfileBigCard(), dur:5400, hideWave:true },
+    { text:'Then it classifies every case.', sub:'From a technical slip to an account gone silent', visual:visFunnel(), dur:5400 },
+    { text:"And it acts — in the borrower's own language, over WhatsApp and voice.", visual:visChannelCards(), dur:5400 },
+    { text:'When a human touch is needed, it hands off seamlessly.', sub:'Full context. Zero repetition.', visual:visHandoffCards(), dur:5400 },
+    { text:'This is Kollect.', sub:`Welcome, ${firstName}. Let's show you what it feels like.`, dur:5400 },
+  ];
+  const initialDelay = 600;
+  const totalDur = beats.reduce((a,b) => a+b.dur, initialDelay);
+
+  try { if('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch(e) {}
+
+  clearTimeout(softLaunchTimer);
+  introBeatTimers.forEach(t => clearTimeout(t));
+  introBeatTimers = [];
+
+  function showBeat(i){
+    if(i >= beats.length) return;
+    const b = beats[i];
+    if(b.revealAgents){
+      agentsBg.classList.add('show'); // fades in here, stays for the rest of the sequence
+      waveEl.classList.add('wave-blue'); // the voice channel goes from dying (red) to live (blue), same moment
+    }
+    if(b.hideWave) waveEl.classList.add('wave-hidden'); // fades out here, stays hidden once the cards start
+    stage.innerHTML = `
+      <div class="ib-beat" id="ibBeat">
+        <div class="ib-headline">${b.text}</div>
+        ${b.sub ? `<div class="ib-sub">${b.sub}</div>` : ''}
+        ${b.visual ? `<div class="ib-visual">${b.visual}</div>` : ''}
+      </div>`;
+    requestAnimationFrame(() => {
+      const el = document.getElementById('ibBeat');
+      if(el) el.classList.add('show');
+    });
+    // Best-effort narration per beat — runs from a click handler upstream so autoplay policies allow it.
+    try {
+      if('speechSynthesis' in window){
+        const utter = new SpeechSynthesisUtterance(b.text + (b.sub ? '. ' + b.sub : ''));
+        utter.rate = 0.98; utter.pitch = 1; utter.volume = 1;
+        window.speechSynthesis.speak(utter);
+      }
+    } catch(e) { /* narration unavailable — visuals still carry the moment */ }
+  }
+
+  setTimeout(() => mark.classList.add('show'), 150);
+  showBeat(0);
+  let cum = initialDelay;
+  beats.forEach((b, i) => {
+    cum += b.dur;
+    introBeatTimers.push(setTimeout(() => showBeat(i+1), cum));
+  });
+
+  const startTime = performance.now();
+  function tickProgress(){
+    const t = performance.now() - startTime;
+    fill.style.width = Math.min(100, (t/totalDur)*100) + '%';
+    if(t < totalDur) requestAnimationFrame(tickProgress);
+  }
+  requestAnimationFrame(tickProgress);
+
+  softLaunchTimer = setTimeout(() => { goTo('screen-orbs'); renderOrbCarousel(); }, totalDur + 300);
+}
+
+document.getElementById('btnSkipIntro').addEventListener('click', () => {
+  clearTimeout(softLaunchTimer);
+  introBeatTimers.forEach(t => clearTimeout(t));
+  introBeatTimers = [];
+  try { if('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch(e) {}
+  goTo('screen-orbs');
+  renderOrbCarousel();
+});
+
+/* =========================================================
+   SCREEN 3 — ORB VOICE CAROUSEL
+========================================================= */
+const orbs = [
+  { id:'priya',   name:'Priya',   lang:'Hinglish', active:true,  pastel:'#ff9eb5', ttsLang:'hi-IN', sample:'Namaste! Main Priya bol rahi hoon, ABC Bank ki taraf se.' },
+  { id:'arjun',   name:'Arjun',   lang:'Hindi',    active:true,  pastel:'#8ecbff', ttsLang:'hi-IN', sample:'नमस्ते, मैं अर्जुन बोल रहा हूँ, ABC Bank की ओर से।' },
+  { id:'aditi',   name:'Aditi',   lang:'Marathi',  active:true,  pastel:'#8ef0c4', ttsLang:'mr-IN', sample:'नमस्कार, मी अदिती बोलतेय, ABC Bank कडून.' },
+  { id:'karthik', name:'Karthik', lang:'Tamil',    active:false, pastel:'#a99bd6' },
+  { id:'deepa',   name:'Deepa',   lang:'Kannada',  active:false, pastel:'#d6ab8e' },
+];
+let orbIndex = 0;
+
+function renderOrbCarousel(autoplay){
+  if(autoplay === undefined) autoplay = true;
+  const track = document.getElementById('orbCarousel');
+  track.innerHTML = '';
+  let frontOrb = null, frontEl = null;
+  orbs.forEach((o, i) => {
+    const offset = i - orbIndex;
+    const dist = Math.abs(offset);
+    const scale = offset === 0 ? 1 : Math.max(0.5, 1 - dist * 0.22);
+    const z = -dist * 70;
+    const x = offset * 122;
+    const opacity = Math.max(0.28, 1 - dist * 0.3);
+
+    const el = document.createElement('div');
+    el.className = 'orb' + (o.active ? '' : ' disabled') + (offset === 0 ? ' front' : '');
+    el.style.setProperty('--pastel', o.pastel);
+    el.style.transform = `translate(-50%,-50%) translate3d(${x}px,0,${z}px) scale(${scale})`;
+    el.style.opacity = opacity;
+    el.style.zIndex = 100 - dist;
+    el.innerHTML = `
+      <div class="orb-sphere"><div class="orb-glow"></div></div>
+      <div class="orb-label">
+        <div class="oname">${o.name}</div>
+        <div class="olang">${o.lang}</div>
+        ${o.active
+          ? (offset === 0 ? `<button class="orb-play" type="button" data-role="play">▸ Replay</button>` : '')
+          : '<div class="osoon">Coming soon</div>'}
+      </div>
+    `;
+    el.addEventListener('click', (e) => {
+      if(e.target.closest('[data-role="play"]')){ playOrbSample(o, el); return; }
+      if(offset !== 0){ orbIndex = i; renderOrbCarousel(); }
+    });
+    if(offset === 0){ frontOrb = o; frontEl = el; }
+    track.appendChild(el);
+  });
+  document.getElementById('btnOrbNext').disabled = !orbs[orbIndex].active;
+  state.voice = orbs[orbIndex];
+
+  // Auto-play the voice the moment it becomes the selected (front) orb — no click needed.
+  if(autoplay && frontOrb && frontOrb.active && frontOrb.sample){ playOrbSample(frontOrb, frontEl); }
+}
+
+function playOrbSample(o, el){
+  const sphere = el.querySelector('.orb-sphere');
+  const btn = el.querySelector('[data-role="play"]');
+  document.querySelectorAll('.orb-sphere').forEach(s => s.classList.remove('speaking'));
+  sphere.classList.add('speaking');
+  if(btn) btn.classList.add('playing');
+
+  let done = false;
+  function stopGlow(){
+    if(done) return; done = true;
+    sphere.classList.remove('speaking');
+    if(btn) btn.classList.remove('playing');
+  }
+  setTimeout(stopGlow, 1900); // guaranteed visual duration even if speech synthesis is unavailable
+
+  try {
+    if('speechSynthesis' in window && o.sample){
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(o.sample);
+      utter.lang = o.ttsLang || 'hi-IN';
+      utter.rate = 1; utter.pitch = 1;
+      utter.onend = stopGlow;
+      utter.onerror = stopGlow;
+      window.speechSynthesis.speak(utter);
+    }
+  } catch(e) { /* fallback timeout above already covers the visual */ }
+}
+
+renderOrbCarousel(false); // initial DOM build at page load, screen isn't visible yet — don't autoplay here
+
+function stepOrb(delta){
+  const next = Math.max(0, Math.min(orbs.length - 1, orbIndex + delta));
+  if(next !== orbIndex){ orbIndex = next; renderOrbCarousel(); }
+}
+document.getElementById('orbPrev').addEventListener('click', () => stepOrb(-1));
+document.getElementById('orbNext').addEventListener('click', () => stepOrb(1));
+
+const orbCarousel = document.getElementById('orbCarousel');
+let orbWheelLock = false;
+orbCarousel.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  if(Math.abs(delta) < 12 || orbWheelLock) return;
+  orbWheelLock = true;
+  stepOrb(delta > 0 ? 1 : -1);
+  setTimeout(() => orbWheelLock = false, 260);
+}, { passive:false });
+
+let orbDragStartX = null;
+orbCarousel.addEventListener('pointerdown', (e) => { orbDragStartX = e.clientX; });
+orbCarousel.addEventListener('pointerup', (e) => {
+  if(orbDragStartX === null) return;
+  const dx = e.clientX - orbDragStartX;
+  if(Math.abs(dx) > 40){ stepOrb(dx < 0 ? 1 : -1); }
+  orbDragStartX = null;
+});
+
+document.getElementById('btnOrbNext').addEventListener('click', () => {
+  goTo('screen-archetype');
+});
+
+/* =========================================================
+   SCREEN 4 — ARCHETYPE / CLASSIFICATION SELECT
+========================================================= */
+const ICON_PAYER = '<circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/>';
+const ICON_NEGOTIATOR = '<path d="M12 3v18M6 8l-3 5.5a3 3 0 0 0 6 0zM18 8l-3 5.5a3 3 0 0 0 6 0zM6 8h12"/>';
+const ICON_SKEPTIC = '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 0 1 4.9.6c0 1.6-2.4 2-2.4 3.4"/><circle cx="12" cy="16.7" r=".6" fill="currentColor" stroke="none"/>';
+const ICON_GHOST = '<circle cx="7" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" opacity="0.6"/><circle cx="17" cy="12" r="1.6" fill="currentColor" stroke="none" opacity="0.25"/>';
+
+// overdueDays drives which bucket this archetype lands in — see getBucket()
+const archetypes = [
+  { id:'technical', title:'Technical Defaulter', desc:'Clean history, single missed payment — likely a genuine slip.', icon:ICON_PAYER,
+    overdueDays:3, risk:35,
+    persona:(nm) => `I'm ${nm}, a software engineer in Pune with an eighteen-month clean repayment history. This EMI slipped through during a busy week, nothing more. The moment someone reminds me, I'll pay. I just need a nudge, not a lecture. Let's see how fast this gets sorted out.` },
+  { id:'systemic', title:'Systemic Defaulter', desc:'A pattern of late payments — this isn\u2019t the first time.', icon:ICON_NEGOTIATOR,
+    overdueDays:45, risk:58,
+    persona:(nm) => `I'm ${nm}, and this month has been tight. Rent went up, a few bills landed at once, and my EMI slipped through the cracks. Honestly, this keeps happening — I'm not avoiding it, I just need a little breathing room.` },
+  { id:'disputed', title:'Disputed Case', desc:'Questions the charge and wants a real person, not a bot.', icon:ICON_SKEPTIC,
+    overdueDays:75, risk:72,
+    persona:(nm) => `I'm ${nm}, and honestly, I'm not fully convinced this charge is even correct. I want it explained properly before I pay anything. Automated reminders don't reassure me much — I want a real person on the line.` },
+  { id:'unreachable', title:'Unreachable', desc:'Short replies, missed calls — hard to pin down.', icon:ICON_GHOST,
+    overdueDays:135, risk:88,
+    persona:(nm) => `I'm ${nm}. Between work and everything else going on, this EMI reminder is easy to miss, or easy to ignore. I might not pick up the first call. I might reply with one word, or nothing at all.` },
+];
+
+function buildArchetypes(){
+  const grid = document.getElementById('archGrid');
+  grid.innerHTML = '';
+  archetypes.forEach(a => {
+    const el = document.createElement('div');
+    el.className = 'arch-card';
+    el.innerHTML = `
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <div class="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${a.icon}</svg></div>
+      <div class="a-title">${a.title}</div>
+      <div class="a-desc">${a.desc}</div>
+    `;
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.arch-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      state.archetype = a;
+      document.getElementById('btnArchNext').disabled = false;
+    });
+    grid.appendChild(el);
+  });
+}
+buildArchetypes();
+
+document.getElementById('btnArchNext').addEventListener('click', () => {
+  goTo('screen-persona');
+  runPersonaScreen();
+});
+
+/* =========================================================
+   BUCKET CLASSIFICATION (by days overdue)
+========================================================= */
+function getBucket(days){
+  if(days <= 30)  return { cls:'bucket-x',   label:'X',   name:'Bucket X', range:'1\u201330 days overdue' };
+  if(days <= 60)  return { cls:'bucket-1',   label:'1',   name:'Bucket 1', range:'30\u201360 days overdue' };
+  if(days <= 90)  return { cls:'bucket-2',   label:'2',   name:'Bucket 2', range:'60\u201390 days overdue' };
+  if(days <= 120) return { cls:'bucket-3',   label:'3',   name:'Bucket 3', range:'90\u2013120 days overdue' };
+  return                 { cls:'bucket-npa', label:'NPA', name:'NPA',      range:'120+ days overdue' };
+}
+
+/* =========================================================
+   SCREEN 5 — PERSONA TYPEWRITER + NUMBERS
+========================================================= */
+function runPersonaScreen(){
+  const tag = document.getElementById('personaTag');
+  const typeEl = document.getElementById('personaTypewriter');
+  const numsEl = document.getElementById('personaNumbers');
+  const actionsEl = document.getElementById('personaActions');
+  const bucketBox = document.getElementById('bucketBox');
+  const captionEl = document.getElementById('personaBucketCaption');
+  numsEl.classList.remove('show');
+  actionsEl.classList.remove('show');
+  captionEl.classList.remove('show');
+  bucketBox.className = 'persona-num-box';
+
+  const a = state.archetype || archetypes[0];
+  tag.textContent = a.title.toUpperCase();
+  const text = a.persona((state.name || 'Ramesh Patil').split(' ')[0]);
+  typeEl.innerHTML = '<span class="cursor"></span>';
+
+  const DURATION = 5200; // stays in the 4-6s window regardless of exact word count
+  const perChar = DURATION / text.length;
+  let i = 0;
+  clearTimeout(personaTypeTimer);
+  function typeNext(){
+    if(i >= text.length){ setTimeout(revealNumbers, 400); return; }
+    i++;
+    typeEl.innerHTML = escapeHtml(text.slice(0, i)) + '<span class="cursor"></span>';
+    personaTypeTimer = setTimeout(typeNext, perChar);
+  }
+  typeNext();
+
+  function revealNumbers(){
+    const bucket = getBucket(a.overdueDays);
+    numsEl.classList.add('show');
+    animateNumber('numDebt', 0, 45000, 900, v => '₹' + Math.round(v).toLocaleString('en-IN'));
+    animateNumber('numOverdue', 0, a.overdueDays, 900, v => Math.round(v) + 'd');
+    animateNumber('numRisk', 0, a.risk, 900, v => Math.round(v));
+    document.getElementById('numBucket').textContent = bucket.label;
+    bucketBox.classList.add(bucket.cls);
+    captionEl.innerHTML = `<b>${bucket.name}</b> · ${bucket.range}`;
+    setTimeout(() => captionEl.classList.add('show'), 300);
+    setTimeout(() => actionsEl.classList.add('show'), 1100);
+  }
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function animateNumber(id, from, to, duration, formatter){
+  const el = document.getElementById(id);
+  const start = performance.now();
+  function step(now){
+    const t = Math.min(1, (now - start) / duration);
+    el.textContent = formatter(from + (to - from) * t);
+    if(t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+document.getElementById('btnPersonaNext').addEventListener('click', () => {
+  const a = state.archetype || archetypes[0];
+  const bucket = getBucket(a.overdueDays);
+  document.getElementById('dashBorrowerName').textContent = state.name;
+  document.getElementById('leftName').textContent = state.name;
+  document.getElementById('dashBorrowerSub').textContent = `₹45,000 · ${a.overdueDays}d overdue`;
+  document.getElementById('leftOverdue').textContent = a.overdueDays + 'd';
+  document.getElementById('leftRisk').textContent = a.risk;
+  goTo('screen-dash');
+  startDash();
+});
+
+/* =========================================================
+   SCREEN TRANSITIONS
+========================================================= */
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* =========================================================
+   SCREEN 4 — DASHBOARD DATA
+========================================================= */
+const TABS = [
+  { key:'b360', label:'Borrower 360', sub:'Profile Analysis', icon:`<path d="M20 7h-3V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a1 1 0 0 0-1-1z"/>` },
+  { key:'strategy', label:'Strategy', sub:'AI Optimization', icon:`<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>` },
+  { key:'execution', label:'Execution', sub:'Omnichannel', icon:`<path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>` },
+  { key:'fulfilment', label:'Fulfilment', sub:'Resolution', icon:`<path d="M20 6L9 17l-5-5"/>` },
+];
+
+function personaTone(){ return state.voice ? state.voice.name : 'Priya'; }
+function personaLang(){ return (state.voice && state.voice.lang) ? state.voice.lang : 'Hinglish'; }
+
+function personaPacks(nm, agent, lang){
+  return {
+    technical: {
+      w1Lines:[`Namaste ${nm} ji,`,'',`Aapki EMI ₹45,000 kal due thi.`,'',`Abhi pay karein: https://pay.link/45k`],
+      w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
+      callType:'chat',
+      callLines:[`[AI Voice Agent — FRIENDLY MODE]`,'',`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, ABC Bank ki taraf se.`,'',`${nm}: Haan bilkul, main abhi hi pay kar deta hoon!`],
+      callAction:'Call answered — borrower agreed to pay immediately', callDetails:`AI Voice Agent — Friendly mode (${agent})`,
+      sentLines:['Outcome: Payment agreed verbally','Sentiment: Cooperative, high confidence','Risk delta: -20 (improving)','','Recalculating next best action...'],
+      sentAction:'Call ended: borrower confirmed payment', sentDetails:'Sentiment: cooperative, high confidence',
+      nbaAction:'Confirm & close — no further contact needed', nbaDetails:'Selected over retry / escalate — borrower already committed',
+      w2Title:'Payment Confirmation', w2Subtitle:'Thank-you message with receipt link',
+      w2Lines:[`Dhanyawad ${nm} ji!`,'','Aapka payment safaltapoorvak mil gaya hai.','','Receipt: https://pay.link/receipt/45k'],
+      w2Action:'Confirmation sent 11:35 AM', w2Details:'Auto-triggered after payment gateway confirms receipt',
+      s9Title:'Payment Verification', s9Subtitle:'Confirming funds cleared, no escalation needed',
+      s9Lines:['Payment gateway: confirmed','LMS: reconciling balance','Account status updating to CURRENT','','No escalation required — case will auto-close'],
+      s9Action:'Funds verified — reconciling with LMS', s9Details:'Escalation protocol not triggered',
+      s10Title:'Case Resolved Early', s10Subtitle:'No human hand-off needed', s10Audience:'borrower', s10Contact:'ABC Bank', s10ContactSub:'Business Account',
+      s10Lines:[`Aapka account ab up-to-date hai, ${nm} ji.`,'','Dhanyawad samay par jawab dene ke liye!'],
+      s10Action:'Final confirmation sent 11:40 AM', s10Details:'Case closed without human involvement',
+      escalate:false,
+      f11Title:'Payment Confirmed', f11Subtitle:'Borrower paid in full during the call window',
+      f11Action:'₹45,000 received at 11:38 AM', f11Details:'Payment gateway confirms full settlement',
+      f11Lines:['Amount: ₹45,000','Channel: Payment link (UPI)','Time: 11:38 AM','','Reconciling with LMS...','Case marked RESOLVED'],
+      f12Action:'Recovery achieved in 2 touchpoints, no escalation', f12Details:'Time to resolution: ~28 minutes from default',
+      f12Lines:['Touchpoint 1: WhatsApp (friendly) — read, no action yet','Touchpoint 2: Voice call (friendly) — borrower agreed immediately','No escalation needed','Outcome: Paid in full, ₹45,000, UPI'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: RESOLVED — paid in full','Audit trail: 13 steps, 2 touchpoints','','Thank you for experiencing Kollect.'],
+      nba:{
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Low-pressure tone selected for a Technical Defaulter — clean history means no need to escalate urgency.', metric:'91% response rate for this profile'},
+        s5:{label:'ACTION TAKEN', state:'taken', title:'Friendly voice call placed', reason:'Following up warmly since WhatsApp was read but no reply yet.', metric:'Call duration: 1m 12s'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower verbally confirmed payment — reassessing whether further contact is needed.', metric:'Confidence: 0.94'},
+        s8:{label:'ACTION TAKEN', state:'taken', title:'Confirmation message sent', reason:'Closing the loop immediately rather than waiting for payment gateway polling.', metric:'Sent within 90s of call ending'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Verify and close — skip escalation', reason:'Funds already confirmed by the gateway; a human hand-off adds no value here.', metric:'Escalation threshold not met'},
+        s10:{label:'ACTION TAKEN', state:'taken', title:'Case closed, borrower notified', reason:'Fastest possible resolution — one call, one message, no escalation.', metric:'Resolved in ~25 minutes'},
+      },
+    },
+    systemic: {
+      w1Lines:[`Namaste ${nm} ji,`,'',`Aapki EMI ₹45,000 kal due thi.`,'',`Abhi pay karein: https://pay.link/45k`],
+      w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
+      callType:'chat',
+      callLines:[`[AI Voice Agent — FRIENDLY MODE]`,'',`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, ABC Bank ki taraf se.`,'',`${nm}: Yaar, is mahine thoda tight hai. Kya thodi mohlat mil sakti hai?`],
+      callAction:'Call answered — borrower requested more time', callDetails:`AI Voice Agent — Friendly mode (${agent})`,
+      sentLines:['Outcome: Promise-to-pay (soft), needs structured plan','Sentiment: Receptive, financial strain detected','Risk delta: unchanged','','Recalculating next best action...'],
+      sentAction:'Call ended: borrower asked for more time', sentDetails:'Sentiment: receptive, financially constrained',
+      nbaAction:'Offer 2-installment payment plan', nbaDetails:'Selected over retry / escalate — borrower engaged but constrained',
+      w2Title:'Round 2: Payment Plan Offer', w2Subtitle:'Firm-but-fair plan offer — WhatsApp',
+      w2Lines:[`${nm} ji,`,'','Hum samajhte hain ki abhi thoda mushkil hai.','Aapke liye 2 installments ka option hai:','₹22,500 abhi + ₹22,500 agle hafte.','','Reply karein "SPLIT" confirm karne ke liye.'],
+      w2Action:'Plan offer sent 3:00 PM', w2Details:'Offers 2-installment split, empathetic tone',
+      s9Title:'Plan Acceptance Check', s9Subtitle:'Borrower reviewing installment offer',
+      s9Lines:['Reply received: "SPLIT"','Plan accepted — 2 installments confirmed','No escalation needed','','Scheduling first installment reminder'],
+      s9Action:'Borrower replied SPLIT at 3:22 PM', s9Details:'Plan accepted — scheduling installments',
+      s10Title:'Plan Activated', s10Subtitle:'Installment schedule confirmed via WhatsApp', s10Audience:'borrower', s10Contact:'ABC Bank', s10ContactSub:'Business Account',
+      s10Lines:[`Perfect, ${nm} ji!`,'','Installment 1: ₹22,500 — due today','Installment 2: ₹22,500 — due in 7 days','','Hum aapko reminder bhejenge har installment se pehle.'],
+      s10Action:'Schedule confirmed 3:25 PM', s10Details:'Case closed without human involvement',
+      escalate:false,
+      f11Title:'Plan Confirmed', f11Subtitle:'First installment received, second scheduled',
+      f11Action:'First installment ₹22,500 received at 3:45 PM', f11Details:'Second installment scheduled for 7 days',
+      f11Lines:['Amount: ₹22,500 (installment 1 of 2)','Channel: Payment link (UPI)','Time: 3:45 PM','','Second installment scheduled','Case marked RESOLVED (plan active)'],
+      f12Action:'Recovery structured across 2 installments, no human needed', f12Details:'Time to first payment: ~5h 30m from default',
+      f12Lines:['Touchpoint 1: WhatsApp (friendly) — read, no action','Touchpoint 2: Voice call — requested more time','Touchpoint 3: WhatsApp (plan offer) — accepted','Outcome: Plan active, ₹22,500 of ₹45,000 recovered so far'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: RESOLVED — payment plan active','Audit trail: 13 steps, 3 touchpoints','','Thank you for experiencing Kollect.'],
+      nba:{
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:"Standard opening tone — the system doesn't presume hardship before any response.", metric:'91% response rate for this profile'},
+        s5:{label:'ACTION TAKEN', state:'taken', title:'Friendly voice call placed', reason:'Following up after WhatsApp was read with no action.', metric:'Call duration: 1m 48s'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower signaled financial strain — evaluating a structured plan instead of repeating the same ask.', metric:'Confidence: 0.71'},
+        s8:{label:'ACTION TAKEN', state:'taken', title:'Payment plan offered', reason:'Highest expected recovery given a soft promise-to-pay with a real constraint.', metric:'Plan acceptance rate: 68% historically'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Activate plan — skip escalation', reason:'Borrower engaged constructively and accepted terms; no need for human involvement.', metric:'Escalation threshold not met'},
+        s10:{label:'ACTION TAKEN', state:'taken', title:'Installment schedule confirmed', reason:'Locking in the agreed plan immediately to reduce any chance of drop-off.', metric:'2 installments over 7 days'},
+      },
+    },
+    disputed: {
+      w1Lines:[`Namaste ${nm} ji,`,'',`Aapki EMI ₹45,000 kal due thi.`,'',`Abhi pay karein: https://pay.link/45k`],
+      w1Action:'Message sent 10:15 AM, read 10:17 AM', w1Details:`${lang} friendly reminder with payment link`,
+      callType:'chat',
+      callLines:[`[AI Voice Agent — FRIENDLY MODE]`,'',`Agent: Namaste ${nm} ji! Kaise hain aap? Main ${agent} bol rahi hoon, ABC Bank ki taraf se.`,'',`${nm}: Ye charge galat hai. Maine ye pehle hi customer care ko bataya tha. Mujhe insaan se baat karni hai.`],
+      callAction:'Call answered — borrower disputes the charge', callDetails:`AI Voice Agent — Friendly mode (${agent})`,
+      sentLines:['Outcome: Dispute raised, distrust of automated contact','Sentiment: Skeptical, defensive','Escalation flag: borrower requested human','','Recalculating next best action...'],
+      sentAction:'Call ended: borrower disputed the charge', sentDetails:'Sentiment: skeptical, defensive',
+      nbaAction:'Escalate to human agent immediately', nbaDetails:'Selected over retry / plan — borrower explicitly requested a person',
+      w2Title:'Round 2: WhatsApp', w2Subtitle:'Dispute acknowledgement — WhatsApp',
+      w2Lines:[`${nm} ji,`,'','Hum aapki dispute note kar rahe hain.','Hamari team jald aapse contact karegi is charge ko clarify karne ke liye.'],
+      w2Action:'Acknowledgement sent 3:00 PM', w2Details:'Confirms dispute logged, sets expectation for human contact',
+      s9Title:'Escalation Check', s9Subtitle:'Explicit human request — evaluating hand-off',
+      s9Lines:['Escalation trigger: explicit human request (not confidence-based)','Dispute flag: charge validity questioned','','Escalating to human collections agent...','Preparing case summary + dispute context'],
+      s9Action:'Borrower explicitly requested human — immediate escalation', s9Details:'Not a confidence-threshold escalation — trust/dispute issue',
+      s10Title:'Human Handoff', s10Subtitle:'WhatsApp summary sent to collections executive', s10Audience:'agent', s10Contact:'Kollect Escalations', s10ContactSub:'Automated alert',
+      s10Lines:(nmFull, phone)=>[`⚠ Dispute — ${nmFull} (₹45,000, overdue)`,'','Borrower disputes charge validity.','Requested human contact explicitly.','Sentiment: skeptical, defensive.','',`Contact: ${phone || '+91 98xxxxxxx0'}`,'Please call within 2 hours — dispute context attached.'],
+      s10Action:'Summary + phone number sent to human agent', s10Details:'Human takes over from here, Kollect stands by',
+      escalate:true,
+      f11Title:'Escalation Confirmed', f11Subtitle:'Case now owned by a human collections executive',
+      f11Action:'Handoff acknowledged by Collections Exec #4 at 4:10 PM', f11Details:'Kollect resumes automated contact only if the case returns to queue',
+      f11Lines:['Case owner: Collections Exec #4','Dispute context: attached','Automated contact: paused','','Awaiting human resolution'],
+      f12Action:'Escalated after 2 touchpoints — dispute could not be resolved automatically', f12Details:'Time to escalation: ~3h 45m from default',
+      f12Lines:['Touchpoint 1: WhatsApp (friendly) — read, no action','Touchpoint 2: Voice call — borrower disputed charge','Touchpoint 3: WhatsApp (acknowledgement)','Outcome: Escalated to human, ₹45,000 still outstanding'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: ESCALATED — with human collections team','Audit trail: 13 steps, 3 touchpoints','','Kollect remains available if the case returns to automation.'],
+      nba:{
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Standard opening — no dispute signal exists yet at this point.', metric:'91% response rate for this profile'},
+        s5:{label:'ACTION TAKEN', state:'taken', title:'Friendly voice call placed', reason:'Following up after WhatsApp was read with no reply.', metric:'Call duration: 2m 05s'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Borrower disputed the charge and asked for a human — this overrides the standard reminder sequence.', metric:'Confidence: 0.38'},
+        s8:{label:'ACTION TAKEN', state:'taken', title:'Dispute acknowledgement sent', reason:'Logging the dispute and setting expectations while escalation is prepared.', metric:'Escalation already in motion'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Escalate to human agent', reason:'Explicit request overrides confidence scoring — this is a policy rule, not a threshold call.', metric:'Trigger: explicit request, not confidence'},
+        s10:{label:'ACTION TAKEN', state:'taken', title:'Case hand-off sent to human agent', reason:"Full dispute context attached so the human doesn't start from zero.", metric:'Routed to Collections Exec #4'},
+      },
+    },
+    unreachable: {
+      w1Lines:[`Namaste ${nm} ji,`,'',`Aapki EMI ₹45,000 kal due thi.`,'',`Abhi pay karein: https://pay.link/45k`],
+      w1Action:'Message sent 10:15 AM — not yet read', w1Details:`${lang} friendly reminder with payment link`,
+      callType:'terminal',
+      callTitle:'Round 1: Call Attempt', callSubtitle:'No answer after 6 rings',
+      callLines:['Dialing...','Ringing... (6 rings)','No answer','Voicemail: box full, cannot leave message','','Logging failed contact attempt'],
+      callAction:'Call attempted at 11:30 AM — no answer', callDetails:'Voicemail box full, call ended without contact',
+      sentTitle:'Contact Attempt Analysis',
+      sentLines:['Outcome: No contact established','Both channels attempted (WhatsApp + call), no response','Risk delta: +5 (non-response is a risk signal)','','Recalculating next best action...'],
+      sentAction:'No response across both channels', sentDetails:'Escalation being considered',
+      nbaAction:'Escalate — automated channels exhausted', nbaDetails:'Selected over retry — 2 failed attempts already logged',
+      w2Title:'Round 2: WhatsApp', w2Subtitle:'Final attempt — WhatsApp',
+      w2Lines:[`${nm} ji,`,'','Hum aapse sampark karne ki koshish kar rahe hain.','Kripya jab possible ho, is number par reply karein ya call back karein.','','Payment link: https://pay.link/45k'],
+      w2Action:'Final message sent 3:00 PM — not yet read', w2Details:'Last automated attempt before human escalation',
+      s9Title:'Escalation Check', s9Subtitle:'Channels exhausted — evaluating hand-off',
+      s9Lines:['2 channels attempted, 0 responses','Automated contact exhausted','','Escalating to human for manual outreach...','Preparing case summary + alternate contact search'],
+      s9Action:'No response across 2 channels, 2 attempts each', s9Details:'Escalating for manual follow-up, not a dispute',
+      s10Title:'Human Handoff', s10Subtitle:'WhatsApp summary sent to collections executive', s10Audience:'agent', s10Contact:'Kollect Escalations', s10ContactSub:'Automated alert',
+      s10Lines:(nmFull, phone, days)=>[`⚠ Unreachable — ${nmFull} (₹45,000, ${days||''}d overdue)`,'','2 WhatsApp + 1 call attempted, zero response.','No dispute — simply unreachable via these channels.','',`Contact: ${phone || '+91 98xxxxxxx0'}`,'Recommend alternate contact method or field visit.'],
+      s10Action:'Summary + phone number sent to human agent', s10Details:'Human takes over from here, Kollect stands by',
+      escalate:true,
+      f11Title:'Escalation Confirmed', f11Subtitle:'Case now owned by a human collections executive',
+      f11Action:'Handoff acknowledged by Collections Exec #4 at 4:10 PM', f11Details:'Kollect resumes automated contact if the borrower re-engages',
+      f11Lines:['Case owner: Collections Exec #4','Contact attempts: 4 (0 successful)','Automated contact: paused','','Awaiting manual outreach outcome'],
+      f12Action:'Escalated after 4 contact attempts across 2 channels', f12Details:'Time to escalation: ~5h 30m from default',
+      f12Lines:['Touchpoint 1: WhatsApp (friendly) — sent, not read','Touchpoint 2: Voice call — no answer','Touchpoint 3: WhatsApp (final attempt) — sent, not read','Outcome: Escalated to human, ₹45,000 still outstanding'],
+      f13Lines:(nmFull)=>[`Borrower: ${nmFull}`,'Final status: ESCALATED — unreachable via automated channels','Audit trail: 13 steps, 4 contact attempts','','Kollect remains available if the borrower re-engages.'],
+      nba:{
+        s4:{label:'ACTION TAKEN', state:'taken', title:'Friendly WhatsApp reminder sent', reason:'Standard opening tone — no signal yet that this account is hard to reach.', metric:'91% response rate for this profile'},
+        s5:{label:'ACTION TAKEN', state:'taken', title:'Voice call attempted', reason:'Following up after WhatsApp went unread.', metric:'No answer after 6 rings'},
+        s6:{label:'ANALYZING', state:'analyzing', title:'Recalculating next best action', reason:'Zero response across two channels is itself a signal — reassessing contact strategy.', metric:'Confidence: 0.22'},
+        s8:{label:'ACTION TAKEN', state:'taken', title:'Final automated reminder sent', reason:'One last attempt before committing to a human hand-off, per policy.', metric:'2nd attempt, still unread'},
+        s9:{label:'NEXT BEST ACTION', state:'deciding', title:'Escalate — channels exhausted', reason:'Automated contact has a ceiling; a human can try alternate numbers or a field visit.', metric:'2 attempts each channel, 0 responses'},
+        s10:{label:'ACTION TAKEN', state:'taken', title:'Case handed to human agent', reason:'Manual outreach with alternate contact methods now has better odds than continuing to automate.', metric:'Routed to Collections Exec #4'},
+      },
+    },
+  };
+}
+
+function steps(){
+  const nm = state.name.split(' ')[0];
+  const agent = personaTone();
+  const lang = personaLang();
+  const arch = state.archetype || archetypes[0];
+  const archId = arch.id;
+  const archTitle = arch.title;
+  const overdueDays = arch.overdueDays || 1;
+  const P = personaPacks(nm, agent, lang)[archId];
+  const finalStatus = P.escalate ? 'escalated' : 'done';
+  const finalClassV = archTitle;
+
+  return [
+  { tab:'b360', pill:'Step 1/13', title:'Default Detection', subtitle:`Payment of ₹45,000 missed on due date`,
+    action:'Initiating Borrower 360 analysis', details:'System triggers workflow automation', classV:'Analyzing…', status:'progress',
+    live:{type:'terminal', tag:'DEFAULT DETECTED', voice:false, lines:[`Borrower: ${state.name}`,`Amount: ₹45,000`,`Days Past Due: ${overdueDays}`,'',`Initiating 360° analysis...`]},
+    agents:['Default Detection Agent','Data Orchestration Agent'], models:['Anomaly Detection (XGBoost)','Priority Scoring Model'],
+    signals:[{name:'Payment Gateway', tag:'miss', desc:'Payment failure at 11:59 PM'},{name:'LMS', tag:'status', desc:'Account status: OVERDUE'}],
+  },
+  { tab:'b360', pill:'Step 2/13', title:'Signal Aggregation', subtitle:'Pulling structured + behavioral data across systems',
+    action:'Merging LMS, CRM and bank feeds', details:'Cross-referencing 3 data sources in real time', classV:archTitle, status:'progress',
+    live:{type:'terminal', tag:'AGGREGATING SIGNALS', voice:false, lines:['18-month repayment history: clean','Employment: Software Engineer, ₹85k/mo','Bank balance: ₹1.2L (sufficient)','App usage: daily active, high engagement','','Classifying borrower...']},
+    agents:['Data Orchestration Agent','Classification Agent'], models:['Feature Extraction','Behavioral Scoring Model'],
+    signals:[{name:'CRM', tag:'profile', desc:'Employment & income verified'},{name:'Bank Feed', tag:'balance', desc:'₹1.2L available — funds present'},{name:'App Analytics', tag:'engagement', desc:'Daily active, WhatsApp preferred'}],
+  },
+  { tab:'strategy', pill:'Step 3/13', title:'Strategy Generation', subtitle:`${agent} Agent activated — reasoning over classification`,
+    action:'Omnichannel approach: WhatsApp + Voice', details:`Low pressure, friendly tone (${lang})`, classV:archTitle, status:'progress',
+    live:{type:'terminal', tag:'STRATEGY READY', voice:false, lines:['STRATEGY READY','',`Agent: ${agent} — Friendly Reminder`,'Channels: WhatsApp + Voice',`Tone: Friendly (${lang})`,'Urgency: Low','Time: 10:15 AM']},
+    agents:['Strategy Gen Agent','Friendly Reminder Agent'], models:['Strategy Recommender','Tone Calibration (GPT)'],
+    signals:[{name:'Strategy Engine', tag:'recommendation', desc:'Omnichannel: 91% success rate'},{name:'RAG KB', tag:'policy', desc:`${archTitle} SOP retrieved`},{name:'Timing Model', tag:'optimal', desc:'10–11 AM: +32% response'}],
+  },
+  { tab:'execution', pill:'Step 4/13', title:'Round 1: WhatsApp', subtitle:'Friendly Reminder — WhatsApp',
+    action:P.w1Action, details:P.w1Details, classV:archTitle, status:'progress',
+    live:{type:'chat', tag:'WHATSAPP', time:'10:15 AM', voice:false, contact:'ABC Bank', contactSub:'Business Account', lines:P.w1Lines},
+    nbaNow:P.nba.s4,
+    agents:['Friendly Reminder Agent','Tracking Agent'], models:['Template Generator (GPT-4)'],
+    signals:[{name:'WhatsApp API', tag:'sent', desc:'Dispatched: 10:15:03 AM'},{name:'WhatsApp API', tag:P.callType==='terminal'?'pending':'read', desc:P.callType==='terminal'?'Not yet read':'Read: 10:17:23 AM'}],
+  },
+  { tab:'execution', pill:'Step 5/13', title:P.callTitle || 'Round 1: Voice Agent', subtitle:P.callSubtitle || 'Friendly Voice Agent call',
+    action:P.callAction, details:P.callDetails, classV:archTitle, status:'progress',
+    live: P.callType==='terminal'
+      ? {type:'terminal', tag:'CALL ATTEMPT', voice:false, lines:P.callLines}
+      : {type:'chat', tag:'VOICE AGENT', time:'11:30 AM', voice:true, contact:'ABC Bank Collections', lines:P.callLines},
+    nbaNow:P.nba.s5,
+    agents:[`Friendly Reminder Agent (${agent})`,'Speech Analyzer'], models:['Conversational AI (GPT-4)','Sentiment Detection'],
+    signals:[{name:'RAG KB', tag:'script', desc:'Friendly reminder script loaded'},{name:'Voice Agent', tag:P.callType==='terminal'?'no-answer':'connected', desc:P.callType==='terminal'?'6 rings, no pickup':'Duration: 1m 23s'}],
+  },
+  { tab:'execution', pill:'Step 6/13', title:P.sentTitle || 'Sentiment & Outcome Analysis', subtitle:'Reading outcome, updating borrower state',
+    action:P.sentAction, details:P.sentDetails, classV:archTitle, status:'progress',
+    live:{type:'terminal', tag:'CALL ANALYSIS', voice:false, lines:P.sentLines},
+    nbaNow:P.nba.s6,
+    agents:['Speech Analyzer','Outcome Classifier'], models:['Sentiment Detection','Promise-to-Pay Classifier'],
+    signals:[{name:'Speech Analyzer', tag:'nlu', desc:'Outcome classified'},{name:'CRM', tag:'update', desc:'Sentiment score updated'}],
+  },
+  { tab:'strategy', pill:'Step 7/13', title:'Next Best Action', subtitle:'Strategy engine ranks 3 fixed actions, selects one',
+    action:P.nbaAction, details:P.nbaDetails, classV:archTitle, status:'progress',
+    live:{type:'nba', nbaChosen:0},
+    agents:['Strategy Gen Agent','NBA Ranking Agent'], models:['Strategy Recommender','Expected Value Model'],
+    signals:[{name:'NBA Engine', tag:'ranked', desc:'3 candidate actions scored'},{name:'Policy Guard', tag:'check', desc:'Decision within SOP bounds'}],
+  },
+  { tab:'execution', pill:'Step 8/13', title:P.w2Title, subtitle:P.w2Subtitle,
+    action:P.w2Action, details:P.w2Details, classV:archTitle, status:'progress',
+    live:{type:'chat', tag:'WHATSAPP', time:'3:00 PM', voice:false, contact:'ABC Bank', contactSub:'Business Account', lines:P.w2Lines},
+    nbaNow:P.nba.s8,
+    agents:['Firm Reminder Agent','Payment Plan Agent'], models:['Template Generator (GPT-4)','Plan Structuring Model'],
+    signals:[{name:'WhatsApp API', tag:'sent', desc:'Dispatched: 3:00:00 PM'},{name:'WhatsApp API', tag:'delivered', desc:'Delivered: 3:00:04 PM'}],
+  },
+  { tab:'execution', pill:'Step 9/13', title:P.s9Title, subtitle:P.s9Subtitle,
+    action:P.s9Action, details:P.s9Details, classV:archTitle, status:'progress',
+    live:{type:'terminal', tag:'ESCALATION CHECK', voice:false, lines:P.s9Lines},
+    nbaNow:P.nba.s9,
+    agents:['Escalation Agent','Case Summary Agent'], models:['Confidence Scoring','Summarization (GPT-4)'],
+    signals:[{name:'Confidence Model', tag:'evaluated', desc:P.escalate?'Escalation triggered':'No escalation needed'},{name:'Escalation Rules', tag:'policy', desc:'SOP applied'}],
+  },
+  { tab:'execution', pill:'Step 10/13', title:P.s10Title, subtitle:P.s10Subtitle,
+    action:P.s10Action, details:P.s10Details, classV:archTitle, status:P.escalate ? 'escalated' : 'progress',
+    live:{type:'chat', tag:P.s10Audience==='agent'?'HANDOFF · TO HUMAN AGENT':'WHATSAPP', time:'3:46 PM', voice:false,
+      audience:P.s10Audience, contact:P.s10Contact, contactSub:P.s10ContactSub,
+      lines: typeof P.s10Lines === 'function' ? P.s10Lines(state.name, state.phone, overdueDays) : P.s10Lines},
+    nbaNow:P.nba.s10,
+    agents:['Escalation Agent','Human Routing Agent'], models:['Summarization (GPT-4)'],
+    signals:[{name:'WhatsApp API', tag:'sent', desc:P.escalate?'Handoff card sent to agent desk':'Confirmation sent to borrower'},{name:'Routing Engine', tag:P.escalate?'assigned':'closed', desc:P.escalate?'Routed to: Collections Exec #4':'No routing needed'}],
+  },
+  { tab:'fulfilment', pill:'Step 11/13', title:P.f11Title, subtitle:P.f11Subtitle,
+    action:P.f11Action, details:P.f11Details, classV:finalClassV, status:finalStatus,
+    live:{type:'terminal', tag:P.escalate?'ESCALATION CONFIRMED':'PAYMENT CONFIRMED', voice:false, lines:P.f11Lines},
+    agents:[P.escalate?'Routing Agent':'Reconciliation Agent'], models:[P.escalate?'Case Assignment':'Payment Matching'],
+    signals:[{name:P.escalate?'Routing Engine':'Payment Gateway', tag:P.escalate?'assigned':'success', desc:P.escalate?'Case owner: human agent':'₹ settled via UPI'},{name:'LMS', tag:'update', desc:P.escalate?'Automated contact paused':'Account status: CURRENT'}],
+  },
+  { tab:'fulfilment', pill:'Step 12/13', title:'Outcome Summary', subtitle:'Full journey compiled for reporting',
+    action:P.f12Action, details:P.f12Details, classV:finalClassV, status:finalStatus,
+    live:{type:'terminal', tag:'JOURNEY SUMMARY', voice:false, lines:P.f12Lines},
+    agents:['Reporting Agent'], models:['Journey Summarization'],
+    signals:[{name:'Analytics Engine', tag:'compiled', desc:'Full journey logged'},{name:'Recovery Model', tag:'logged', desc:'Contributes to portfolio recovery rate'}],
+  },
+  { tab:'fulfilment', pill:'Step 13/13', title:P.escalate?'Case Handed Off':'Case Closed', subtitle:'Audit trail complete — ready for next case',
+    action:'All actions, timestamps and messages logged', details:'Available for compliance review at any time', classV:finalClassV, status:finalStatus,
+    live:{type:'terminal', tag:P.escalate?'CASE HANDED OFF':'CASE CLOSED', voice:false, lines:P.f13Lines(state.name)},
+    agents:['Audit Agent'], models:['Compliance Logger'],
+    signals:[{name:'Audit Log', tag:'sealed', desc:'Immutable record created'},{name:'Compliance', tag:'ready', desc:'Available for lender review'}],
+  },
+  ];
+}
+
+function getNbaOptions(archId){
+  const sets = {
+    technical: [
+      { title:'Payment now — confirm & close', desc:'Borrower verbally agreed on the call. Fastest path, no further contact needed.', chosen:true },
+      { title:'Retry — friendly follow-up', desc:'Not needed given verbal confirmation.' },
+      { title:'Escalate to human', desc:'Not needed — cooperative borrower, no risk signal.' },
+    ],
+    systemic: [
+      { title:'Retry — friendly voice call', desc:'Same tone, different channel. Lower urgency signal.' },
+      { title:'Payment plan — 2 installments', desc:'Borrower asked for room. Highest expected recovery given soft P2P.', chosen:true },
+      { title:'Escalate to human', desc:'Premature — borrower is engaged and cooperative, just constrained.' },
+    ],
+    disputed: [
+      { title:'Retry — firm reminder', desc:'Unlikely to resolve a trust or dispute issue.' },
+      { title:'Payment plan', desc:'Not relevant — borrower disputes the charge itself.' },
+      { title:'Escalate to human', desc:'Borrower explicitly requested a person. More automated contact erodes trust further.', chosen:true },
+    ],
+    unreachable: [
+      { title:'Retry — voice call again', desc:'Already attempted twice with no pickup — diminishing returns.' },
+      { title:'Wait 24h, re-attempt', desc:'Risk: promise window may lapse without any nudge.' },
+      { title:'Escalate to human', desc:'Automated channels exhausted. Manual outreach has better reach for silent accounts.', chosen:true },
+    ],
+  };
+  return sets[archId] || sets.technical;
+}
+
+let stepData = [];
+let idx = 0;
+let playTimer = null;
+let typeTimer = null;
+let ingestTimer = null;
+let behaviorIngestTimer = null;
+
+function startDash(){
+  stepData = steps();
+  goToStep(0, true);
+  startIngestion();
+  const leftCard = document.getElementById('leftPanelCard');
+  if(leftCard) leftCard.scrollTop = 0;
+}
+
+function startIngestionGroup(groupSelector, counterId, intervalMs, existingTimer){
+  clearInterval(existingTimer);
+  const items = document.querySelectorAll(groupSelector);
+  items.forEach(el => el.classList.remove('show', 'flash'));
+  const counter = document.getElementById(counterId);
+  const total = items.length;
+  if(counter) counter.textContent = `0/${total}`;
+  let n = 0;
+  let timer = null;
+  function revealNext(){
+    if(n >= items.length){ clearInterval(timer); return; }
+    const el = items[n];
+    el.classList.add('show', 'flash');
+    setTimeout(() => el.classList.remove('flash'), 700);
+    n++;
+    if(counter) counter.textContent = `${n}/${total}`;
+    if(n >= items.length) clearInterval(timer);
+  }
+  revealNext(); // first signal appears immediately, rest follow every ~4s in the background
+  timer = setInterval(revealNext, intervalMs);
+  return timer;
+}
+
+function startIngestion(){
+  ingestTimer = startIngestionGroup('[data-ingest="structured"]', 'ingestCounter', 4000, ingestTimer);
+  behaviorIngestTimer = startIngestionGroup('[data-ingest="behavioral"]', 'behaviorCounter', 4600, behaviorIngestTimer);
+}
+
+function goToStep(newIdx, instant){
+  idx = newIdx;
+  renderStep(instant);
+}
+
+function renderTabs(){
+  const row = document.getElementById('tabRow');
+  row.innerHTML = '';
+  TABS.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'tab' + (stepData[idx].tab === t.key ? ' active' : '');
+    el.innerHTML = `<div class="tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${t.icon}</svg></div><div><div class="tab-title">${t.label}</div><div class="tab-sub">${t.sub}</div></div>`;
+    row.appendChild(el);
+  });
+}
+
+const ICON_MIC = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>`;
+const ICON_SPEAKER = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.5 8.5a5.5 5.5 0 0 1 0 7"/></svg>`;
+const ICON_HANGUP = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 11.5c2.5-2.4 5.6-3.7 8.4-3.7s5.9 1.3 8.4 3.7c.4.4.4 1 0 1.4l-1.9 1.9c-.4.4-1 .4-1.4.1-.7-.5-1.5-.9-2.3-1.2-.4-.1-.6-.5-.6-.9v-1.7c-1.4-.4-2.9-.4-4.4 0v1.7c0 .4-.3.8-.6.9-.8.3-1.6.7-2.3 1.2-.4.3-1 .3-1.4-.1L3.6 12.9c-.4-.4-.4-1 0-1.4z"/></svg>`;
+
+function renderPhoneMockup(s){
+  const lines = s.live.lines.filter(l => l.trim() !== '');
+  if(!s.live.voice){
+    const contact = s.live.contact || 'ABC Bank';
+    const contactSub = s.live.contactSub || 'Business Account';
+    const initials = contact.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    const bodyText = lines.join('<br>');
+    return `
+      <div class="phone-wrap">
+        <div class="phone-mockup">
+          <div class="phone-notch"></div>
+          <div class="phone-statusbar"><span>9:41</span><span>100%</span></div>
+          <div class="phone-screen">
+            <div class="wa-header">
+              <span class="wa-back">‹</span>
+              <div class="wa-avatar">${initials}</div>
+              <div class="wa-title"><div class="wa-name">${contact}</div><div class="wa-sub">${contactSub}</div></div>
+            </div>
+            <div class="wa-body">
+              <div class="wa-bubble-in">
+                <div class="wa-text">${bodyText}</div>
+                <div class="wa-meta">${s.live.time || ''}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+  const dialogue = lines.filter(l => /:\s/.test(l) && !l.startsWith('['));
+  const captions = dialogue.slice(-2);
+  const personaName = state.voice ? state.voice.name : 'Priya';
+  const personaInit = personaName.charAt(0).toUpperCase();
+  return `
+    <div class="phone-wrap">
+      <div class="phone-mockup">
+        <div class="phone-notch"></div>
+        <div class="phone-statusbar"><span>9:41</span><span>100%</span></div>
+        <div class="call-screen">
+          <div class="call-top">
+            <div class="call-avatar">${personaInit}</div>
+            <div class="call-name">${personaName}</div>
+            <div class="call-status"><span class="live-blip"></span>${s.live.contact || 'ABC Bank'} · ${s.live.time || ''}</div>
+          </div>
+          <div class="call-captions">${captions.map(l => `<div class="cap-line">${l}</div>`).join('')}</div>
+          <div class="call-controls">
+            <div class="call-btn">${ICON_MIC}</div>
+            <div class="call-btn end">${ICON_HANGUP}</div>
+            <div class="call-btn">${ICON_SPEAKER}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function updateDockedPhone(s){
+  const titleEl = document.getElementById('phoneDockTitle');
+  if(titleEl){
+    titleEl.textContent = (s.live.audience === 'agent') ? "Human agent's phone" : (s.live.voice ? 'Incoming call' : "Borrower's phone");
+  }
+  const bodyEl = document.getElementById('phoneDockBody');
+  if(bodyEl) bodyEl.innerHTML = renderPhoneMockup(s);
+}
+
+function setRightColumnMode(isExecutionTab){
+  document.getElementById('rightDataPanels').style.display = isExecutionTab ? 'none' : 'flex';
+  const phonePanel = document.getElementById('rightPhonePanel');
+  phonePanel.style.display = isExecutionTab ? 'flex' : 'none';
+  if(isExecutionTab){
+    const bodyEl = document.getElementById('phoneDockBody');
+    if(!bodyEl.innerHTML.trim()){
+      bodyEl.innerHTML = '<div class="phone-dock-empty">Waiting for channel activity…</div>';
+    }
+  }
+}
+
+function renderStep(instant){
+  const s = stepData[idx];
+  clearTimeout(typeTimer);
+  renderTabs();
+
+  document.getElementById('stepPill').textContent = s.pill + ' · ' + TABS.find(t=>t.key===s.tab).label;
+  document.getElementById('stepTitle').textContent = s.title;
+  document.getElementById('stepSubtitle').textContent = s.subtitle;
+  document.getElementById('actionText').textContent = s.action;
+  document.getElementById('detailsText').textContent = s.details;
+  document.getElementById('classValue').textContent = s.classV;
+  document.getElementById('progressFill').style.width = ((idx+1)/stepData.length*100).toFixed(1)+'%';
+  document.getElementById('footStep').textContent = `Step ${idx+1} of ${stepData.length}`;
+  document.getElementById('footClass').textContent = s.classV;
+
+  const badge = document.getElementById('statusBadge');
+  badge.classList.remove('done', 'escalated');
+  if(s.status === 'done'){ badge.textContent='RESOLVED'; badge.classList.add('done'); }
+  else if(s.status === 'escalated'){ badge.textContent='ESCALATED'; badge.classList.add('escalated'); }
+  else { badge.textContent='IN PROGRESS'; }
+
+  // infra — compact one-line strip instead of a full card
+  document.getElementById('infraStripText').textContent = s.agents.join(', ') + '  ·  ' + s.models.join(', ');
+  // signals
+  document.getElementById('signalsList').innerHTML = s.signals.map(sg=>`
+    <div class="signal-item">
+      <div class="sig-top"><div class="sig-dot"></div><div class="sig-name">${sg.name}</div><div class="sig-tag">${sg.tag}</div></div>
+      <div class="sig-desc">${sg.desc}</div>
+    </div>`).join('');
+
+  // live area
+  const wrap = document.getElementById('liveContent');
+  const headEl = document.getElementById('liveHead');
+  const liveCard = document.getElementById('liveCardWrap');
+
+  if(s.live.type === 'nba'){
+    const archId = (state.archetype || archetypes[0]).id;
+    const nbaOpts = getNbaOptions(archId);
+    headEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>NEXT BEST ACTIONS — RANKED`;
+    wrap.innerHTML = `<div class="nba-row">${nbaOpts.map(o=>`
+      <div class="nba-box ${o.chosen?'chosen':''}">
+        <div class="nb-k"><span>Option</span>${o.chosen?'<span class="pick">✓ SELECTED</span>':''}</div>
+        <div class="nb-t">${o.title}</div>
+        <div class="nb-d">${o.desc}</div>
+      </div>`).join('')}</div>`;
+    liveCard.style.background = 'var(--panel)';
+  } else if(s.live.type === 'chat' || s.live.type === 'terminal'){
+    const isChat = s.live.type === 'chat';
+    const isExecution = s.tab === 'execution';
+
+    if(isExecution && s.nbaNow){
+      headEl.innerHTML = `<span class="live-head-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>DECISION ENGINE</span>`;
+      const n = s.nbaNow;
+      wrap.innerHTML = `
+        <div class="nba-now-card">
+          <div class="nba-now-eyebrow ${n.state}">${n.label}</div>
+          <div class="nba-now-title">${n.title}</div>
+          <div class="nba-now-reason">${n.reason}</div>
+          ${n.metric ? `<div class="nba-now-metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><span>${n.metric}</span></div>` : ''}
+        </div>`;
+    } else {
+      const label = !isChat ? 'LIVE INTERACTION'
+        : (s.live.audience === 'agent' ? "SENT — HUMAN AGENT'S PHONE" : (s.live.voice ? 'LIVE — INCOMING CALL' : "SENT — BORROWER'S PHONE"));
+      headEl.innerHTML = `<span class="live-head-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${label}</span>`;
+      wrap.innerHTML = `<div class="terminal" style="flex:1;"><span class="term-tag">⚡ ${s.live.tag}</span><br><br><span id="typedLines"></span></div>`;
+      typeLines(s.live.lines, instant);
+    }
+
+    if(isChat){ updateDockedPhone(s); }
+  }
+
+  // Right column shows the docked phone throughout the Execution tab, data panels otherwise.
+  setRightColumnMode(s.tab === 'execution');
+
+  document.getElementById('btnPrev').style.opacity = idx===0 ? .35 : 1;
+  document.getElementById('btnNext').style.opacity = idx===stepData.length-1 ? .35 : 1;
+}
+
+function typeLines(lines, instant){
+  const target = document.getElementById('typedLines');
+  if(!target) return;
+  if(instant === false){ target.innerHTML = lines.join('<br>'); return; }
+  let html = '';
+  let li = 0;
+  function step(){
+    if(li >= lines.length){ return; }
+    html += (li>0?'<br>':'') + lines[li];
+    target.innerHTML = html;
+    li++;
+    typeTimer = setTimeout(step, 90);
+  }
+  step();
+}
+
+/* controls */
+document.getElementById('btnNext').addEventListener('click', () => {
+  if(idx < stepData.length-1){ goToStep(idx+1); }
+});
+document.getElementById('btnPrev').addEventListener('click', () => {
+  if(idx > 0){ goToStep(idx-1); }
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  stopPlay(); goToStep(0); startIngestion();
+});
+const btnPlay = document.getElementById('btnPlay');
+btnPlay.addEventListener('click', () => {
+  if(playTimer){ stopPlay(); } else { startPlay(); }
+});
+function startPlay(){
+  btnPlay.classList.add('play-active');
+  btnPlay.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+  playTimer = setInterval(() => {
+    if(idx < stepData.length-1){ goToStep(idx+1); }
+    else { stopPlay(); }
+  }, 3400);
+}
+function stopPlay(){
+  clearInterval(playTimer);
+  playTimer = null;
+  btnPlay.classList.remove('play-active');
+  btnPlay.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+}
+</script>
+</body>
+</html>

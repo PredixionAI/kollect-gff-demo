@@ -1,0 +1,904 @@
+:root{
+  --bg: #08090c;
+  --panel: #101216;
+  --panel-2: #14171d;
+  --border: #22262e;
+  --border-soft: #1a1d24;
+  --text: #eef0f3;
+  --text-dim: #9aa1ad;
+  --text-faint: #5c6270;
+  --blue: #3b82f6;
+  --blue-dim: #1d3a63;
+  --green: #34d399;
+  --amber: #f5b942;
+  --purple: #a78bfa;
+  --red: #f56565;
+  --whatsapp: #25d366;
+  --mono: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Shared easing tokens — extend these, don't fork new curves elsewhere. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-feature-settings:'ss01' 1, 'cv05' 1;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+#app{height:100vh; width:100vw; position:relative;}
+.screen{
+  position:absolute; inset:0;
+  display:none;
+  animation:fadeIn .45s ease both;
+}
+.screen.active{display:flex;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+/* ---------- shared ---------- */
+.brand{
+  display:flex; align-items:center; gap:10px;
+  position:fixed; top:28px; left:32px; z-index:5;
+}
+.brand .mark{
+  width:34px; height:34px; border-radius:8px; background:#fff;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; padding:5px; overflow:hidden;
+}
+.brand .mark img{width:100%; height:100%; object-fit:contain;}
+.brand .name{font-weight:700; font-size:15px; letter-spacing:.2px;}
+.brand .sub{font-size:11px; color:var(--text-faint); margin-top:1px;}
+
+/* ---------- CAPTURE SCREEN ---------- */
+#screen-login, #screen-capture{
+  flex-direction:column; align-items:center; justify-content:center;
+  background:
+    radial-gradient(ellipse 900px 500px at 50% -10%, rgba(59,130,246,.14), transparent 60%),
+    var(--bg);
+}
+.capture-box{width:420px; max-width:90vw; text-align:center;}
+.pulse-ring{
+  width:64px; height:64px; margin:0 auto 28px; border-radius:50%;
+  border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+}
+.pulse-ring::before{
+  content:''; position:absolute; inset:-6px; border-radius:50%;
+  border:1px solid var(--blue-dim);
+  animation:ring 2.2s ease-out infinite;
+}
+@keyframes ring{0%{transform:scale(.85); opacity:.9;} 100%{transform:scale(1.5); opacity:0;}}
+.pulse-ring svg{width:26px; height:26px;}
+.capture-box h1{font-size:26px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px;}
+.capture-box p.lead{color:var(--text-dim); font-size:14.5px; margin-bottom:36px; line-height:1.5;}
+.field{text-align:left; margin-bottom:16px;}
+.field label{font-size:11.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.6px; display:block; margin-bottom:8px;}
+.field input{
+  width:100%; background:var(--panel); border:1px solid var(--border);
+  border-radius:10px; padding:14px 16px; color:var(--text); font-size:15px;
+  font-family:var(--sans); transition:border-color .15s;
+}
+.field input:focus{outline:none; border-color:var(--blue);}
+.field input::placeholder{color:var(--text-faint);}
+.consent{
+  display:flex; gap:10px; align-items:flex-start; text-align:left;
+  font-size:12px; color:var(--text-faint); margin:18px 0 26px; line-height:1.55;
+}
+.consent input{margin-top:3px; accent-color:var(--blue);}
+.btn-primary{
+  width:100%; background:var(--blue); color:#fff; border:none; border-radius:10px;
+  padding:15px; font-size:14.5px; font-weight:600; cursor:pointer; font-family:var(--sans);
+  transition:background .15s, transform .1s; letter-spacing:.1px;
+}
+.btn-primary:hover{background:#2f6fdb;}
+.btn-primary:active{transform:scale(.99);}
+.btn-primary:disabled{background:#20242c; color:var(--text-faint); cursor:not-allowed;}
+.btn-ghost{
+  width:100%; background:transparent; color:var(--text-faint); border:none;
+  padding:12px; font-size:12.5px; cursor:pointer; font-family:var(--sans); margin-top:6px;
+  text-decoration:underline; text-underline-offset:3px; transition:color .15s;
+}
+.btn-ghost:hover{color:var(--text-dim);}
+.foot-note{margin-top:18px; font-size:11.5px; color:var(--text-faint);}
+
+/* ---------- VOICE SELECT ---------- */
+#screen-voice{flex-direction:column; align-items:center; justify-content:center; padding:40px;}
+.voice-head{text-align:center; margin-bottom:34px;}
+.voice-head .eyebrow{font-size:11.5px; color:var(--blue); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:10px;}
+.voice-head h1{font-size:24px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px;}
+.voice-head p{color:var(--text-dim); font-size:14px;}
+.voice-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; width:100%; max-width:920px;}
+.voice-card{
+  background:var(--panel); border:1px solid var(--border); border-radius:14px;
+  padding:20px 16px; cursor:pointer; transition:all .15s; position:relative;
+}
+.voice-card:hover{border-color:#3a4150; transform:translateY(-2px);}
+.voice-card.selected{border-color:var(--blue); background:#0f1a2c;}
+.voice-card .avatar{
+  width:40px; height:40px; border-radius:50%; margin-bottom:14px;
+  display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700;
+  background:var(--panel-2); color:var(--text-dim); border:1px solid var(--border-soft);
+}
+.voice-card .vname{font-size:14.5px; font-weight:600; margin-bottom:3px;}
+.voice-card .vmeta{font-size:11.5px; color:var(--text-faint); margin-bottom:14px; line-height:1.5;}
+.play-btn{
+  display:flex; align-items:center; gap:8px; background:var(--panel-2); border:1px solid var(--border-soft);
+  border-radius:8px; padding:8px 10px; font-size:11.5px; color:var(--text-dim); cursor:pointer; width:100%;
+  font-family:var(--sans);
+}
+.play-btn:hover{border-color:var(--blue);}
+.play-btn svg{width:12px; height:12px; flex-shrink:0;}
+.play-btn.playing{color:var(--blue); border-color:var(--blue);}
+.voice-card .check{
+  position:absolute; top:14px; right:14px; width:18px; height:18px; border-radius:50%;
+  background:var(--blue); display:none; align-items:center; justify-content:center;
+}
+.voice-card.selected .check{display:flex;}
+.voice-card .check svg{width:10px; height:10px;}
+.voice-actions{margin-top:30px; width:100%; max-width:300px;}
+
+/* ---------- CASE STUDY ---------- */
+#screen-case{flex-direction:column; align-items:center; justify-content:center; padding:24px;}
+.case-card{
+  width:640px; max-width:92vw; max-height:92vh; background:var(--panel); border:1px solid var(--border);
+  border-radius:18px; padding:32px 36px; text-align:left; display:flex; flex-direction:column; gap:18px;
+}
+.case-top{display:flex; align-items:flex-start; justify-content:space-between; gap:20px;}
+.case-card .tag{
+  display:inline-flex; align-items:center; gap:6px; background:#241a08; color:var(--amber);
+  border:1px solid #3a2c10; font-size:10.5px; font-weight:700; letter-spacing:.5px; text-transform:uppercase;
+  padding:5px 10px; border-radius:6px; margin-bottom:10px;
+}
+.case-card h2{font-size:28px; font-weight:700; letter-spacing:-.3px; line-height:1.15;}
+.case-card .loc{color:var(--text-faint); font-size:12.5px; margin-top:6px;}
+.case-risk-ring{
+  flex-shrink:0; width:76px; height:76px; border-radius:50%; position:relative;
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  background:conic-gradient(var(--amber) 0% 65%, var(--border-soft) 65% 100%);
+}
+.case-risk-ring::before{content:''; position:absolute; inset:6px; border-radius:50%; background:var(--panel);}
+.case-risk-ring .rv{position:relative; font-size:20px; font-weight:700; color:var(--amber);}
+.case-risk-ring .rl{position:relative; font-size:8.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px;}
+.case-stats{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
+.case-stat{background:var(--panel-2); border:1px solid var(--border-soft); border-radius:12px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between;}
+.case-stat .k{font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px;}
+.case-stat .v{font-size:20px; font-weight:700;}
+.case-persona-line{
+  display:flex; align-items:center; gap:10px; background:var(--panel-2); border:1px solid var(--border-soft);
+  border-radius:12px; padding:14px 16px; font-size:13px; color:var(--text-dim); line-height:1.5;
+}
+.case-persona-line .picon{font-size:14px; color:var(--blue); flex-shrink:0;}
+.case-persona-line b{color:var(--text); font-weight:700;}
+.case-chip-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+.case-chip{
+  background:var(--panel-2); border:1px solid var(--border-soft); border-radius:12px; padding:12px 12px;
+  display:flex; flex-direction:column; gap:6px; align-items:flex-start;
+}
+.case-chip .ci{font-size:10.5px; color:var(--text-faint); font-family:var(--mono); letter-spacing:.5px;}
+.case-chip .ct{font-size:11.5px; color:var(--text-dim); line-height:1.35; font-weight:600;}
+.case-watch{
+  display:flex; align-items:center; gap:10px; font-size:12px; color:var(--text-dim);
+  background:var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; padding:10px 14px;
+}
+.case-watch b{color:var(--text);}
+
+/* ================= DASHBOARD ================= */
+#screen-dash{flex-direction:column; padding:14px 18px; gap:10px;}
+.topbar{
+  display:flex; align-items:center; gap:14px; background:var(--panel);
+  border:1px solid var(--border); border-radius:14px; padding:10px 16px;
+}
+.topbar .divider{width:1px; height:26px; background:var(--border);}
+.tb-item{display:flex; align-items:center; gap:10px;}
+.tb-icon{width:32px; height:32px; border-radius:8px; background:var(--panel-2); border:1px solid var(--border-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.tb-icon svg{width:16px;height:16px;}
+.tb-icon-brand{background:#fff; border-color:#fff; padding:5px; overflow:hidden;}
+.tb-icon-brand img{width:100%; height:100%; object-fit:contain;}
+.tb-title{font-size:14px; font-weight:700; line-height:1.2;}
+.tb-sub{font-size:11.5px; color:var(--text-faint);}
+.status-flex{flex:1; display:flex; justify-content:flex-end; align-items:center; gap:14px;}
+.live-dot{width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 0 3px rgba(52,211,153,.15);}
+.live-label{font-size:12px; color:var(--text-dim); font-weight:600;}
+
+/* 2026-09-07 redesign: two persistent panes instead of three columns -- the
+   dashboard/process view on the left, the phone mockup (real communication:
+   calls, transcripts, WhatsApp, Next Best Action) always visible on the
+   right, not conditionally swapped in per tab. */
+.main-grid{flex:1; display:grid; grid-template-columns:1fr 380px; gap:10px; min-height:0;}
+.col{display:flex; flex-direction:column; gap:10px; min-height:0; overflow:hidden;}
+.dash-pane-top{display:flex; gap:10px; min-height:0; flex:1;}
+.dash-pane-top > .card{flex:1; min-width:0; overflow:hidden; padding:9px;}
+
+.phone-pane{animation:phonePaneSlideIn .6s cubic-bezier(.22,1,.36,1) both;}
+@keyframes phonePaneSlideIn{from{opacity:0; transform:translateX(48px);} to{opacity:1; transform:translateX(0);}}
+.card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px;}
+.scroll{overflow-y:auto;}
+.scroll::-webkit-scrollbar{width:5px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--border); border-radius:10px;}
+
+/* Margins tightened 2026-09-07 for the no-scroll left pane. */
+.status-badge{
+  display:inline-block; background:#241a08; color:var(--amber); border:1px solid #3a2c10;
+  font-size:11px; font-weight:700; letter-spacing:.5px; padding:5px 12px; border-radius:6px;
+}
+.status-badge.done{background:#0c2419; color:var(--green); border-color:#164430;}
+.profile-row{display:flex; gap:12px; align-items:center;}
+.profile-icon{width:40px; height:40px; border-radius:10px; background:var(--blue-dim); display:flex; align-items:center; justify-content:center;}
+.profile-icon svg{width:18px;height:18px; color:var(--blue);}
+.profile-name{font-size:15px; font-weight:700;}
+.profile-loc{font-size:12px; color:var(--text-faint); display:flex; align-items:center; gap:4px; margin-top:2px;}
+
+/* Persona header -- name/location/age (profile-row) plus the case's status
+   and archetype as two compact badges, replacing the old full-width
+   "Classification" box so identity + state read as one glanceable band. */
+.persona-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:8px;}
+.persona-badges{display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0;}
+.arch-badge{
+  display:inline-block; background:var(--blue-dim); color:#a8c8f5; border:1px solid #2a4d80;
+  font-size:11.5px; font-weight:700; letter-spacing:.3px; padding:5px 12px; border-radius:6px; white-space:nowrap;
+}
+.stat-row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:8px;}
+.stat-box{background:var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; padding:6px 6px; text-align:center;}
+.stat-box .k{font-size:10.5px; color:var(--text-faint); margin-bottom:2px;}
+.stat-box .v{font-size:15px; font-weight:700;}
+.stat-box .v.risk{color:var(--amber);}
+.section-label{display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:var(--text-dim); margin-bottom:6px; line-height:1.2;}
+.section-label svg{width:13px;height:13px;}
+.data-group{margin-bottom:6px;}
+.data-group .gh{display:flex; align-items:center; font-size:10.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; margin-bottom:4px; line-height:1.2;}
+.data-group.structured .gh{color:var(--green);}
+.data-group.appweb .gh{color:var(--amber);}
+.data-group.commbehaviour .gh{color:var(--blue);}
+.data-group.unusual .gh{color:var(--red);}
+.dot-item{display:flex; gap:8px; align-items:flex-start; font-size:13px; color:var(--text-dim); padding:1px 0; line-height:1.35;}
+.dot-item::before{content:''; width:5px; height:5px; border-radius:50%; margin-top:6px; flex-shrink:0;}
+.data-group.structured .dot-item::before{background:var(--green);}
+.data-group.appweb .dot-item::before{background:var(--amber);}
+.data-group.commbehaviour .dot-item::before{background:var(--blue);}
+
+/* Segment 1, row 2 -- Borrower 360 (structured + unstructured data) next to
+   Communication History, side by side instead of stacked full-width. */
+.b360-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+.b360-col{min-width:0;}
+.unstructured .real-transcript-card{margin-top:0;}
+
+.comm-history{position:relative; min-height:20px;}
+.comm-empty{font-size:12.5px; color:var(--text-faint); padding:2px 0;}
+.comm-list{display:flex; flex-direction:column; gap:6px;}
+.comm-item{display:flex; flex-wrap:wrap; align-items:center; gap:5px 7px; font-size:12.5px; color:var(--text-dim);}
+.comm-time{font-family:var(--mono); color:var(--text-faint); font-size:11px; flex-shrink:0;}
+.comm-status{font-size:12px; color:var(--text-faint); flex-basis:100%;}
+.comm-real-tag{
+  font-size:8.5px; font-weight:700; letter-spacing:.4px; color:var(--green); background:#0c2419;
+  border:1px solid #164430; border-radius:4px; padding:1px 5px; flex-shrink:0;
+}
+
+/* No-scroll rule: once the real transcript has content, the structured-data
+   bullets (their job -- build a first impression -- is done by now) step
+   aside to make room, instead of the pane scrolling or clipping. */
+#leftPanelCard.has-transcript .data-group.structured{display:none;}
+
+/* Segment 2 -- Signals: Real-Time Activity stays the live per-step feed;
+   the four static groups below it are each one clear angle on the borrower
+   (purchasing, app/web, communication behaviour, and a flagged anomaly with
+   its assumed cause) instead of two loosely-named catch-all blocks. */
+/* One row of four, not a cramped 2x2 -- the panel is wide enough that
+   spreading these out uses the real width instead of wasting it while
+   stacking two extra rows of height. */
+.signal-quad{display:grid; grid-template-columns:repeat(4, 1fr); gap:6px 18px;}
+.unusual-flag{font-size:12px; color:var(--text); font-weight:600; line-height:1.3;}
+.unusual-conclusion{font-size:10px; color:var(--text-faint); margin-top:1px; line-height:1.2;}
+
+/* center column */
+/* Compacted 2026-09-07 -- freed vertical space so the left pane fits
+   without scrolling (design rule: no scroll anywhere in this pane). */
+.tab-row{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
+.tab{
+  position:relative; overflow:hidden;
+  background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:5px 7px;
+  display:flex; align-items:center; gap:6px; transition:all .2s;
+}
+.tab.active{border-color:var(--blue); background:#0f1a2c;}
+.tab.done{opacity:.6;}
+.tab-icon{width:19px; height:19px; border-radius:6px; background:var(--panel-2); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.tab.active .tab-icon{background:var(--blue-dim);}
+.tab.done .tab-icon{background:var(--blue-dim);}
+.tab-icon svg{width:13px; height:13px; color:var(--text-faint);}
+.tab.active .tab-icon svg{color:var(--blue);}
+.tab.done .tab-icon svg{color:var(--green);}
+.tab-title{font-size:12px; font-weight:700; line-height:1.25;}
+.tab-sub{font-size:9.5px; color:var(--text-faint); line-height:1.25;}
+.tab-fill{position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--border-soft);}
+.tab-fill-bar{height:100%; background:var(--blue); transition:width .4s ease;}
+.tab.done .tab-fill-bar{background:var(--green);}
+
+/* Condensed state machine -- the tab row above is now the only progress
+   indicator (no separate "Step X/13 . <Tab>" pill or full-width bar
+   restating what the active tab already shows), just the current step's
+   own title/subtitle plus the playback controls. */
+.state-machine{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:9px 16px;}
+.sm-top{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+.sm-top .tab-row{flex:1;}
+.step-controls{margin-left:auto; display:flex; gap:8px; flex-shrink:0;}
+.ctrl-btn{
+  width:30px; height:30px; border-radius:8px; background:var(--panel-2); border:1px solid var(--border-soft);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-dim); transition:all .15s;
+}
+.ctrl-btn:hover{border-color:var(--blue); color:var(--blue);}
+.ctrl-btn svg{width:13px; height:13px;}
+.ctrl-btn.play-active{background:var(--blue); border-color:var(--blue); color:#fff;}
+.step-title{font-size:15px; font-weight:700; margin-bottom:2px; letter-spacing:-.2px;}
+.step-subtitle{font-size:11.5px; color:var(--text-dim);}
+
+.action-details{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.ad-box{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:9px 12px;}
+.ad-head{display:flex; align-items:center; gap:7px; font-size:10.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.5px; font-weight:700; margin-bottom:4px;}
+.ad-head svg{width:12px;height:12px;}
+.ad-body{font-size:13px; color:var(--text); line-height:1.4; font-weight:500;}
+
+.live-card{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px 16px; flex:1; display:flex; flex-direction:column; min-height:0;}
+.live-head{display:flex; align-items:center; gap:8px; font-size:10.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.5px; font-weight:700; margin-bottom:10px;}
+.live-head svg{width:12px;height:12px;}
+.terminal{
+  background:#0a0d12; border:1px solid var(--border-soft); border-radius:10px; padding:14px 16px;
+  font-family:var(--mono); font-size:12.5px; line-height:1.55; color:#d7dbe2; flex:1; overflow-y:auto;
+}
+.chat-bubble{
+  background:var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; padding:14px 16px;
+  font-family:var(--mono); font-size:12.5px; line-height:1.55; color:#dfe2e7; flex:1; overflow-y:auto;
+}
+.chat-bubble.voice{background:var(--panel-2); border-color:var(--border-soft); color:#dfe2e7;}
+.term-tag{color:var(--text); font-weight:700; letter-spacing:.4px;}
+.term-tag.voice{color:var(--text);}
+.term-label{color:var(--text-faint);}
+.nba-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:2px;}
+.nba-box{border-radius:12px; padding:14px; border:1px solid var(--border-soft); background:var(--panel-2);}
+.nba-box.chosen{border-color:var(--green); background:#0c2419;}
+.nba-box .nb-k{font-size:10px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;}
+.nba-box .nb-k .pick{color:var(--green); font-weight:700; font-size:9.5px;}
+.nba-box .nb-t{font-size:13px; font-weight:700; margin-bottom:3px;}
+.nba-box .nb-d{font-size:11px; color:var(--text-faint); line-height:1.4;}
+
+/* right column */
+.infra-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.infra-col .ih{font-size:11px; font-weight:700; margin-bottom:9px; display:flex; align-items:center; gap:6px; color:var(--text-dim);}
+.infra-col.agents .ih{color:var(--blue);}
+.infra-col .ih svg{width:12px;height:12px;}
+.infra-item{font-size:12px; color:var(--text-dim); padding:3px 0;}
+.signal-item{margin-bottom:4px; padding-bottom:4px; border-bottom:1px solid var(--border-soft);}
+.signal-item:last-child{border:none; margin-bottom:0; padding-bottom:0;}
+.sig-top{display:flex; align-items:center; gap:7px; margin-bottom:2px;}
+.sig-dot{width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0;}
+.sig-name{font-size:12px; font-weight:700; color:var(--blue);}
+.sig-tag{font-size:9px; background:var(--panel-2); border:1px solid var(--border-soft); color:var(--text-faint); padding:1px 6px; border-radius:5px; text-transform:uppercase; letter-spacing:.3px;}
+.sig-desc{font-size:11.5px; color:var(--text-dim); margin-left:13px; line-height:1.3;}
+.data-sync-item{display:flex; gap:8px; font-size:12px; padding:5px 0;}
+.data-sync-item .d{width:6px; height:6px; border-radius:50%; background:var(--blue); margin-top:5px; flex-shrink:0;}
+.data-sync-item b{color:var(--text-dim); margin-right:4px;}
+.footer-status{display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-faint); padding:2px 4px;}
+
+/* ---------- CALL STATUS OVERLAY (new) ---------- */
+.call-status-line{
+  display:flex; align-items:center; gap:10px; background:var(--panel-2); border:1px solid var(--border-soft);
+  border-radius:10px; padding:6px 12px; font-size:12px; color:var(--text-dim);
+}
+.call-status-line.err{color:var(--red);}
+.call-status-line .dot{width:7px; height:7px; border-radius:50%; background:var(--amber); flex-shrink:0;}
+.call-status-line.live .dot{background:var(--green);}
+
+/* ---------- DIRECT CALL TRIGGER MODAL & BUTTON ---------- */
+.btn-direct-trigger {
+  display: flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  color: #fff; border: 1px solid #3b82f6; border-radius: 8px;
+  padding: 6px 14px; font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: var(--sans);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px rgba(37,99,235,0.25);
+}
+.btn-direct-trigger:hover {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(59,130,246,0.35);
+}
+.btn-direct-trigger:active { transform: translateY(0); }
+
+/* Mock is the default look (matches Direct Call button). Live is
+   deliberately alarming — real sends cost money. */
+.btn-direct-trigger.whatsapp-live-armed {
+  background: linear-gradient(135deg, #b91c1c, #dc2626);
+  border-color: #ef4444;
+  box-shadow: 0 2px 10px rgba(220,38,38,0.4);
+  animation: whatsapp-live-pulse 1.6s ease-in-out infinite;
+}
+.btn-direct-trigger.whatsapp-live-armed:hover {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+}
+@keyframes whatsapp-live-pulse {
+  0%, 100% { box-shadow: 0 2px 10px rgba(220,38,38,0.4); }
+  50% { box-shadow: 0 2px 18px rgba(220,38,38,0.75); }
+}
+
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(4, 5, 8, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-box {
+  width: 620px; max-width: 95vw; max-height: 90vh;
+  background: var(--panel); border: 1px solid #2d3342;
+  border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 30px rgba(59,130,246,0.15);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+  background: var(--panel-2);
+}
+.modal-title { display: flex; align-items: center; gap: 12px; }
+.modal-title .icon { font-size: 22px; }
+.modal-title h3 { font-size: 16px; font-weight: 700; color: var(--text); }
+.modal-title p { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+.modal-close {
+  background: transparent; border: none; color: var(--text-faint);
+  font-size: 24px; font-weight: 400; cursor: pointer; border-radius: 6px;
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.modal-close:hover { background: var(--border); color: var(--text); }
+
+.modal-body { padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+
+.dc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.dc-field { display: flex; flex-direction: column; gap: 6px; }
+.dc-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); }
+.dc-field input, .dc-field select {
+  background: var(--panel-2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: 13.5px;
+  font-family: var(--sans); transition: border-color 0.15s; width: 100%;
+}
+.dc-field input:focus, .dc-field select:focus { outline: none; border-color: var(--blue); }
+
+.dc-json-preview {
+  background: #080a0e; border: 1px solid var(--border-soft);
+  border-radius: 10px; padding: 12px 16px; font-family: var(--mono);
+}
+.dc-json-preview .jh { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--blue); font-weight: 700; margin-bottom: 8px; }
+.dc-json-preview pre { font-size: 12px; color: #a5b4fc; white-space: pre-wrap; word-break: break-all; margin: 0; }
+
+.btn-call-now {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  padding: 14px; font-size: 15px; font-weight: 700; letter-spacing: 0.3px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 15px rgba(37,99,235,0.35);
+}
+.btn-call-now:hover { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+
+.dc-result-box {
+  background: #0d1117; border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; font-family: var(--mono); font-size: 12px;
+}
+.dc-result-box .rh { font-weight: 700; font-size: 12px; margin-bottom: 8px; color: var(--green); }
+.dc-result-box .rh.err { color: var(--red); }
+.dc-result-box .rb { color: var(--text-dim); white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
+
+
+
+/* =========================================================
+   Appended styles for new screens: Soft Launch, Orb Carousel,
+   Archetype Select, Persona Typewriter, Phone Mockup,
+   NBA-Now card, Right-panel toggle, Ingest animations.
+   Original styles.css content is unchanged above.
+========================================================= */
+
+/* ---------- SOFT LAUNCH (cinematic marketing intro) ----------
+   Ported from kollect-demo.html 2026-09-05 — replaces the old 2-line fade
+   intro with the 7-beat sequence (agent-orb halo, constant waveform,
+   mini-cards, fly-in big card, animated funnel, progress bar, narration).
+   .sl-line/.sl-line.strong removed — public/index.html no longer has
+   #slLine1/#slLine2, replaced by #ibStage (see softlaunch.js). */
+#screen-softlaunch{flex-direction:column; align-items:center; justify-content:center; background:#000; overflow:hidden;}
+.sl-glow{position:absolute; inset:0; background:radial-gradient(ellipse 700px 460px at 50% 45%, rgba(59,130,246,.10), transparent 70%); animation:slPulse 4s ease-in-out infinite; z-index:0;}
+@keyframes slPulse{0%,100%{opacity:.5;} 50%{opacity:1;}}
+.sl-content{position:relative; z-index:2; text-align:center; max-width:640px; padding:40px; min-height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer;}
+.sl-skip{position:fixed; bottom:32px; right:32px; font-size:12px; color:var(--text-faint); background:rgba(20,20,24,.5); backdrop-filter:blur(12px) saturate(160%); -webkit-backdrop-filter:blur(12px) saturate(160%); border:1px solid var(--border-soft); border-radius:8px; padding:8px 16px; cursor:pointer; font-family:var(--sans); transition:color .15s var(--ease-out), border-color .15s var(--ease-out); z-index:5;}
+.sl-skip:hover{color:var(--text); border-color:var(--blue);}
+
+/* the journey orb — the one motion-graphic system for the whole intro, always
+   present and impossible to miss (was a small peripheral element before;
+   now it's the visual the text sits directly above). Named agents pulled
+   from the real dashboard's own step data spawn off it per stage, styled
+   after the Core exploration's glowing-sphere-with-ring-fill language. */
+.ib-journey{margin-top:30px; display:flex; flex-direction:column; align-items:center; opacity:0; transition:opacity .6s var(--ease-out);}
+.ib-journey.show{opacity:1;}
+.ib-journey-orb{position:relative; width:150px; height:150px; flex-shrink:0;}
+.ib-journey-orb svg{position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg);}
+.ib-journey-track{fill:none; stroke:var(--border-soft); stroke-width:2;}
+.ib-journey-progress{fill:none; stroke:var(--blue); stroke-width:2; stroke-linecap:round; transition:stroke-dashoffset .7s var(--ease-in-out), stroke .5s var(--ease-out);}
+.ib-journey-sphere{
+  position:absolute; inset:32px; border-radius:50%;
+  background:radial-gradient(circle at 34% 28%, rgba(255,255,255,.9), rgba(59,130,246,.55) 42%, rgba(59,130,246,.08) 75%);
+  box-shadow:0 0 34px rgba(59,130,246,.35), inset 0 0 26px rgba(255,255,255,.14);
+  animation:ibJourneyBreathe 3.2s var(--ease-in-out) infinite;
+}
+@keyframes ibJourneyBreathe{0%,100%{transform:scale(1);} 50%{transform:scale(1.045);}}
+.ib-journey-sphere.pulse{animation:ibJourneyBreathe 3.2s var(--ease-in-out) infinite, ibJourneyPulse .55s var(--ease-out);}
+@keyframes ibJourneyPulse{
+  0%{box-shadow:0 0 34px rgba(59,130,246,.35), inset 0 0 26px rgba(255,255,255,.14);}
+  45%{box-shadow:0 0 56px rgba(59,130,246,.65), inset 0 0 34px rgba(255,255,255,.24);}
+  100%{box-shadow:0 0 34px rgba(59,130,246,.35), inset 0 0 26px rgba(255,255,255,.14);}
+}
+
+/* agent chips — spawn from the orb's position outward into a loose row
+   beneath it (translateY from above + a per-chip --dx spread), staggered
+   ~90ms apart so several agents read as arriving together, not queued. */
+.ib-journey-chips{display:flex; gap:10px; margin-top:18px; min-height:34px; flex-wrap:wrap; justify-content:center; max-width:560px;}
+.ib-chip{
+  display:flex; align-items:center; gap:7px; padding:8px 14px; border-radius:20px;
+  background:rgba(20,20,24,.55); backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
+  border:1px solid var(--ch, var(--border)); font-size:11.5px; font-weight:600; color:var(--text); white-space:nowrap;
+  opacity:0; transform:translate(var(--dx,0), -54px) scale(.5); filter:blur(8px);
+  transition:opacity .5s var(--ease-out), transform .5s var(--ease-out), filter .5s var(--ease-out);
+}
+.ib-chip.show{opacity:1; transform:translate(0,0) scale(1); filter:blur(0);}
+.ib-chip-dot{width:6px; height:6px; border-radius:50%; background:var(--ch, var(--blue)); flex-shrink:0;}
+.ib-chip-loop-icon{width:12px; height:12px; flex-shrink:0; fill:var(--ch, var(--amber)); animation:ibChipSpin 1.8s linear infinite;}
+@keyframes ibChipSpin{to{transform:rotate(360deg);}}
+
+/* persistent background layer — a cluster of glass agent-orbs, each visibly doing a different job */
+.ib-agents-bg{position:absolute; inset:0; z-index:1; pointer-events:none; opacity:0; transition:opacity 1.4s ease; perspective:900px;}
+.ib-agents-bg.show{opacity:1;}
+.ib-agent-cluster{
+  position:absolute; inset:4% 3%;
+  transform-style:preserve-3d; transition:transform .25s ease-out;
+}
+.ib-agent-orb{
+  position:absolute; border-radius:50%;
+  background:radial-gradient(circle at 32% 26%, rgba(255,255,255,.42), rgba(59,130,246,.16) 52%, rgba(255,255,255,.03) 100%);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.35), 0 10px 22px rgba(0,0,0,.45);
+  animation:ibOrbFloat 6s ease-in-out infinite, ibOrbGlow 3.4s ease-in-out infinite;
+}
+@keyframes ibOrbFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-9px);}}
+@keyframes ibOrbGlow{0%,100%{opacity:.5;} 50%{opacity:.9;}}
+/* type: spin — a partial ring rotating around the orb, reads as "actively processing" */
+.ib-agent-orb.type-spin::after{
+  content:''; position:absolute; inset:-3px; border-radius:50%;
+  border:1.5px solid transparent; border-top-color:rgba(255,255,255,.55); border-right-color:rgba(255,255,255,.16);
+  animation:ibOrbSpin 2.1s linear infinite;
+}
+@keyframes ibOrbSpin{to{transform:rotate(360deg);}}
+/* type: blink — an inner status light, reads as "signal / indicator" */
+.ib-agent-orb.type-blink::before{
+  content:''; position:absolute; top:32%; left:32%; width:24%; height:24%; border-radius:50%;
+  background:rgba(255,255,255,.9); animation:ibOrbBlink 1.5s ease-in-out infinite;
+}
+@keyframes ibOrbBlink{0%,100%{opacity:.85;} 50%{opacity:.1;}}
+/* type: orbit — a satellite dot circling the orb, reads as "routing / dispatching" */
+.ib-agent-orb.type-orbit::after{
+  content:''; position:absolute; width:5px; height:5px; margin:-2.5px 0 0 -2.5px; top:50%; left:50%;
+  border-radius:50%; background:rgba(255,255,255,.85);
+  animation:ibOrbOrbit 2.6s linear infinite;
+}
+@keyframes ibOrbOrbit{from{transform:rotate(0deg) translateX(var(--orbit-r,18px)) rotate(0deg);} to{transform:rotate(360deg) translateX(var(--orbit-r,18px)) rotate(-360deg);}}
+
+/* beats alternate their entry side (left/right) so the sequence reads as one
+   continuous pass instead of seven identical fades — see AGENT_ORB_LAYOUT
+   comment above for the same idea applied to the background. */
+.ib-beat{opacity:0; transform:translateY(10px); transition:opacity .6s var(--ease-out), transform .6s var(--ease-out); cursor:pointer;}
+.ib-beat.from-left{transform:translate(-18px, 10px);}
+.ib-beat.from-right{transform:translate(18px, 10px);}
+.ib-beat.show{opacity:1; transform:translate(0, 0);}
+.ib-headline{font-size:27px; color:var(--text); font-weight:600; line-height:1.35; letter-spacing:-.01em;}
+/* the payoff line ("This is Kollect.") gets its own weight so it reads as the
+   climax, not beat #7 of 7 rendered identically to the rest — larger display
+   text gets tighter leading and more negative tracking, per size (not one
+   fixed letter-spacing for every headline in this screen) */
+.ib-headline-climax{font-size:40px; font-weight:700; line-height:1.15; letter-spacing:-.025em;}
+.ib-sub{font-size:12px; color:var(--text-faint); margin-top:6px; letter-spacing:.2px;}
+
+/* word-level mask reveal (Kinetic exploration) — each word rises and
+   sharpens into place individually instead of the whole line fading as one
+   block, on top of the beat's own from-left/from-right entrance. */
+.ib-word-mask{display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.1em;}
+.ib-word{display:inline-block; transform:translateY(115%); opacity:0; filter:blur(6px); transition:transform .55s var(--ease-out), opacity .45s var(--ease-out), filter .45s var(--ease-out);}
+.ib-beat.show .ib-word{transform:translateY(0); opacity:1; filter:blur(0);}
+
+/* the constant waveform — the voice channel, always live during the opening beats.
+   Red while the problem is being framed, blue once the platform beat lands, then fades
+   out once the journey orb takes over (it was competing with it for attention). */
+.ib-waveform-constant{margin-top:26px; display:flex; align-items:center; justify-content:center; gap:4px; height:34px; position:relative; z-index:2; opacity:1; transition:opacity .8s ease;}
+.ib-waveform-constant.wave-hidden{opacity:0;}
+.ib-waveform-constant .ib-wave-bar{width:4px; border-radius:2.5px; background:var(--red); transform-origin:center; transition:background-color 1.2s ease; animation:ibWaveBar 1.3s ease-in-out infinite;}
+.ib-waveform-constant.wave-blue .ib-wave-bar{background:var(--blue);}
+@keyframes ibWaveBar{0%,100%{transform:scaleY(.4);} 50%{transform:scaleY(1);}}
+
+/* Reduced motion: the intro is otherwise a full-viewport, continuously
+   animating background (orb float/spin/blink/orbit, waveform, chip spawns) —
+   exactly the case prefers-reduced-motion exists for. Comprehension-aiding
+   opacity changes stay; everything vestibular or looping drops out. */
+@media (prefers-reduced-motion: reduce){
+  .sl-glow{animation:none; opacity:.75;}
+  .ib-agent-orb, .ib-agent-orb::before, .ib-agent-orb::after{animation:none;}
+  .ib-agent-cluster{transition:none; transform:none !important;}
+  .ib-waveform-constant .ib-wave-bar{animation:none; transform:scaleY(.7);}
+  .ib-beat{transition:opacity .3s ease; transform:none !important;}
+  .ib-word{transition:opacity .3s ease; transform:none !important; filter:none !important;}
+  .ib-journey-sphere, .ib-journey-sphere.pulse{animation:none;}
+  .ib-chip{transition:opacity .3s ease; transform:none !important; filter:none !important;}
+  .ib-chip-loop-icon{animation:none;}
+}
+
+/* ---------- ORB VOICE CAROUSEL ---------- */
+#screen-orbs{flex-direction:column; align-items:center; justify-content:center; padding:40px;}
+.orbs-head{text-align:center; margin-bottom:6px; position:relative; z-index:2;}
+.orbs-head .eyebrow{font-size:11.5px; color:var(--blue); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:10px;}
+.orbs-head h1{font-size:24px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px;}
+.orbs-head p{color:var(--text-dim); font-size:14px;}
+.orb-carousel-wrap{display:flex; align-items:center; gap:16px; width:100%; max-width:820px; margin:16px 0;}
+.orb-nav{
+  width:38px; height:38px; border-radius:50%; background:var(--panel-2); border:1px solid var(--border-soft);
+  color:var(--text-dim); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+  font-size:17px; transition:all .15s; user-select:none; position:relative; z-index:200;
+}
+.orb-nav:hover{border-color:var(--blue); color:var(--blue);}
+.orb-carousel{
+  position:relative; flex:1; height:270px; perspective:1100px; touch-action:pan-y; cursor:grab; overflow:visible;
+}
+.orb-carousel:active{cursor:grabbing;}
+.orb{
+  position:absolute; left:50%; top:50%; display:flex; flex-direction:column; align-items:center;
+  cursor:pointer; transition:transform .45s cubic-bezier(.22,1,.36,1), opacity .45s ease; user-select:none;
+}
+.orb.disabled{cursor:not-allowed;}
+.orb-sphere{
+  width:104px; height:104px; border-radius:50%; position:relative;
+  background:radial-gradient(circle at 32% 28%, rgba(255,255,255,.65), var(--pastel) 46%, rgba(255,255,255,.06) 100%);
+  box-shadow:0 16px 32px rgba(0,0,0,.5);
+  animation:orbFloat 5s ease-in-out infinite;
+}
+.orb.disabled .orb-sphere{filter:grayscale(.65) brightness(.65);}
+.orb-glow{
+  position:absolute; inset:-16px; border-radius:50%; background:var(--pastel);
+  filter:blur(26px); opacity:.38; z-index:-1; transition:opacity .3s, filter .3s; pointer-events:none;
+}
+.orb.front .orb-glow{opacity:.6;}
+.orb-sphere.speaking .orb-glow{opacity:1; filter:blur(34px); animation:orbPulse .9s ease-in-out infinite, orbFloat 5s ease-in-out infinite;}
+@keyframes orbPulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.2);}}
+@keyframes orbFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-9px);}}
+.orb-label{margin-top:12px; text-align:center;}
+.orb .oname{font-size:13px; font-weight:700; color:#fff;}
+.orb .olang{font-size:9.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px; margin-top:2px;}
+.orb .osoon{font-size:8.5px; color:var(--text-faint); margin-top:5px;}
+.orb-play{
+  margin-top:8px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); border-radius:16px;
+  padding:4px 13px; font-size:9.5px; color:#fff; cursor:pointer; font-family:var(--sans); transition:all .15s;
+}
+.orb-play:hover{border-color:var(--pastel);}
+.orb-play.playing{border-color:var(--pastel); color:var(--pastel);}
+.orbs-actions{margin-top:6px; width:100%; max-width:300px; position:relative; z-index:2;}
+
+/* ---------- ARCHETYPE SELECT ---------- */
+#screen-archetype{flex-direction:column; align-items:center; justify-content:center; padding:40px;}
+.arch-head{text-align:center; margin-bottom:28px;}
+.arch-head .eyebrow{font-size:11.5px; color:var(--blue); text-transform:uppercase; letter-spacing:1px; font-weight:700; margin-bottom:10px;}
+.arch-head h1{font-size:24px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px;}
+.arch-head p{color:var(--text-dim); font-size:14px;}
+.arch-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; width:100%; max-width:600px;}
+.arch-card{background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:20px; cursor:pointer; transition:all .15s; text-align:left; position:relative;}
+.arch-card:hover{border-color:#3a4150; transform:translateY(-2px);}
+.arch-card.selected{border-color:var(--blue); background:#0f1a2c;}
+.arch-card .a-icon{width:36px; height:36px; border-radius:10px; background:var(--panel-2); border:1px solid var(--border-soft); display:flex; align-items:center; justify-content:center; margin-bottom:12px;}
+.arch-card .a-icon svg{width:17px;height:17px; color:var(--text-dim);}
+.arch-card.selected .a-icon{background:var(--blue-dim);}
+.arch-card.selected .a-icon svg{color:var(--blue);}
+.arch-card .a-title{font-size:14.5px; font-weight:700; margin-bottom:5px;}
+.arch-card .a-desc{font-size:11.5px; color:var(--text-faint); line-height:1.45;}
+.arch-card .check{position:absolute; top:14px; right:14px; width:18px; height:18px; border-radius:50%; background:var(--blue); display:none; align-items:center; justify-content:center;}
+.arch-card.selected .check{display:flex;}
+.arch-card .check svg{width:10px;height:10px;}
+.arch-actions{margin-top:24px; width:100%; max-width:300px;}
+
+/* ---------- PERSONA TYPEWRITER ---------- */
+#screen-persona{flex-direction:column; align-items:center; justify-content:center; padding:40px;}
+.persona-box{width:560px; max-width:90vw; text-align:center;}
+.persona-tag{
+  display:inline-flex; align-items:center; gap:6px; background:#241a08; color:var(--amber);
+  border:1px solid #3a2c10; font-size:10.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+  padding:6px 12px; border-radius:6px; margin-bottom:22px;
+}
+.persona-typewriter{font-size:19px; line-height:1.7; color:var(--text); font-weight:500; min-height:150px; text-align:left; margin-bottom:8px;}
+.persona-typewriter .cursor{display:inline-block; width:2px; height:1.1em; background:var(--blue); margin-left:2px; vertical-align:text-bottom; animation:blinkCursor .8s step-end infinite;}
+@keyframes blinkCursor{50%{opacity:0;}}
+.persona-numbers{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:20px 0 8px; opacity:0; transform:translateY(6px); transition:opacity .5s ease, transform .5s ease;}
+.persona-numbers.show{opacity:1; transform:translateY(0);}
+.persona-num-box{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px 8px;}
+.persona-num-box .k{font-size:10px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px; margin-bottom:7px;}
+.persona-num-box .v{font-size:20px; font-weight:700;}
+.persona-num-box.bucket-x .v{color:var(--green);}
+.persona-num-box.bucket-1 .v{color:var(--amber);}
+.persona-num-box.bucket-2 .v{color:var(--orange);}
+.persona-num-box.bucket-3 .v, .persona-num-box.bucket-npa .v{color:var(--red);}
+.persona-bucket-caption{
+  font-size:11.5px; color:var(--text-faint); text-align:center; margin-bottom:14px; opacity:0; transition:opacity .5s ease;
+}
+.persona-bucket-caption.show{opacity:1;}
+.persona-bucket-caption b{color:var(--text-dim);}
+.persona-actions{margin-top:8px; width:100%; max-width:300px; opacity:0; transition:opacity .5s ease; pointer-events:none;}
+.persona-actions.show{opacity:1; pointer-events:auto;}
+
+/* ---------- DASHBOARD: extra vars ---------- */
+--orange: #f5924a;
+
+/* ---------- DASHBOARD: ingest animations ---------- */
+.data-group .gh{display:flex; align-items:center;}
+.dot-item[data-ingest]{opacity:0; transform:translateX(-6px); transition:opacity .5s ease, transform .5s ease, background-color .6s ease; border-radius:4px;}
+.dot-item[data-ingest].show{opacity:1; transform:translateX(0);}
+.dot-item[data-ingest].flash{background-color:rgba(59,130,246,.14);}
+.ingest-counter{
+  margin-left:auto; font-size:9.5px; font-weight:700; color:var(--text-faint); background:var(--panel-2);
+  border:1px solid var(--border-soft); border-radius:5px; padding:2px 7px; letter-spacing:.3px; font-family:var(--mono);
+}
+
+/* ---------- DASHBOARD: right-column panels toggle ---------- */
+.right-panels-group{display:flex; flex-direction:column; gap:10px; flex:1; min-height:0;}
+.right-phone-card{flex:1; min-height:0; display:flex; flex-direction:column;}
+.phone-dock-head{
+  display:flex; align-items:center; gap:7px; font-size:11px; font-weight:700; color:var(--text-dim);
+  text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px; flex-shrink:0;
+}
+.phone-dock-head svg{width:13px; height:13px; color:var(--blue);}
+.phone-dock-body{flex:1; display:flex; align-items:center; justify-content:center; min-height:0;}
+.phone-dock-empty{font-size:11.5px; color:var(--text-faint); text-align:center; padding:0 10px;}
+
+/* ---------- PHONE MOCKUP ---------- */
+.phone-wrap{flex:1; display:flex; align-items:center; justify-content:center; min-height:0; padding:6px 0;}
+.phone-mockup{
+  position:relative; width:auto; height:100%; max-height:580px; max-width:290px; aspect-ratio:9/19.5;
+  background:#000; border-radius:38px; border:4px solid #2c2c2e;
+  box-shadow:0 24px 48px rgba(0,0,0,.55), 0 0 0 1px #1a1a1a, inset 0 0 0 2px #050505;
+  display:flex; flex-direction:column; overflow:hidden; flex-shrink:0;
+  animation:phoneOpen .5s cubic-bezier(.32,1.4,.55,1) both;
+}
+@keyframes phoneOpen{ 0%{opacity:0; transform:scale(.85) translateX(14px);} 100%{opacity:1; transform:scale(1) translateX(0);} }
+.phone-mockup::before{ content:''; position:absolute; right:-4px; top:22%; width:4px; height:64px; background:#232323; border-radius:2px; }
+.phone-mockup::after{ content:''; position:absolute; left:-4px; top:16%; width:4px; height:38px; background:#232323; border-radius:2px; box-shadow:0 56px 0 0 #232323, 0 98px 0 0 #232323; }
+.phone-notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:44%; height:24px; background:#000; border-radius:0 0 16px 16px; z-index:6;}
+.phone-statusbar{
+  flex-shrink:0; height:32px; background:#000; color:#fff; display:flex; align-items:center; justify-content:space-between;
+  padding:0 22px; font-size:11.5px; font-weight:700; letter-spacing:.2px; position:relative; z-index:5; white-space:nowrap;
+}
+.phone-screen{flex:1; display:flex; flex-direction:column; min-height:0; background:#0b141a;}
+
+/* WhatsApp variant */
+.wa-header{flex-shrink:0; background:#202c33; display:flex; align-items:center; gap:10px; padding:12px 14px;}
+.wa-back{color:#8696a0; font-size:18px;}
+.wa-avatar{width:34px; height:34px; border-radius:50%; background:#3b4a54; color:#cfd7dd; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0;}
+.wa-title .wa-name{font-size:13.5px; font-weight:700; color:#e9edef; line-height:1.25;}
+.wa-title .wa-sub{font-size:10.5px; color:#8696a0; line-height:1.2;}
+.wa-body{flex:1; padding:14px 12px; overflow-y:auto; display:flex; flex-direction:column; justify-content:flex-end;}
+.wa-bubble-in{
+  background:#202c33; border-radius:10px 10px 10px 2px; padding:9px 11px; max-width:90%;
+  align-self:flex-start; box-shadow:0 1px 2px rgba(0,0,0,.3); flex-shrink:0;
+}
+.wa-bubble-in .wa-text{font-size:12px; line-height:1.55; color:#e9edef; white-space:pre-wrap;}
+.wa-bubble-in .wa-meta{font-size:9px; color:#8696a0; text-align:right; margin-top:4px;}
+
+/* Call variant */
+.call-screen{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:30px 14px 22px; background:linear-gradient(180deg,#111417 0%,#0a0d10 100%); min-height:0;}
+.call-top{display:flex; flex-direction:column; align-items:center; gap:9px; margin-top:6px;}
+.call-avatar{width:68px; height:68px; border-radius:50%; background:var(--blue-dim); color:#a8c8f5; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; border:2px solid #2c3e5c;}
+.call-name{font-size:16px; font-weight:700; color:#fff;}
+.call-status{font-size:11px; color:#8fa0b3; display:flex; align-items:center; gap:6px;}
+.call-status .live-blip{width:6px; height:6px; border-radius:50%; background:var(--green); animation:blip 1.4s ease-in-out infinite; flex-shrink:0;}
+@keyframes blip{0%,100%{opacity:1;} 50%{opacity:.3;}}
+.call-captions{width:100%; font-family:var(--mono); font-size:10.5px; line-height:1.6; color:#c7cdd4; text-align:center; padding:0 6px; max-height:130px; overflow-y:auto;}
+.call-captions .cap-line{margin-bottom:5px; opacity:.85;}
+.call-controls{display:flex; gap:20px; align-items:center;}
+.call-btn{width:42px; height:42px; border-radius:50%; background:#2a2f36; display:flex; align-items:center; justify-content:center; color:#fff;}
+.call-btn svg{width:16px; height:16px;}
+
+/* ---------- PHONE SCREEN — idle home screen
+   (2026-09-07 redesign: the phone only ever shows real phone activity —
+   a call or a WhatsApp thread — or, before anything real has happened,
+   an actual home screen with the apps that will be used. NBA/decision
+   reasoning is not phone content — it lives in the ACTION/DETAILS boxes
+   in the left pane instead, per s.action/s.details.) ---------- */
+.phone-home{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; background:linear-gradient(180deg,#0d1b2e 0%,#0b141a 70%); padding:0 0 40px;}
+.phone-home-time{font-size:15px; color:rgba(255,255,255,.5); font-weight:500; margin-bottom:auto; margin-top:28px;}
+.phone-home-apps{display:flex; justify-content:center; gap:22px;}
+.phone-app{display:flex; flex-direction:column; align-items:center; gap:6px; width:64px;}
+.phone-app-icon{
+  width:48px; height:48px; border-radius:13px; display:flex; align-items:center; justify-content:center;
+  font-size:20px; font-weight:800; font-style:italic; color:#fff;
+  box-shadow:0 4px 10px rgba(0,0,0,.35);
+}
+.phone-app-icon svg{width:22px; height:22px;}
+.phone-app-icon.fincorp{background:#fff; color:#0a0a0a;}
+.phone-app-icon.whatsapp{background:var(--whatsapp);}
+.phone-app-icon.phone{background:var(--green);}
+.phone-app-label{font-size:9.5px; color:rgba(255,255,255,.75); text-align:center; line-height:1.3;}
+.call-btn.end{background:#e5484d; width:50px; height:50px;}
+.call-btn.end svg{width:19px; height:19px;}
+
+/* ---------- NBA-NOW card (Decision Engine view) ---------- */
+.nba-now-card{
+  flex:1; display:flex; flex-direction:column; justify-content:center; gap:14px; min-height:0;
+}
+.nba-now-eyebrow{
+  display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+  padding:5px 11px; border-radius:6px; width:fit-content;
+}
+.nba-now-eyebrow.taken{background:#0c2419; color:var(--green); border:1px solid #164430;}
+.nba-now-eyebrow.analyzing{background:#1a1330; color:var(--purple); border:1px solid #3a2a5c;}
+.nba-now-eyebrow.deciding{background:#241a08; color:var(--amber); border:1px solid #3a2c10;}
+.nba-now-title{font-size:22px; font-weight:700; letter-spacing:-.3px; line-height:1.3;}
+.nba-now-reason{font-size:14px; color:var(--text-dim); line-height:1.65; max-width:520px;}
+.nba-now-metric{
+  display:inline-flex; align-items:center; gap:9px; background:var(--panel-2); border:1px solid var(--border-soft);
+  border-radius:10px; padding:11px 15px; font-size:12.5px; color:var(--text-dim); width:fit-content; margin-top:2px;
+}
+.nba-now-metric svg{width:14px; height:14px; color:var(--text-faint); flex-shrink:0;}
+.nba-now-metric b{color:var(--text); font-weight:700;}
+
+/* ---------- INFRA strip ---------- */
+.infra-strip{
+  background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:7px 12px;
+  font-size:11px; color:var(--text-faint); line-height:1.4; display:flex; gap:8px; align-items:baseline; flex-shrink:0;
+}
+.infra-strip-label{flex-shrink:0; font-weight:700; color:var(--text-dim); letter-spacing:.5px; font-size:10px;}
+.infra-strip span:not(.infra-strip-label){
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+
+/* ---------- Purchasing Signals ---------- */
+.data-group.realtime-group .gh{color:var(--blue);}
+.data-group.purchasing .gh{color:var(--text-dim);}
+
+/* ---------- COMMUNICATION HISTORY (one tight line per event) ---------- */
+.comm-platform{font-size:11px; font-weight:700; letter-spacing:.2px;}
+.comm-platform.whatsapp{color:#25d366;}
+.comm-platform.voice{color:var(--blue);}
+.comm-platform.sms{color:var(--amber);}
+.comm-platform.email{color:#a78bfa;}
+.lc-dot{width:6px; height:6px; border-radius:50%; background:var(--text-faint); flex-shrink:0; transition:background .4s, box-shadow .4s;}
+.lc-dot.connected{background:var(--green); box-shadow:0 0 7px rgba(34,197,94,.55); animation:blip 1.6s ease-in-out infinite;}
+.lc-dot.not-connected{background:var(--red); box-shadow:0 0 5px rgba(239,68,68,.4);}
+.lc-dot.pending{background:var(--amber);}
+
+/* ---------- REAL CALL TRANSCRIPT & OUTCOME ---------- */
+.real-transcript-card{
+  background:var(--panel-2); border:1px solid var(--border); border-radius:12px;
+  padding:9px 11px; margin-top:1px; display:flex; flex-direction:column; gap:7px;
+}
+.rt-outcome{display:flex; flex-wrap:wrap; gap:6px;}
+.rt-badge{
+  display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700;
+  padding:3px 9px; border-radius:20px; border:1px solid var(--border-soft); background:var(--panel);
+  font-family:var(--sans); letter-spacing:.2px;
+}
+.rt-badge.escalated{color:var(--red); border-color:#3a1a1a; background:#1f0a0a;}
+.rt-badge.resolved{color:var(--green); border-color:#164430; background:#0c2419;}
+.rt-badge.neutral{color:var(--text-dim); border-color:var(--border-soft); background:var(--panel);}
+.rt-transcript{
+  font-family:var(--mono); font-size:12px; line-height:1.55;
+  color:#d7dbe2; max-height:110px; overflow-y:auto; white-space:pre-wrap;
+}
+.rt-outcome:empty, .rt-transcript:empty{display:none;}
+.rt-transcript .rt-line-agent{color:var(--blue);}
+.rt-transcript .rt-line-customer{color:var(--text-dim);}
