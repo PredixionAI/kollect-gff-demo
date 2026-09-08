@@ -17,14 +17,14 @@ module.exports = {
     webhookSecret: required('VOIZ_WEBHOOK_SECRET'),
     sipTrunkId: required('SIP_TRUNK_ID'),
     defaultAgentId: required('VOIZ_DEFAULT_AGENT_ID'),
-    // Which VOIZ agent_id an orb dials. Priya falls back to
+    // Which VOIZ agent_id an orb dials. Neha (id 'priya') falls back to
     // VOIZ_DEFAULT_AGENT_ID since that's the one agent registered so far.
-    // Add VOIZ_AGENT_ID_ARJUN / _MEERA / _VIKRAM / _RITU to .env as each new
+    // Add VOIZ_AGENT_ID_SWARA / _MEERA / _VIKRAM / _RITU to .env as each new
     // agent is registered — no code change needed, the orb lights up
     // ("active") automatically once its env var is set (see routes/voices.js).
     agentIdsByVoice: {
       priya: process.env.VOIZ_AGENT_ID_PRIYA || process.env.VOIZ_DEFAULT_AGENT_ID || '',
-      arjun: process.env.VOIZ_AGENT_ID_ARJUN || '',
+      swara: process.env.VOIZ_AGENT_ID_SWARA || '',
       meera: process.env.VOIZ_AGENT_ID_MEERA || '',
       vikram: process.env.VOIZ_AGENT_ID_VIKRAM || '',
       ritu: process.env.VOIZ_AGENT_ID_RITU || '',

@@ -56,7 +56,7 @@ Decisions locked in (do not re-litigate without checking with Kamal):
   vs. the call-dispatch endpoint which is proven working.
 - Each orb now maps to its own VOIZ agent via `server/config.js`
   `agentIdsByVoice` (sourced from `VOIZ_AGENT_ID_PRIYA` / `_ARJUN` / `_MEERA`
-  / `_VIKRAM` / `_RITU` in `.env`). Only Priya has a real agent right now, so
+  / `_VIKRAM` / `_RITU` in `.env`). Only Neha has a real agent right now, so
   only her orb is selectable — the other four render as "Coming soon" and
   the Confirm button stays disabled on them (`public/js/orbs.js`,
   `renderOrbCarousel`). **Filling in one of those env vars is the entire
@@ -75,7 +75,7 @@ silently at the specific route that needed it. Check in this order:
 |---|---|---|
 | `VOIZ_API_KEY` | Outbound call dispatch | [server/lib/voizClient.js](server/lib/voizClient.js) — sent as `X-API-Key` (not `Bearer` — see §1) |
 | `VOIZ_BASE_URL` | Same — which VOIZ environment you're hitting | same file |
-| `VOIZ_DEFAULT_AGENT_ID` | Fallback agent, and currently Priya's real agent | [server/config.js](server/config.js), used by [server/routes/call.js](server/routes/call.js) |
+| `VOIZ_DEFAULT_AGENT_ID` | Fallback agent, and currently Neha's real agent | [server/config.js](server/config.js), used by [server/routes/call.js](server/routes/call.js) |
 | `VOIZ_AGENT_ID_ARJUN` / `_MEERA` / `_VIKRAM` / `_RITU` | Activates that orb — set once the agent is registered, no code change | `server/config.js` → `server/routes/voices.js` → `public/js/orbs.js` |
 | `SIP_TRUNK_ID` | Passed through to VOIZ's call payload | `voizClient.js` |
 | `VOIZ_WEBHOOK_SECRET` | Inbound `call_completed` webhook signature check — now a secondary/optional path, see §1 | [server/lib/verifySignature.js](server/lib/verifySignature.js) |
@@ -130,8 +130,8 @@ This follows the PRD's own Phase 0–6 build order, filtered to what's still
 open after the scope decisions in §1.
 
 ### Phase 0 — Agent registration (partially done)
-Priya is registered and working (`VOIZ_DEFAULT_AGENT_ID`, real call
-recordings exist in `recordings/`). Arjun, Meera, Vikram, Ritu still need
+Neha is registered and working (`VOIZ_DEFAULT_AGENT_ID`, real call
+recordings exist in `recordings/`). Swara, Meera, Vikram, Ritu still need
 their own agents registered via `POST /api/agents` (platform guide §3.1).
 The moment each is registered:
 1. Set its `VOIZ_AGENT_ID_*` var in `.env` (see §2 table).

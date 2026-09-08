@@ -1,8 +1,8 @@
 // Built-in fallback voices (shown when /api/voices returns nothing useful)
 const BUILTIN_ORBS = [
-  { id:'priya',   name:'Priya',   lang:'Hinglish', meta:'Hinglish · Female', active:true,  pastel:'#ff9eb5', ttsLang:'hi-IN', sample:'Namaste! Main Priya bol rahi hoon, ABC Bank ki taraf se.' },
-  { id:'arjun',   name:'Arjun',   lang:'Hindi',    meta:'Hindi · Male',    active:true,  pastel:'#8ecbff', ttsLang:'hi-IN', sample:'Namaste, main Arjun bol raha hoon, ABC Bank ki or se.' },
-  { id:'aditi',   name:'Aditi',   lang:'Marathi',  meta:'Marathi · Female',active:true,  pastel:'#8ef0c4', ttsLang:'mr-IN', sample:'Namaskar, mi Aditi boltey, ABC Bank kadun.' },
+  { id:'priya',   name:'Neha',   lang:'Hinglish', meta:'Hinglish · Female', active:true,  pastel:'#ff9eb5', ttsLang:'hi-IN', sample:'Namaste! Main Neha bol rahi hoon, Predixion Fincorp ki taraf se.' },
+  { id:'swara',   name:'Swara',   lang:'Hindi', meta:'Hindi · Female', active:true,  pastel:'#8ecbff', ttsLang:'hi-IN', sample:'Namaste, main Swara bol rahi hoon, Predixion Fincorp ki taraf se.' },
+  { id:'aditi',   name:'Aditi',   lang:'Marathi',  meta:'Marathi · Female',active:true,  pastel:'#8ef0c4', ttsLang:'mr-IN', sample:'Namaskar, mi Aditi boltey, Predixion Fincorp kadun.' },
   { id:'karthik', name:'Karthik', lang:'Tamil',    meta:'Tamil · Male',    active:false, pastel:'#a99bd6' },
   { id:'deepa',   name:'Deepa',   lang:'Kannada',  meta:'Kannada · Female',active:false, pastel:'#d6ab8e' },
 ];
@@ -54,8 +54,20 @@ function renderOrbCarousel(autoplay){
     const z = -dist * 70;
     const x = offset * 122;
     const opacity = Math.max(0.28, 1 - dist * 0.3);
+    // Showcase (play a sample) is driven by whether there's a REAL
+    // recording — not the Web Speech TTS fallback, and not whether a real
+    // VOIZ agent is registered. Those are different things: "active" below
+    // still gates whether this persona can actually be CONFIRMED and dialed
+    // (server/routes/call.js 500s with no configured agent_id), but a real
+    // recorded voice is worth showcasing long before its agent is
+    // registered — TTS-only personas (no recording yet) still say
+    // "Coming soon" since there's nothing genuine to showcase yet.
+    const canShowcase = !!o.sampleAudio;
     const el = document.createElement('div');
-    el.className = 'orb' + (o.active ? '' : ' disabled') + (offset === 0 ? ' front' : '');
+    // .disabled (grayscale + "not-allowed" cursor) matches "Coming soon" now
+    // — an orb with a real recording reads as fully alive even before its
+    // agent is registered, since there's genuinely something to hear.
+    el.className = 'orb' + (canShowcase ? '' : ' disabled') + (offset === 0 ? ' front' : '');
     el.style.setProperty('--pastel', o.pastel || '#8ecbff');
     el.style.transform = 'translate(-50%,-50%) translate3d(' + x + 'px,0,' + z + 'px) scale(' + scale + ')';
     el.style.opacity = opacity;
@@ -65,23 +77,29 @@ function renderOrbCarousel(autoplay){
       '<div class="orb-label">' +
         '<div class="oname">' + o.name + '</div>' +
         '<div class="olang">' + o.lang + '</div>' +
-        (o.active
+        (canShowcase
           ? (offset === 0 ? '<button class="orb-play" type="button" data-role="play">&#9654; Replay</button>' : '')
           : '<div class="osoon">Coming soon</div>') +
+        (!o.active && canShowcase ? '<div class="osoon osoon-pending">Agent pending</div>' : '') +
       '</div>';
     el.addEventListener('click', (e) => {
       if(e.target.closest('[data-role="play"]')){ playOrbSample(o, el); return; }
       if(offset !== 0){ orbIndex = i; renderOrbCarousel(); return; }
       // Already the front orb — clicking the sphere itself (not just the
       // small Replay button) should also (re)play the sample.
-      if(o.active) playOrbSample(o, el);
+      if(canShowcase) playOrbSample(o, el);
     });
     if(offset === 0){ frontOrb = o; frontEl = el; }
     track.appendChild(el);
   });
+  // Confirming still requires a real registered VOIZ agent — showcasing the
+  // voice doesn't mean it can actually be dialed yet.
   document.getElementById('btnOrbNext').disabled = !orbList[orbIndex].active;
   state.voice = orbList[orbIndex];
-  if(autoplay && frontOrb && frontOrb.active && frontOrb.sample){
+  // Autoplay-on-arrival matches what's actually shown: only orbs with a
+  // visible Replay button (a real recording) play automatically — staying
+  // silent for "Coming soon" ones instead of TTS-narrating them unprompted.
+  if(autoplay && frontOrb && frontOrb.sampleAudio){
     playOrbSample(frontOrb, frontEl);
   }
 }

@@ -194,7 +194,7 @@ X-API-Key: <VOIZ_API_KEY>
 **Given the auth-header correction above and the `due_amount`/`due_date`
 type note in the call endpoint, don't assume this payload is 100% accurate
 either — verify the auth header works here before relying on any other
-field shape being exact.** If you're registering the next agent (Arjun,
+field shape being exact.** If you're registering the next agent (Swara,
 Meera, Vikram, or Ritu — see `EXECUTION.md`), this is the endpoint to use;
 treat the first registration as the verification step for this section too,
 and update this doc once you've confirmed the real shape.

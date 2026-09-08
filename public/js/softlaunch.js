@@ -12,6 +12,54 @@ function enterSoftLaunch(){
   runSoftLaunch();
 }
 
+/* =========================================================
+   PER-BEAT VOICEOVER — one real recording per beat (public/audio/intro/),
+   synced 1:1 to whichever beat is on screen. Whatever changes the beat
+   (auto-timer, a tap, Skip Intro) must also change the audio — there's a
+   single entry point (playBeatAudio) called from showBeat() below, so every
+   caller of showBeat automatically gets synced audio for free, and a single
+   stopBeatAudio() for the one path that leaves the beats entirely
+   (Skip Intro) instead of moving to another beat.
+========================================================= */
+let _introAudioEl = null;
+const INTRO_FADE_MS = 180; // "soft" start/stop, not a hard cut — long enough to be felt, short enough to still feel synced to the tap
+let _introFadeTimer = null;
+
+function stopBeatAudio(){
+  clearInterval(_introFadeTimer);
+  if(!_introAudioEl) return;
+  const el = _introAudioEl;
+  _introAudioEl = null;
+  const steps = 6;
+  let i = 0;
+  _introFadeTimer = setInterval(() => {
+    i++;
+    el.volume = Math.max(0, el.volume - 1 / steps);
+    if(i >= steps){
+      clearInterval(_introFadeTimer);
+      el.pause();
+    }
+  }, INTRO_FADE_MS / steps);
+}
+
+function playBeatAudio(src){
+  stopBeatAudio();
+  if(!src) return;
+  const el = new Audio(src);
+  el.volume = 0;
+  _introAudioEl = el;
+  el.play().then(() => {
+    const steps = 6;
+    let i = 0;
+    const fadeIn = setInterval(() => {
+      if(_introAudioEl !== el){ clearInterval(fadeIn); return; } // superseded by a later beat mid-fade
+      i++;
+      el.volume = Math.min(1, i / steps);
+      if(i >= steps) clearInterval(fadeIn);
+    }, INTRO_FADE_MS / steps);
+  }).catch(() => {}); // autoplay can be blocked in some browsers — the visuals still work without it
+}
+
 function renderWaveformConstant(){
   const el = document.getElementById('ibWaveformConstant');
   if(!el || el.dataset.built) return; // build once, colors/toggles from then on
@@ -130,31 +178,31 @@ function runSoftLaunch(){
   const beats = [
     { text:'Collection across DPD buckets has always cost lenders more than it should.',
       sub:'One strategy was never built to fit every borrower.',
-      dur:4800 },
+      dur:4800, audio:'/audio/intro/beat1.wav' },
     { text:'Kollect is a platform of specialized agents, working in perfect harmony.',
       sub:'Proactive. Personalized. Outcome-based by design.',
-      dur:4800, revealAgents:true },
+      dur:4800, revealAgents:true, audio:'/audio/intro/beat2.wav' },
     { text:'It starts with Borrower 360: every touchpoint, pulled in at once.',
       sub:'CIBIL · CRM · Dashboards · User history',
       stage:'b360', ch:'var(--blue)',
       agents:['Default Detection Agent','Data Orchestration Agent','Classification Agent'],
-      dur:5000, hideWave:true },
+      dur:5000, hideWave:true, audio:'/audio/intro/beat3.wav' },
     { text:'Then Strategy builds a pitch that actually sounds personal.',
       sub:'Tone · Language · Timing · Channel',
       stage:'strategy', ch:'var(--purple)',
       agents:['Strategy Gen Agent','Tone Calibration','NBA Ranking Agent'],
-      dur:5000 },
+      dur:5000, audio:'/audio/intro/beat4.wav' },
     { text:"Execution isn't one attempt. It's a live conversation, re-strategized after every reply.",
       sub:'WhatsApp · Voice · Recalculated in real time',
       stage:'execution', ch:'var(--amber)',
       agents:['Friendly Reminder Agent','Speech Analyzer','Escalation Agent'], loop:true,
-      dur:5600 },
+      dur:5600, audio:'/audio/intro/beat5.wav' },
     { text:'Until Fulfilment: resolved without drop-offs, without friction.',
       sub:'Reconciled · Reported · Audited',
       stage:'fulfilment', ch:'var(--green)',
       agents:['Reconciliation Agent','Reporting Agent','Audit Agent'],
-      dur:5000 },
-    { text:'This is Kollect.', sub:`Welcome, ${firstName}. Let's show you what it feels like.`, dur:5400 },
+      dur:5000, audio:'/audio/intro/beat6.wav' },
+    { text:'This is Kollect.', sub:`Welcome, ${firstName}. Let's show you what it feels like.`, dur:5400, audio:'/audio/intro/beat7.wav' },
   ];
   const initialDelay = 600;
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -167,6 +215,7 @@ function runSoftLaunch(){
     if(i >= beats.length) return;
     const b = beats[i];
     const isLast = i === beats.length - 1;
+    playBeatAudio(b.audio); // every caller (auto-timer, tap, replay) goes through here, so audio always stays synced to whatever beat is actually on screen
     if(b.revealAgents){
       agentsBg.classList.add('show'); // fades in here, stays for the rest of the sequence
       waveEl.classList.add('wave-blue'); // the voice channel goes from dying (red) to live (blue), same moment
@@ -212,6 +261,7 @@ function runSoftLaunch(){
         showBeat(beatIndex);
         scheduleNext(beats[beatIndex].dur);
       } else {
+        stopBeatAudio(); // leaving the beat sequence entirely — nothing left to stay synced to
         softLaunchTimer = setTimeout(() => { goTo('screen-orbs'); renderOrbCarousel(); }, 300);
       }
     }, delay));
@@ -242,6 +292,7 @@ document.getElementById('btnSkipIntro').addEventListener('click', (e) => {
   clearTimeout(softLaunchTimer);
   introBeatTimers.forEach(t => clearTimeout(t));
   introBeatTimers = [];
+  stopBeatAudio(); // leaving the intro screen entirely, not just moving to another beat
   if (window.track) track('intro_skip', {});
   goTo('screen-orbs');
   if (window.track) track('voice_screen_entered', {});

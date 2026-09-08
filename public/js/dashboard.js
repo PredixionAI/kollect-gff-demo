@@ -10,7 +10,7 @@ const TABS = [
   { key:'fulfilment',label:'Fulfilment',   sub:'Resolution',         icon:`<path d="M20 6L9 17l-5-5"/>` },
 ];
 
-function personaTone(){ return state.voice ? state.voice.name : 'Priya'; }
+function personaTone(){ return state.voice ? state.voice.name : 'Neha'; }
 function personaLang(){ return (state.voice && state.voice.lang) ? state.voice.lang : 'Hinglish'; }
 
 /* =========================================================
@@ -537,7 +537,7 @@ function renderPhoneMockup(s){
   }
   const dialogue    = lines.filter(l => /:\s/.test(l) && !l.startsWith('['));
   const captions    = dialogue.slice(-2);
-  const personaName = state.voice ? state.voice.name : 'Priya';
+  const personaName = state.voice ? state.voice.name : 'Neha';
   const personaInit = personaName.charAt(0).toUpperCase();
   return `
     <div class="phone-wrap">
@@ -1153,6 +1153,33 @@ function renderGeminiAnalysis(analysis){
 
   state.geminiAnalysis = analysis; // read by the WhatsApp-copy override in renderStep (steps 7/9)
 }
+
+/* =========================================================
+   LIGHT/DARK THEME TOGGLE — dashboard screen only (2026-09-08 decision).
+   Every other screen and the phone mockup inside this one stay dark
+   always — see the #screen-dash[data-theme="light"] rule in styles.css.
+   Starts dark on a fresh visit; a manual toggle is remembered per browser.
+========================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('btnThemeToggle');
+  const dashEl = document.getElementById('screen-dash');
+  if(!btn || !dashEl) return;
+
+  function applyTheme(theme){
+    if(theme === 'light') dashEl.setAttribute('data-theme', 'light');
+    else dashEl.removeAttribute('data-theme');
+  }
+
+  const saved = localStorage.getItem('kollect_theme');
+  if(saved === 'light') applyTheme('light'); // default stays dark otherwise
+
+  btn.addEventListener('click', () => {
+    const next = dashEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    localStorage.setItem('kollect_theme', next);
+    if (window.track) track('theme_toggled', { theme: next });
+  });
+});
 
 /* =========================================================
    WHATSAPP MOCK/LIVE TOGGLE — /api/whatsapp/mode
