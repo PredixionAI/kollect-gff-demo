@@ -477,9 +477,94 @@ function renderTabs(){
       <div class="tab-icon">${isDone ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>' : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${t.icon}</svg>`}</div>
       <div><div class="tab-title">${t.label}</div><div class="tab-sub">${t.sub}</div></div>
       <div class="tab-fill"><div class="tab-fill-bar" style="width:${pct.toFixed(0)}%"></div></div>`;
+    // Strategy is the one tab that opens into the actual multi-agent,
+    // multi-data-source reasoning behind the current archetype's strategy
+    // (see openStrategyModal) — every other tab stays a plain progress header.
+    if(t.key === 'strategy'){
+      el.classList.add('tab-clickable');
+      el.title = 'See how this strategy was built';
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('aria-label', 'See how this strategy was built');
+      const hint = document.createElement('div');
+      hint.className = 'tab-expand-hint';
+      hint.textContent = 'View';
+      el.appendChild(hint);
+      el.addEventListener('click', () => openStrategyModal());
+      el.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openStrategyModal(); }
+      });
+    }
     row.appendChild(el);
   });
 }
+
+/* =========================================================
+   STRATEGY MODAL — "how this strategy was built": pulls the real
+   agents/models/signals every step already carries (previously never
+   displayed) and shows the data sources feeding in, the agents reasoning
+   over them, and the resulting decision, for the CURRENT archetype run.
+========================================================= */
+function openStrategyModal(){
+  const modal = document.getElementById('strategyModal');
+  if(!modal) return;
+  const genStep = stepData.find(s => s.title === 'Strategy Generation');
+  const nbaStep = stepData.find(s => s.title === 'Next Best Action');
+  const aggStep = stepData.find(s => s.title === 'Signal Aggregation');
+  if(!genStep || !nbaStep) return;
+
+  const sourceSignals = [...(aggStep ? aggStep.signals : []), ...genStep.signals];
+  document.getElementById('strategySources').innerHTML = sourceSignals.map(sg => `
+    <div class="source-node">
+      <div class="src-name">${sg.name}</div>
+      <div class="src-desc">${sg.desc}</div>
+    </div>`).join('');
+
+  const pairs = [];
+  const seenAgents = new Set();
+  [genStep, nbaStep].forEach(step => {
+    (step.agents || []).forEach((name, i) => {
+      if(seenAgents.has(name)) return;
+      seenAgents.add(name);
+      pairs.push({ name, model: (step.models && (step.models[i] || step.models[0])) || '' });
+    });
+  });
+  document.getElementById('strategyAgents').innerHTML = pairs.map(p => `
+    <div class="agent-card">
+      <div class="agent-name"><span class="agent-status-dot"></span>${p.name}</div>
+      <div class="agent-model">${p.model}</div>
+    </div>`).join('');
+
+  document.getElementById('strategyDecisionInitial').innerHTML = `
+    <div class="dcard-label">Initial Strategy</div>
+    <div class="dcard-title">${genStep.action}</div>
+    <div class="dcard-desc">${genStep.details}</div>`;
+  document.getElementById('strategyDecisionFinal').innerHTML = `
+    <div class="dcard-label">Chosen Next Best Action</div>
+    <div class="dcard-title">${nbaStep.action}</div>
+    <div class="dcard-desc">${nbaStep.details}</div>`;
+
+  const archTitle = state.archetype ? state.archetype.title : '';
+  document.getElementById('strategyModalSub').textContent =
+    `${pairs.length} agents · ${sourceSignals.length} data sources · ${archTitle}`;
+
+  if(window.track) track('strategy_modal_open', { archetype: state.archetype ? state.archetype.id : null });
+  modal.style.display = 'flex';
+}
+function closeStrategyModal(){
+  const modal = document.getElementById('strategyModal');
+  if(modal) modal.style.display = 'none';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('strategyModal');
+  const btnClose = document.getElementById('btnCloseStrategyModal');
+  if(!modal) return;
+  if(btnClose) btnClose.addEventListener('click', closeStrategyModal);
+  modal.addEventListener('click', (e) => { if(e.target === modal) closeStrategyModal(); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && modal.style.display !== 'none') closeStrategyModal();
+  });
+});
 
 /* =========================================================
    PHONE MOCKUP RENDERER

@@ -572,6 +572,94 @@ body{
 .dc-result-box .rh.err { color: var(--red); }
 .dc-result-box .rb { color: var(--text-dim); white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
 
+/* ---------- STRATEGY TAB → "How this strategy was built" modal ----------
+   The Strategy tab header is otherwise just a progress indicator; this
+   makes it a doorway into the real per-archetype agents/models/signals
+   data that every step already carries but nothing displayed, showing the
+   actual data sources + agents that produced the current strategy. */
+.tab-clickable{ cursor:pointer; }
+.tab-clickable:hover{ border-color:var(--blue-dim); background:var(--panel-2); }
+.tab-expand-hint{
+  position:absolute; top:4px; right:6px; font-size:8.5px; font-weight:700;
+  letter-spacing:.3px; color:var(--text-faint); text-transform:uppercase;
+  opacity:0; transition:opacity .15s;
+}
+.tab-clickable:hover .tab-expand-hint{ opacity:1; }
+
+.strategy-modal-box{ width:900px; max-width:95vw; }
+.strategy-modal-body{ padding:22px 24px; }
+.strategy-flow{ display:flex; align-items:stretch; gap:0; }
+.flow-col{ flex:1 1 0; min-width:0; }
+.flow-col-label{
+  font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.6px;
+  color:var(--text-faint); margin-bottom:10px;
+}
+
+.flow-connector{
+  flex:0 0 34px; position:relative; align-self:stretch;
+  display:flex; align-items:center; justify-content:center;
+}
+.flow-connector::before{
+  content:''; position:absolute; left:1px; right:1px; top:50%;
+  height:1px; background:var(--border-soft);
+}
+.flow-dot{
+  position:absolute; top:50%; left:1px; width:5px; height:5px; margin-top:-2.5px;
+  border-radius:50%; background:var(--blue); opacity:0;
+  animation:flowTravel 1.8s linear infinite; will-change:transform;
+}
+.flow-dot:nth-child(2){ animation-delay:.6s; }
+.flow-dot:nth-child(3){ animation-delay:1.2s; }
+@keyframes flowTravel{
+  0%{ transform:translateX(0); opacity:0; }
+  8%{ opacity:1; }
+  88%{ opacity:1; }
+  100%{ transform:translateX(28px); opacity:0; }
+}
+@media (prefers-reduced-motion: reduce){
+  .flow-dot{ animation:none; opacity:.55; }
+}
+
+.source-node{
+  background:var(--panel-2); border:1px solid var(--border-soft); border-radius:8px;
+  padding:8px 10px; margin-bottom:7px; font-size:11.5px;
+}
+.source-node .src-name{ font-weight:700; color:var(--blue); }
+.source-node .src-desc{ color:var(--text-faint); margin-top:2px; line-height:1.35; }
+
+.agent-card{
+  background:var(--panel-2); border:1px solid var(--border); border-radius:10px;
+  padding:10px 12px; margin-bottom:8px;
+}
+.agent-card .agent-name{
+  font-size:12.5px; font-weight:700; color:var(--text);
+  display:flex; align-items:center; gap:7px;
+}
+.agent-status-dot{
+  width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0;
+  animation:agentPulse 1.6s ease-in-out infinite;
+}
+@keyframes agentPulse{
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%{ opacity:.4; transform:scale(.82); }
+}
+@media (prefers-reduced-motion: reduce){
+  .agent-status-dot{ animation:none; opacity:.9; }
+}
+.agent-card .agent-model{ font-size:11px; color:var(--text-faint); margin-top:3px; margin-left:14px; }
+
+.decision-card{
+  background:var(--panel-2); border:1px solid var(--border); border-radius:10px;
+  padding:12px 14px; margin-bottom:10px;
+}
+.decision-card .dcard-label{
+  font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px;
+  color:var(--text-faint); margin-bottom:4px;
+}
+.decision-card .dcard-title{ font-size:13.5px; font-weight:700; color:var(--text); line-height:1.35; }
+.decision-card .dcard-desc{ font-size:11.5px; color:var(--text-dim); margin-top:4px; line-height:1.45; }
+.decision-card.decision-final{ border-color:var(--blue-dim); box-shadow:0 0 0 1px var(--blue-dim) inset; }
+
 
 
 /* =========================================================
