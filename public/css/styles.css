@@ -31,7 +31,26 @@ body{
   -webkit-font-smoothing:antialiased;
   overflow:hidden;
 }
-#app{height:100vh; width:100vw; position:relative;}
+/* Viewport-fit scaling (2026-09-08) — the whole app is designed at a fixed
+   1440x900 reference size and uniformly scaled to fit whatever screen it's
+   actually opened on (iPad, a laptop at various zoom levels, a wide
+   monitor...), via #app's transform (set in public/js/viewportFit.js). This
+   replaces fighting responsive breakpoints one cropped element at a time —
+   every child still lays out against the same 1440x900 box it always has,
+   so nothing reflows differently at different sizes, it's the exact same
+   layout just visually bigger or smaller as a whole unit. position:fixed
+   here also makes #app the containing block for any fixed-position
+   descendant (e.g. .brand below) per spec once a transform is present, so
+   those scale and stay positioned correctly inside the reference frame
+   too, instead of escaping it to the real viewport. */
+#app{
+  width:1440px; height:900px;
+  position:fixed; top:50%; left:50%;
+  transform-origin:center center;
+  /* transform itself (translate + scale) is set by viewportFit.js — this
+     default keeps things sane for a split second before that JS runs. */
+  transform:translate(-50%,-50%);
+}
 .screen{
   position:absolute; inset:0;
   display:none;
@@ -814,11 +833,6 @@ body{
 /* ---------- DASHBOARD: right-column panels toggle ---------- */
 .right-panels-group{display:flex; flex-direction:column; gap:10px; flex:1; min-height:0;}
 .right-phone-card{flex:1; min-height:0; display:flex; flex-direction:column;}
-.phone-dock-head{
-  display:flex; align-items:center; gap:7px; font-size:11px; font-weight:700; color:var(--text-dim);
-  text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px; flex-shrink:0;
-}
-.phone-dock-head svg{width:13px; height:13px; color:var(--blue);}
 .phone-dock-body{flex:1; display:flex; align-items:stretch; justify-content:center; min-height:0;}
 .phone-dock-empty{font-size:11.5px; color:var(--text-faint); text-align:center; padding:0 10px;}
 
@@ -831,7 +845,7 @@ body{
      message content. Confirmed via measurement (2026-09-08): 0 overflow at
      257px, 41px of content cut at 131px. This floor keeps it above that
      line regardless of how narrow the browser window gets. */
-  position:relative; width:auto; height:100%; min-height:270px; max-height:580px; max-width:290px; aspect-ratio:9/19.5;
+  position:relative; width:auto; height:100%; min-height:270px; max-height:640px; max-width:315px; aspect-ratio:9/19.5;
   background:#000; border-radius:38px; border:4px solid #2c2c2e;
   box-shadow:0 24px 48px rgba(0,0,0,.55), 0 0 0 1px #1a1a1a, inset 0 0 0 2px #050505;
   display:flex; flex-direction:column; overflow:hidden; flex-shrink:0;
@@ -857,7 +871,7 @@ body{
 .wa-action{width:19px; height:19px; display:flex; align-items:center; justify-content:center;}
 .wa-action svg{width:100%; height:100%;}
 .wa-body{
-  flex:1; padding:14px 12px; overflow-y:auto; display:flex; flex-direction:column; justify-content:flex-end;
+  flex:1; padding:14px 12px; overflow-y:auto; display:flex; flex-direction:column; justify-content:flex-end; gap:8px;
   background-color:#0b141a;
   background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.035) 1px, transparent 0);
   background-size:20px 20px;

@@ -9,6 +9,7 @@ let introBeatTimers = [];
 function enterSoftLaunch(){
   goTo('screen-softlaunch');
   if (window.track) track('intro_start', {});
+  unlockBeatAudio();
   runSoftLaunch();
 }
 
@@ -20,10 +21,53 @@ function enterSoftLaunch(){
    caller of showBeat automatically gets synced audio for free, and a single
    stopBeatAudio() for the one path that leaves the beats entirely
    (Skip Intro) instead of moving to another beat.
+
+   Deployed-environment bug (2026-09-08): beat 1 played fine on auto-advance
+   (its showBeat() call happens synchronously inside the "Start the
+   simulation" button's click handler — a real user gesture), but beats 2-5
+   auto-advance via a setTimeout with no gesture in the call stack at all,
+   so the browser's autoplay policy silently blocked `.play()` on those —
+   confirmed by the exact symptom reported: audio only ever played on a
+   manual tap (content.onclick below, itself a real click handler), never
+   on the untouched auto-timer. A user gesture only reliably unlocks the
+   SPECIFIC <audio> element it plays, not "audio in general" for the page,
+   so the fix is to pre-create and silently play+pause every beat's element
+   once, synchronously inside that same initial click (unlockBeatAudio,
+   called from enterSoftLaunch above) — every later programmatic .play() on
+   those same (already-unlocked) elements then succeeds even from a timer.
 ========================================================= */
 let _introAudioEl = null;
 const INTRO_FADE_MS = 180; // "soft" start/stop, not a hard cut — long enough to be felt, short enough to still feel synced to the tap
 let _introFadeTimer = null;
+const _beatAudioPool = {}; // src -> pre-created, pre-unlocked <audio> element
+
+function unlockBeatAudio(){
+  // beat1 deliberately excluded: it plays synchronously inside this exact
+  // same click handler (enterSoftLaunch -> runSoftLaunch -> showBeat(0),
+  // right after this function returns), so it never needed unlocking. The
+  // very first version of this fix primed beat1 here too — its priming
+  // play() and the real playBeatAudio() play() landed on the same <audio>
+  // element in the same tick, and the priming call's own pause() (in the
+  // .then() below) won the race and silenced the real playback moments
+  // after it started. Regression found and fixed same day.
+  const srcs = [
+    '/audio/intro/beat2.wav', '/audio/intro/beat3.wav',
+    '/audio/intro/beat4.wav', '/audio/intro/beat5.wav', '/audio/intro/beat6.wav',
+    '/audio/intro/beat7.wav',
+  ];
+  srcs.forEach(src => {
+    if(_beatAudioPool[src]) return; // already unlocked from an earlier run (e.g. replaying the intro)
+    const el = new Audio(src);
+    el.volume = 0;
+    _beatAudioPool[src] = el;
+    // Play+immediately pause while still inside the click's gesture context
+    // — this is what actually unlocks the element for a later, gesture-less
+    // .play() call from setTimeout. The .catch is real: browsers vary on
+    // whether even this succeeds, but it costs nothing to try, and
+    // playBeatAudio's own .catch below still guards the real playback.
+    el.play().then(() => { el.pause(); el.currentTime = 0; el.volume = 1; }).catch(() => {});
+  });
+}
 
 function stopBeatAudio(){
   clearInterval(_introFadeTimer);
@@ -45,7 +89,13 @@ function stopBeatAudio(){
 function playBeatAudio(src){
   stopBeatAudio();
   if(!src) return;
-  const el = new Audio(src);
+  // Reuse the pre-unlocked element for this beat if unlockBeatAudio already
+  // ran (the normal path); fall back to a fresh Audio() otherwise (e.g. if
+  // this somehow gets called before enterSoftLaunch, or the pool doesn't
+  // have this src) — worst case that one behaves like it did before this
+  // fix, no worse off.
+  const el = _beatAudioPool[src] || new Audio(src);
+  el.currentTime = 0;
   el.volume = 0;
   _introAudioEl = el;
   el.play().then(() => {

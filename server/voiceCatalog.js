@@ -40,15 +40,14 @@ module.exports = [
     meta: 'Global English · Support & friendly · Female',
     provider: 'cartesia', voiceId: '694f9389-aac1-45b6-b726-9d9369183238',
     sampleText: 'Hi, this is Meera calling on behalf of Predixion Fincorp.' },
-  // Repurposed 2026-09-08 from "US English, Authoritative" — this slot's
-  // real VOIZ agent was never registered (VOIZ_AGENT_ID_VIKRAM still
-  // blank), so nothing functional depended on the old language/voice.
-  // sampleAudio is the male Marathi/Hindi recording that came from the
-  // original ritu.mp3 (git commit 7ee943d) — didn't match Ritu (Female) or
-  // Swara (Hindi), and this is where it actually belongs. provider/voiceId
-  // still the old Cartesia English id, unverified against a real
-  // Marathi/Hindi male voice — confirm once this persona's agent is
-  // actually registered.
+  // Repurposed 2026-09-08 from "US English, Authoritative" — at the time
+  // this slot's real VOIZ agent wasn't registered, so nothing functional
+  // depended on the old language/voice. Now registered as agent_6ded70c012ae
+  // (VOIZ_AGENT_ID_VIKRAM in .env). sampleAudio is the male Marathi/Hindi
+  // recording that came from the original ritu.mp3 (git commit 7ee943d) —
+  // didn't match Ritu (Female) or Swara (Hindi), and this is where it
+  // actually belongs. provider/voiceId still the old Cartesia English id,
+  // unverified against a real Marathi/Hindi male voice.
   { id: 'vikram', name: 'Vikram', lang: 'Marathi/Hindi', ttsLang: 'mr-IN',
     meta: 'Marathi/Hindi · Authoritative, clear · Male',
     provider: 'cartesia', voiceId: 'a0e99841-438c-4a64-b679-ae501e7d6091',

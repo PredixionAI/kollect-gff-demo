@@ -88,19 +88,42 @@ async function handleCallOutcome(callId, record) {
   // meant geminiAnalysis never landed at all, so the dashboard's pending
   // badge sat there for the full client-side ceiling before silently giving
   // up instead of clearing right away.
+  // Unanswered/declined/voicemail/cancelled — no transcript exists, and
+  // this must NOT quietly fall through to the scripted happy-path follow-up
+  // (which assumes the borrower engaged). Route to the dedicated no-answer
+  // prompt instead, grounded in the fact that nothing was said and in the
+  // one real message already sent (so the second message reads as a
+  // continuation of an actual thread, not a restart). a.answered === true
+  // is the only case that gets the transcript-analysis path; anything else
+  // (false, or missing/undefined on a genuinely weird terminal status)
+  // gets the no-answer path.
   const runningAnalysis = { status: 'streaming' };
-  geminiClient.analyzeCallTranscriptStreaming({
-    transcript: transcriptText,
-    borrowerName: existing.name || record.customer_name,
-    language: existing.lang,
-    dueAmount: existing.dueAmount || config.demo.dueAmount,
-    dueDate: existing.dueDate || config.demo.dueDate,
-    callDurationSeconds: record.duration,
-    answered: a.answered,
-  }, (partial) => {
-    Object.assign(runningAnalysis, partial);
-    store.updateCase(callId, { geminiAnalysis: { ...runningAnalysis } });
-  }).then(finalAnalysis => {
+  const analysisPromise = a.answered === true
+    ? geminiClient.analyzeCallTranscriptStreaming({
+        transcript: transcriptText,
+        borrowerName: existing.name || record.customer_name,
+        language: existing.lang,
+        dueAmount: existing.dueAmount || config.demo.dueAmount,
+        dueDate: existing.dueDate || config.demo.dueDate,
+        callDurationSeconds: record.duration,
+        answered: a.answered,
+      }, (partial) => {
+        Object.assign(runningAnalysis, partial);
+        store.updateCase(callId, { geminiAnalysis: { ...runningAnalysis } });
+      })
+    : geminiClient.analyzeNoAnswerStreaming({
+        borrowerName: existing.name || record.customer_name,
+        language: existing.lang,
+        dueAmount: existing.dueAmount || config.demo.dueAmount,
+        dueDate: existing.dueDate || config.demo.dueDate,
+        firstMessageText: existing.firstMessage,
+        callEndReason: a.call_end_reason,
+      }, (partial) => {
+        Object.assign(runningAnalysis, partial);
+        store.updateCase(callId, { geminiAnalysis: { ...runningAnalysis } });
+      });
+
+  analysisPromise.then(finalAnalysis => {
     store.updateCase(callId, { geminiAnalysis: finalAnalysis });
   }).catch(err => {
     console.error(`[callOutcome] gemini analysis threw for ${callId}`, err);

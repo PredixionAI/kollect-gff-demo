@@ -31,7 +31,8 @@ const LIMITS = {
 // the whole thing has arrived, which defeats the point of streaming it.
 // Fixed order: cheapest/most-useful-first (sentiment, then summary, then
 // NBA) so the dashboard fills in the visible-first fields before the
-// (unused-until-later) WhatsApp copy even finishes generating.
+// (unused-until-later) WhatsApp copy even finishes generating. Shared by
+// both the real-transcript path and the no-answer/no-reply path below.
 const FIELD_MAP = {
   SENTIMENT: { key: 'sentiment', limit: LIMITS.sentiment, type: 'string' },
   SUMMARY: { key: 'summary', limit: LIMITS.summary, type: 'string' },
@@ -40,7 +41,7 @@ const FIELD_MAP = {
   DISPUTE: { key: 'disputeDetected', limit: null, type: 'boolean' },
   WHATSAPP: { key: 'whatsappCopy', limit: LIMITS.whatsappCopy, type: 'string' },
 };
-const LINE_RE = /^([A-Z]+):\s?(.*)$/;
+const LINE_RE = /^([A-Z_]+):\s?(.*)$/;
 
 function sanitizeText(value, maxLen) {
   if (typeof value !== 'string') return '';
@@ -90,27 +91,38 @@ Transcript:
 ${transcript}`;
 }
 
-// Streams the model's output and calls onPartial({sentiment}|{summary}|
-// {nextBestAction}|{disputeDetected}|{whatsappCopy}) the instant each field's
-// line completes — well before the whole response finishes, especially on a
-// long transcript. Resolves once the stream ends with the FINAL merged
-// result: {status:'ready', ...whateverFieldsArrived, latencyMs} if at least
-// one field was captured, or {status:'unavailable', reason} if none was
-// (network error, timeout, or the model produced nothing usable). A
-// call that captured 3 of 5 fields still resolves 'ready' with those 3 —
-// same "some fields real, some still scripted" pattern this dashboard
-// already uses elsewhere (e.g. Structured Data stays scripted while
-// Communication History goes real); callers only ever act on fields that
-// are actually present, never assume completeness.
-async function analyzeCallTranscriptStreaming(input, onPartial) {
-  const noop = () => {};
-  onPartial = onPartial || noop;
+// No transcript exists here — the call rang and nothing was said (unanswered,
+// declined, voicemail, cancelled...). This must NOT pretend a conversation
+// happened or fall back to the scripted happy-path narrative (which assumes
+// the borrower engaged) — it has to read as what actually occurred: one
+// attempt, no reply, moving forward from there. Grounded in the one real
+// message already sent, so the second message reads as a continuation of an
+// actual thread, not a generic restart.
+function buildNoAnswerPrompt({ borrowerName, language, dueAmount, dueDate, firstMessageText, callEndReason }) {
+  return `A collections call to a borrower just ended WITHOUT being answered — no conversation happened, there is no transcript. Do not invent one.
+Output EXACTLY 6 lines, in this exact order, nothing before or after, one field per line, plain text only, no markdown, no bullet points:
+SENTIMENT: <2-4 words describing the SITUATION, not a mood that was never observed, e.g. "Unresponsive, first attempt", max ${LIMITS.sentiment} chars>
+SUMMARY: <one sentence stating plainly that the call went unanswered, max ${LIMITS.summary} chars>
+NBA: <the next best action given no response yet, action title only, max ${LIMITS.nextBestAction} chars>
+NBA_REASON: <one short clause on why, max ${LIMITS.nextBestActionReason} chars, e.g. "no pickup on first attempt, try a written nudge before escalating">
+DISPUTE: false
+WHATSAPP: <a short natural follow-up message that acknowledges the missed call and restates the ask, max ${LIMITS.whatsappCopy} chars, matching the tone/language of "${language || 'Hinglish'}">
 
-  if (!config.gemini.apiKey) return { status: 'unavailable', reason: 'no_api_key' };
-  if (!input || !input.transcript || !input.transcript.trim()) {
-    return { status: 'unavailable', reason: 'no_transcript' };
-  }
+Do not pad any field. Do not repeat the borrower's name more than once total across all 6 lines. Never claim the borrower said anything, agreed to anything, or expressed any sentiment — nothing was said. WHATSAPP must read as a natural continuation of the thread below (same tone, doesn't repeat it word for word, doesn't contradict it), acknowledging that a call was just attempted and there was no answer — not a generic restart as if this were the first contact.
 
+Known facts (real, not to be second-guessed): borrower is ${borrowerName || 'the borrower'}; amount due ₹${dueAmount}; due date ${dueDate}; call ended: ${callEndReason || 'no answer'}.
+
+The one message already sent to this borrower before the call (for tone/context only — do not repeat it):
+${firstMessageText || '(none sent yet)'}`;
+}
+
+// Shared core: POST the given prompt to Gemini's streaming endpoint, parse
+// "LABEL: value" lines as they complete, call onPartial per field the
+// instant it's ready, and resolve with the final merged result. Used by both
+// analyzeCallTranscriptStreaming (real transcript) and
+// analyzeNoAnswerStreaming (no transcript, call went unanswered) — they only
+// differ in which prompt they hand in.
+async function streamLabeledCompletion(promptText, onPartial) {
   const startedAt = Date.now();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -123,7 +135,7 @@ async function analyzeCallTranscriptStreaming(input, onPartial) {
       headers: { 'Content-Type': 'application/json' },
       signal: controller.signal,
       body: JSON.stringify({
-        contents: [{ parts: [{ text: buildPrompt(input) }] }],
+        contents: [{ parts: [{ text: promptText }] }],
         generationConfig: {
           temperature: 0.4,
           // Compact field extraction, not reasoning — 2.5 Flash's default
@@ -219,4 +231,31 @@ async function analyzeCallTranscriptStreaming(input, onPartial) {
   }
 }
 
-module.exports = { analyzeCallTranscriptStreaming, LIMITS };
+// Returns { status:'ready', sentiment, summary, nextBestAction,
+// nextBestActionReason, whatsappCopy, disputeDetected, latencyMs }
+// or { status:'unavailable', reason } — callers must treat 'unavailable'
+// as "keep showing whatever real VOIZ data is already on screen", never
+// as "fall back to scripted archetype text".
+async function analyzeCallTranscriptStreaming(input, onPartial) {
+  onPartial = onPartial || (() => {});
+  if (!config.gemini.apiKey) return { status: 'unavailable', reason: 'no_api_key' };
+  if (!input || !input.transcript || !input.transcript.trim()) {
+    return { status: 'unavailable', reason: 'no_transcript' };
+  }
+  return streamLabeledCompletion(buildPrompt(input), onPartial);
+}
+
+// The call rang and nothing was said — no transcript exists, so
+// analyzeCallTranscriptStreaming can't run (and shouldn't: there's nothing
+// to summarize). This is the dedicated path for that case: composes a
+// natural, grounded-in-reality follow-up ("we tried calling, no answer, here's
+// the ask again") instead of the caller silently falling back to a scripted
+// happy-path message that assumes engagement that never happened. Same
+// wire format/guardrails as the transcript path, different prompt.
+async function analyzeNoAnswerStreaming(input, onPartial) {
+  onPartial = onPartial || (() => {});
+  if (!config.gemini.apiKey) return { status: 'unavailable', reason: 'no_api_key' };
+  return streamLabeledCompletion(buildNoAnswerPrompt(input || {}), onPartial);
+}
+
+module.exports = { analyzeCallTranscriptStreaming, analyzeNoAnswerStreaming, LIMITS };

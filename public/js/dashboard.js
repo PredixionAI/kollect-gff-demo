@@ -494,13 +494,30 @@ const ICON_WA_ATTACH = `<svg viewBox="0 0 24 24" fill="#8696a0"><path d="M16.5 6
 const ICON_WA_CAMERA_SM = `<svg viewBox="0 0 24 24" fill="none" stroke="#8696a0" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
 const ICON_WA_MIC = `<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4" stroke="#fff" stroke-width="2" fill="none"/></svg>`;
 
+function renderWaBubble(linesArr, time){
+  const bodyText = (linesArr || []).filter(l => l.trim() !== '').join('<br>');
+  if(!bodyText) return '';
+  return `<div class="wa-bubble-in"><div class="wa-text">${bodyText}</div><div class="wa-meta">${time || ''}</div></div>`;
+}
+
 function renderPhoneMockup(s){
   const lines = s.live.lines.filter(l => l.trim() !== '');
   if(!s.live.voice){
     const contact    = s.live.contact    || 'Predixion Fincorp';
     const contactSub = s.live.contactSub || 'Business Account';
     const initials   = contact.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
-    const bodyText   = lines.join('<br>');
+    // A follow-up message is a continuation of a real thread, not an
+    // isolated card — show whatever was genuinely sent before it (steps 3
+    // and, at step 9, 7 too) so the conversation reads as it actually
+    // happened. Skipped for the step-9 agent-escalation case: that goes to
+    // a human agent, a different recipient with no prior thread to show.
+    const priorStepIdxs = idx === 7 ? [3]
+      : (idx === 9 && s.live.audience !== 'agent') ? [3, 7]
+      : [];
+    const priorBubbles = priorStepIdxs
+      .map(i => stepData[i] && renderWaBubble(stepData[i].live.lines, stepData[i].live.time))
+      .filter(Boolean).join('');
+    const currentBubble = renderWaBubble(lines, s.live.time);
     return `
       <div class="phone-wrap">
         <div class="phone-mockup">
@@ -517,10 +534,8 @@ function renderPhoneMockup(s){
               </div>
             </div>
             <div class="wa-body">
-              <div class="wa-bubble-in">
-                <div class="wa-text">${bodyText}</div>
-                <div class="wa-meta">${s.live.time || ''}</div>
-              </div>
+              ${priorBubbles}
+              ${currentBubble}
             </div>
             <div class="wa-inputbar">
               <div class="wa-input-field">
@@ -893,6 +908,12 @@ async function triggerRealCall(){
         phone: state.phone,
         voiceId: state.voice ? state.voice.id : null,
         lang: personaLang(),
+        // The first WhatsApp message (step 3) already went out before this
+        // call — hand it to the server so a no-answer follow-up (see
+        // callOutcome.js) reads as a continuation of that thread, not a
+        // restart. stepData[3] is always populated by here regardless of
+        // which step is currently showing.
+        firstMessage: (stepData[3] && stepData[3].live.lines || []).filter(l => l.trim()).join('\n'),
       }),
     });
     const data = await res.json();

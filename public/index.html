@@ -294,10 +294,11 @@
            calls, transcripts, WhatsApp, Next Best Action. -->
       <div class="col phone-pane" id="phonePane">
         <div id="rightPhonePanel" class="card right-phone-card">
-          <div class="phone-dock-head">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
-            <span id="phoneDockTitle">Borrower&#x2019;s phone</span>
-          </div>
+          <!-- Headline + icon removed 2026-09-08 (user request) — freed
+               vertical room so the phone mockup itself can be bigger; the
+               phone screen's own header already identifies whose phone
+               this is (contact name / "Incoming call"), so the label was
+               redundant with it anyway. -->
           <div class="phone-dock-body" id="phoneDockBody"></div>
         </div>
         <div class="footer-status">
@@ -385,6 +386,7 @@
 
 </div>
 
+<script src="/js/viewportFit.js"></script>
 <script src="/js/telemetry.js"></script>
 <script src="/js/state.js"></script>
 
