@@ -238,7 +238,7 @@
     <div class="main-grid">
       <!-- LEFT PANE: DASHBOARD / PROCESS VIEW -->
       <div class="col dash-pane">
-        <div class="call-status-line" id="realCallStatus" style="display:none;"><span class="dot"></span><span id="realCallStatusText"></span></div>
+        <div class="call-status-line" id="realCallStatus" style="display:none;"><span class="dot"></span><span id="realCallStatusText"></span><span class="call-status-timer" id="realCallStatusTimer" style="display:none;"></span></div>
 
         <div class="dash-pane-top">
           <div class="card" id="leftPanelCard">
@@ -296,6 +296,20 @@
               <div class="real-transcript-card" id="realTranscriptCard">
                 <div class="rt-outcome" id="rtOutcome"></div>
                 <div class="rt-transcript" id="rtTranscript">Awaiting first call.</div>
+                <!-- Shown between the real call completing and Gemini's
+                     streamed analysis finishing (see setAnalysisPending /
+                     advanceAnalysisStage in dashboard.js). Each stage lights
+                     up only once its real field has actually streamed in —
+                     not a blind timed animation. -->
+                <div class="analysis-stage-line" id="analysisStageLine" style="display:none;">
+                  <span class="stage-spinner"></span>
+                  <span class="stage-steps">
+                    <span class="stage-step" data-stage="1">Segmenting</span>
+                    <span class="stage-step" data-stage="2">Addressing</span>
+                    <span class="stage-step" data-stage="3">Loading</span>
+                    <span class="stage-step" data-stage="4">Evaluating</span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>

@@ -1,7 +1,30 @@
 const store = require('./store');
 const whatsapp = require('./whatsapp');
 const geminiClient = require('./geminiClient');
+const glmClient = require('./glmClient');
 const config = require('../config');
+
+// Tries GLM 5 (Bedrock) first, falls back to Gemini only on a CLEAN GLM
+// failure — no key configured, or the stream ended having captured zero
+// fields (both clients' own streamLabeledCompletion already returns
+// 'ready' with whatever partial fields it captured rather than
+// 'unavailable' the moment even one field streamed back, so by the time
+// this sees 'unavailable' at all, nothing has been shown to the user yet).
+// This is what keeps the fallback safe to do mid-stream: it never discards
+// or contradicts real data already on screen, it only ever fires before
+// anything was displayed at all.
+async function analyzeWithFallback(mode, input, onPartial) {
+  const glmFn = mode === 'transcript' ? glmClient.analyzeCallTranscriptStreaming : glmClient.analyzeNoAnswerStreaming;
+  const geminiFn = mode === 'transcript' ? geminiClient.analyzeCallTranscriptStreaming : geminiClient.analyzeNoAnswerStreaming;
+
+  if (config.glm.apiKey) {
+    const glmResult = await glmFn(input, onPartial);
+    if (glmResult.status !== 'unavailable') return { ...glmResult, provider: 'glm' };
+    console.warn(`[callOutcome] GLM unavailable (${glmResult.reason}), falling back to Gemini`);
+  }
+  const geminiResult = await geminiFn(input, onPartial);
+  return { ...geminiResult, provider: 'gemini' };
+}
 
 // Confirmed real fields via GET /calls/{call_id} (2026-09-05) — there is no
 // single "disposition" enum as the platform guide's example implied. VOIZ
@@ -105,8 +128,12 @@ async function handleCallOutcome(callId, record) {
   // copy from the no-answer prompt are still shown (they're honest about
   // "no reply happened", not a fabricated recommendation).
   const runningAnalysis = { status: 'streaming', hasTranscript: a.answered === true };
+  const onPartial = (partial) => {
+    Object.assign(runningAnalysis, partial);
+    store.updateCase(callId, { geminiAnalysis: { ...runningAnalysis } });
+  };
   const analysisPromise = a.answered === true
-    ? geminiClient.analyzeCallTranscriptStreaming({
+    ? analyzeWithFallback('transcript', {
         transcript: transcriptText,
         borrowerName: existing.name || record.customer_name,
         language: existing.lang,
@@ -114,31 +141,26 @@ async function handleCallOutcome(callId, record) {
         dueDate: existing.dueDate || config.demo.dueDate,
         callDurationSeconds: record.duration,
         answered: a.answered,
-      }, (partial) => {
-        Object.assign(runningAnalysis, partial);
-        store.updateCase(callId, { geminiAnalysis: { ...runningAnalysis } });
-      })
-    : geminiClient.analyzeNoAnswerStreaming({
+      }, onPartial)
+    : analyzeWithFallback('no_answer', {
         borrowerName: existing.name || record.customer_name,
         language: existing.lang,
         dueAmount: existing.dueAmount || config.demo.dueAmount,
         dueDate: existing.dueDate || config.demo.dueDate,
         firstMessageText: existing.firstMessage,
         callEndReason: a.call_end_reason,
-      }, (partial) => {
-        Object.assign(runningAnalysis, partial);
-        store.updateCase(callId, { geminiAnalysis: { ...runningAnalysis } });
-      });
+      }, onPartial);
 
   analysisPromise.then(finalAnalysis => {
-    // finalAnalysis is a fresh object from geminiClient (status/fields/
-    // latencyMs) — it doesn't carry hasTranscript, which only exists on
-    // runningAnalysis above, so it has to be merged back in explicitly or
-    // the terminal 'ready' write would silently drop it after the streaming
-    // partials (which do carry it) already set the frontend's expectation.
+    // finalAnalysis is a fresh object from analyzeWithFallback (status/
+    // provider/fields/latencyMs) — it doesn't carry hasTranscript, which
+    // only exists on runningAnalysis above, so it has to be merged back in
+    // explicitly or the terminal 'ready' write would silently drop it after
+    // the streaming partials (which do carry it) already set the
+    // frontend's expectation.
     store.updateCase(callId, { geminiAnalysis: { hasTranscript: runningAnalysis.hasTranscript, ...finalAnalysis } });
   }).catch(err => {
-    console.error(`[callOutcome] gemini analysis threw for ${callId}`, err);
+    console.error(`[callOutcome] post-call analysis threw for ${callId}`, err);
     store.updateCase(callId, { geminiAnalysis: { status: 'unavailable', reason: 'threw' } });
   });
 

@@ -44,6 +44,19 @@ module.exports = {
     model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
   },
 
+  // GLM 5 via AWS Bedrock's OpenAI-compatible endpoint — tried FIRST for
+  // post-call analysis when configured (server/lib/callOutcome.js
+  // analyzeWithFallback), with Gemini above as the fallback. Blank key means
+  // GLM is silently skipped and Gemini runs as before — see
+  // server/lib/glmClient.js and docs/GLM5-Bedrock-API-Access-Documentation
+  // (Aivar Innovations, issued 2026-09-07, expires 2026-10-07 — request a
+  // renewed key before then or every request starts failing auth).
+  glm: {
+    apiKey: process.env.GLM_BEDROCK_API_KEY || '',
+    baseUrl: process.env.GLM_BEDROCK_BASE_URL || 'https://bedrock-runtime.ap-south-1.amazonaws.com/openai/v1',
+    model: process.env.GLM_MODEL || 'zai.glm-5',
+  },
+
   telemetry: {
     // Set GOOGLE_SHEET_WEBHOOK_URL in .env to the Apps Script web-app URL.
     // When blank the Google Sheets push is simply skipped — local fallback

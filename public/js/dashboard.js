@@ -249,7 +249,14 @@ function steps(){
   },
   { tab:'execution', pill:'Step 4/13', title:'Round 1: WhatsApp', subtitle:'Friendly Reminder, WhatsApp',
     action:P.w1Action, details:P.w1Details, classV:archTitle, status:'progress',
-    lastContact:{time:'10:15 AM', platform:'whatsapp', platformLabel:'WhatsApp', status: P.callType==='terminal' ? 'pending' : 'connected', statusLabel: P.callType==='terminal' ? 'Sent · Not Read' : 'Connected · Read'},
+    // key, not just (time, platform): the real send (triggerWhatsApp ->
+    // markRealWhatsAppOutcome) mutates this entry's own `time` to the real
+    // clock time once it resolves, which would otherwise stop matching this
+    // scripted probe's still-'10:15 AM' lc.time on any later re-render of
+    // this step and push a duplicate row (see the voice-call entry above
+    // and wa-round2/wa-close below for the same fix, 2026-09-08 user report
+    // of duplicate WhatsApp entries).
+    lastContact:{key:'wa-round1', time:'10:15 AM', platform:'whatsapp', platformLabel:'WhatsApp', status: P.callType==='terminal' ? 'pending' : 'connected', statusLabel: P.callType==='terminal' ? 'Sent · Not Read' : 'Connected · Read'},
     live:{type:'chat', tag:'WHATSAPP', time:'10:15 AM', voice:false, contact:'Predixion Fincorp', contactSub:'Business Account', lines:P.w1Lines},
     nbaNow:P.nba.s4,
     agents:['Friendly Reminder Agent','Tracking Agent'], models:['Template Generator (GPT-4)'],
@@ -257,9 +264,22 @@ function steps(){
   },
   { tab:'execution', pill:'Step 5/13', title:P.callTitle || 'Round 1: Voice Agent', subtitle:P.callSubtitle || 'Friendly Voice Agent call',
     action:P.callAction, details:P.callDetails, classV:archTitle, status:'progress',
-    lastContact:P.callType==='terminal'
-      ? {time:'11:30 AM', platform:'voice', platformLabel:'Voice Call', status:'not-connected', statusLabel:'Not Connected · No Answer'}
-      : {time:'11:30 AM', platform:'voice', platformLabel:'Voice Call', status:'connected', statusLabel:'Connected · 1m 23s'},
+    // Neither branch claims an outcome up front anymore — the archetype
+    // picks which SCRIPTED narrative unfolds on the steps around this one,
+    // but the real call to the real phone number can genuinely go either
+    // way (the presenter might answer a call from an "Unreachable" run, or
+    // miss one from a "Technical Defaulter" run). Claiming "Connected" or
+    // "No Answer" before the real call even starts ringing was misleading
+    // regardless of which one it guessed — see subscribeToCallEvents's
+    // 'initiated'/'completed' handlers for what actually overwrites this,
+    // live, once the real outcome is known.
+    // key (not just time+platform) is what updateLastContact dedupes new
+    // pushes against — needed because the real call handlers below mutate
+    // this entry's own `time` field once the call actually connects, which
+    // would otherwise stop matching this scripted probe's still-'11:30 AM'
+    // lc.time the next time this step (or step 7, same key) re-renders,
+    // and push a second duplicate "Dialing…" row back into the list.
+    lastContact:{key:'voice-call', time:'11:30 AM', platform:'voice', platformLabel:'Voice Call', status:'pending', statusLabel:'Dialing…'},
     live: P.callType==='terminal'
       ? {type:'terminal', tag:'CALL ATTEMPT', voice:false, lines:P.callLines}
       : {type:'chat', tag:'VOICE AGENT', time:'11:30 AM', voice:true, contact:'Predixion Fincorp', lines:P.callLines},
@@ -276,16 +296,29 @@ function steps(){
   },
   { tab:'strategy', pill:'Step 7/13', title:'Next Best Action', subtitle:'Strategy engine ranks 3 fixed actions, selects one',
     action:P.nbaAction, details:P.nbaDetails, classV:archTitle, status:'progress',
-    lastContact:P.callType==='terminal'
-      ? {time:'11:30 AM', platform:'voice', platformLabel:'Voice Call', status:'not-connected', statusLabel:'Not Connected · No Answer'}
-      : {time:'11:30 AM', platform:'voice', platformLabel:'Voice Call', status:'connected', statusLabel:'Connected · 1m 23s'},
+    // Neither branch claims an outcome up front anymore — the archetype
+    // picks which SCRIPTED narrative unfolds on the steps around this one,
+    // but the real call to the real phone number can genuinely go either
+    // way (the presenter might answer a call from an "Unreachable" run, or
+    // miss one from a "Technical Defaulter" run). Claiming "Connected" or
+    // "No Answer" before the real call even starts ringing was misleading
+    // regardless of which one it guessed — see subscribeToCallEvents's
+    // 'initiated'/'completed' handlers for what actually overwrites this,
+    // live, once the real outcome is known.
+    // key (not just time+platform) is what updateLastContact dedupes new
+    // pushes against — needed because the real call handlers below mutate
+    // this entry's own `time` field once the call actually connects, which
+    // would otherwise stop matching this scripted probe's still-'11:30 AM'
+    // lc.time the next time this step (or step 7, same key) re-renders,
+    // and push a second duplicate "Dialing…" row back into the list.
+    lastContact:{key:'voice-call', time:'11:30 AM', platform:'voice', platformLabel:'Voice Call', status:'pending', statusLabel:'Dialing…'},
     live:{type:'nba', nbaChosen:0},
     agents:['Strategy Gen Agent','NBA Ranking Agent'], models:['Strategy Recommender','Expected Value Model'],
     signals:[{name:'NBA Engine', tag:'ranked', desc:'3 candidate actions scored'},{name:'Policy Guard', tag:'check', desc:'Decision within SOP bounds'}],
   },
   { tab:'execution', pill:'Step 8/13', title:P.w2Title, subtitle:P.w2Subtitle,
     action:P.w2Action, details:P.w2Details, classV:archTitle, status:'progress',
-    lastContact:{time:'3:00 PM', platform:'whatsapp', platformLabel:'WhatsApp', status:P.escalate?'pending':'connected', statusLabel:P.escalate?'Sent \u00b7 Not Read':'Sent \u00b7 Delivered'},
+    lastContact:{key:'wa-round2', time:'3:00 PM', platform:'whatsapp', platformLabel:'WhatsApp', status:P.escalate?'pending':'connected', statusLabel:P.escalate?'Sent \u00b7 Not Read':'Sent \u00b7 Delivered'},
     live:{type:'chat', tag:'WHATSAPP', time:'3:00 PM', voice:false, contact:'Predixion Fincorp', contactSub:'Business Account', lines:P.w2Lines},
     nbaNow:P.nba.s8,
     agents:['Firm Reminder Agent','Payment Plan Agent'], models:['Template Generator (GPT-4)','Plan Structuring Model'],
@@ -293,7 +326,12 @@ function steps(){
   },
   { tab:'execution', pill:'Step 9/13', title:P.s9Title, subtitle:P.s9Subtitle,
     action:P.s9Action, details:P.s9Details, classV:archTitle, status:'progress',
-    lastContact:{time:'3:00 PM', platform:'whatsapp', platformLabel:'WhatsApp', status:P.escalate?'pending':'connected', statusLabel:P.escalate?'Sent \u00b7 Not Read':'Accepted'},
+    // Same key as step 8 above \u2014 this step re-points at the SAME real
+    // contact attempt (Round 2) for display continuity, it doesn't create a
+    // new one. Without a shared key, step 8's mutated real `time` no longer
+    // matches this scripted '3:00 PM' probe on re-render, and a duplicate
+    // "Accepted" row appears (2026-09-08 user report).
+    lastContact:{key:'wa-round2', time:'3:00 PM', platform:'whatsapp', platformLabel:'WhatsApp', status:P.escalate?'pending':'connected', statusLabel:P.escalate?'Sent \u00b7 Not Read':'Accepted'},
     live:{type:'terminal', tag:'ESCALATION CHECK', voice:false, lines:P.s9Lines},
     nbaNow:P.nba.s9,
     agents:['Escalation Agent','Case Summary Agent'], models:['Confidence Scoring','Summarization (GPT-4)'],
@@ -301,7 +339,13 @@ function steps(){
   },
   { tab:'execution', pill:'Step 10/13', title:P.s10Title, subtitle:P.s10Subtitle,
     action:P.s10Action, details:P.s10Details, classV:archTitle, status:P.escalate ? 'escalated' : 'progress',
-    lastContact:{time:'3:46 PM', platform: P.s10Audience==='agent' ? 'whatsapp' : 'whatsapp', platformLabel: P.s10Audience==='agent' ? 'WhatsApp (Agent)' : 'WhatsApp', status:'connected', statusLabel: P.s10Audience==='agent' ? 'Handoff \u00b7 Sent to Agent' : 'Connected \u00b7 Confirmed'},
+    // key shared with steps 11-13 below \u2014 they all re-point at this SAME
+    // real contact attempt for display continuity as the case wraps up,
+    // none of them create a new one. Without a shared key, this step's own
+    // mutated real `time` (once its real send resolves) stops matching
+    // their scripted '3:46 PM' probe on re-render, and duplicate rows
+    // appear (2026-09-08 user report).
+    lastContact:{key:'wa-close', time:'3:46 PM', platform: P.s10Audience==='agent' ? 'whatsapp' : 'whatsapp', platformLabel: P.s10Audience==='agent' ? 'WhatsApp (Agent)' : 'WhatsApp', status:'connected', statusLabel: P.s10Audience==='agent' ? 'Handoff \u00b7 Sent to Agent' : 'Connected \u00b7 Confirmed'},
     live:{type:'chat', tag:P.s10Audience==='agent'?'HANDOFF \u00b7 TO HUMAN AGENT':'WHATSAPP', time:'3:46 PM', voice:false,
       audience:P.s10Audience, contact:P.s10Contact, contactSub:P.s10ContactSub,
       lines: typeof P.s10Lines === 'function' ? P.s10Lines(state.name, state.phone, overdueDays) : P.s10Lines},
@@ -311,21 +355,21 @@ function steps(){
   },
   { tab:'fulfilment', pill:'Step 11/13', title:P.f11Title, subtitle:P.f11Subtitle,
     action:P.f11Action, details:P.f11Details, classV:finalClassV, status:finalStatus,
-    lastContact:{time:'3:46 PM', platform:'whatsapp', platformLabel: P.s10Audience==='agent' ? 'WhatsApp (Agent)' : 'WhatsApp', status:'connected', statusLabel: P.escalate ? 'Handoff \u00b7 Acknowledged' : 'Connected \u00b7 Confirmed'},
+    lastContact:{key:'wa-close', time:'3:46 PM', platform:'whatsapp', platformLabel: P.s10Audience==='agent' ? 'WhatsApp (Agent)' : 'WhatsApp', status:'connected', statusLabel: P.escalate ? 'Handoff \u00b7 Acknowledged' : 'Connected \u00b7 Confirmed'},
     live:{type:'terminal', tag:P.escalate?'ESCALATION CONFIRMED':'PAYMENT CONFIRMED', voice:false, lines:P.f11Lines},
     agents:[P.escalate?'Routing Agent':'Reconciliation Agent'], models:[P.escalate?'Case Assignment':'Payment Matching'],
     signals:[{name:P.escalate?'Routing Engine':'Payment Gateway', tag:P.escalate?'assigned':'success', desc:P.escalate?'Case owner: human agent':'\u20b9 settled via UPI'},{name:'LMS', tag:'update', desc:P.escalate?'Automated contact paused':'Account status: CURRENT'}],
   },
   { tab:'fulfilment', pill:'Step 12/13', title:'Outcome Summary', subtitle:'Full journey compiled for reporting',
     action:P.f12Action, details:P.f12Details, classV:finalClassV, status:finalStatus,
-    lastContact:{time:'3:46 PM', platform:'whatsapp', platformLabel: P.s10Audience==='agent' ? 'WhatsApp (Agent)' : 'WhatsApp', status:'connected', statusLabel: P.escalate ? 'Handoff \u00b7 Acknowledged' : 'Connected \u00b7 Confirmed'},
+    lastContact:{key:'wa-close', time:'3:46 PM', platform:'whatsapp', platformLabel: P.s10Audience==='agent' ? 'WhatsApp (Agent)' : 'WhatsApp', status:'connected', statusLabel: P.escalate ? 'Handoff \u00b7 Acknowledged' : 'Connected \u00b7 Confirmed'},
     live:{type:'terminal', tag:'JOURNEY SUMMARY', voice:false, lines:P.f12Lines},
     agents:['Reporting Agent'], models:['Journey Summarization'],
     signals:[{name:'Analytics Engine', tag:'compiled', desc:'Full journey logged'},{name:'Recovery Model', tag:'logged', desc:'Contributes to portfolio recovery rate'}],
   },
   { tab:'fulfilment', pill:'Step 13/13', title:P.escalate?'Case Handed Off':'Case Closed', subtitle:'Audit trail complete, ready for next case',
     action:'All actions, timestamps and messages logged', details:'Available for compliance review at any time', classV:finalClassV, status:finalStatus,
-    lastContact:{time:'3:46 PM', platform:'whatsapp', platformLabel: P.s10Audience==='agent' ? 'WhatsApp (Agent)' : 'WhatsApp', status:'connected', statusLabel: P.escalate ? 'Handoff \u00b7 Acknowledged' : 'Connected \u00b7 Confirmed'},
+    lastContact:{key:'wa-close', time:'3:46 PM', platform:'whatsapp', platformLabel: P.s10Audience==='agent' ? 'WhatsApp (Agent)' : 'WhatsApp', status:'connected', statusLabel: P.escalate ? 'Handoff \u00b7 Acknowledged' : 'Connected \u00b7 Confirmed'},
     live:{type:'terminal', tag:P.escalate?'CASE HANDED OFF':'CASE CLOSED', voice:false, lines:P.f13Lines(state.name)},
     agents:['Audit Agent'], models:['Compliance Logger'],
     signals:[{name:'Audit Log', tag:'sealed', desc:'Immutable record created'},{name:'Compliance', tag:'ready', desc:'Available for lender review'}],
@@ -387,6 +431,8 @@ function startDash(){
   _lastContactState = null;
   _contactHistory = [];
   _phoneHasContent = false;
+  _voiceCallPhase = 'idle';
+  stopCallTimer();
   goToStep(0, true);
   startIngestion();
   _nbaIsReal = false;
@@ -403,6 +449,11 @@ function startDash(){
   const rtTranscriptEl = document.getElementById('rtTranscript');
   if(rtOutcomeEl) rtOutcomeEl.innerHTML = '';
   if(rtTranscriptEl) rtTranscriptEl.textContent = 'Awaiting first call.';
+  const stageLineEl = document.getElementById('analysisStageLine');
+  if(stageLineEl){
+    stageLineEl.style.display = 'none';
+    stageLineEl.querySelectorAll('.stage-step').forEach(el => el.classList.remove('active', 'done'));
+  }
 
   // Communication History starts empty each run.
   const commEmpty = document.getElementById('commEmpty');
@@ -669,7 +720,7 @@ function renderPhoneMockup(s){
       <div class="phone-wrap">
         <div class="phone-mockup">
           <div class="phone-notch"></div>
-          <div class="phone-statusbar"><span>9:41</span><span>100%</span></div>
+          <div class="phone-statusbar"><span class="phone-clock">${realTimeLabel()}</span><span>100%</span></div>
           <div class="phone-screen">
             <div class="wa-header">
               <span class="wa-back">&#8249;</span>
@@ -701,18 +752,40 @@ function renderPhoneMockup(s){
   const captions    = dialogue.slice(-2);
   const personaName = state.voice ? state.voice.name : 'Neha';
   const personaInit = personaName.charAt(0).toUpperCase();
+  const contactName = s.live.contact || 'Predixion Fincorp';
+
+  // A real call has a genuine dial delay before anything is actually
+  // happening — the phone screen used to jump straight to scripted call
+  // captions regardless, which read as connected instantly. Only applies
+  // when a real call was actually triggered (state.phone set); a mock run
+  // keeps the original scripted-only display below. Mirrors the top
+  // call-status bar (setCallStatusLine) and Communication History (both
+  // driven by the same _voiceCallPhase, set in triggerRealCall /
+  // subscribeToCallEvents) so all three never disagree about what's
+  // actually happening (2026-09-08 user report).
+  let statusHtml;
+  let captionsHtml = captions.map(l => `<div class="cap-line">${l}</div>`).join('');
+  if(state.phone && _voiceCallPhase === 'connecting'){
+    statusHtml = `<span class="dot-pending"></span>Connecting…`;
+    captionsHtml = `<div class="cap-line cap-connecting">Dialing ${state.phone}…</div>`;
+  } else if(state.phone && _voiceCallPhase === 'live'){
+    statusHtml = `<span class="live-blip"></span>${contactName} &middot; <span id="phoneCallTimer">0:00</span>`;
+  } else {
+    statusHtml = `<span class="live-blip"></span>${contactName} &middot; ${realTimeLabel()}`;
+  }
+
   return `
     <div class="phone-wrap">
       <div class="phone-mockup">
         <div class="phone-notch"></div>
-        <div class="phone-statusbar"><span>9:41</span><span>100%</span></div>
+        <div class="phone-statusbar"><span class="phone-clock">${realTimeLabel()}</span><span>100%</span></div>
         <div class="call-screen">
           <div class="call-top">
             <div class="call-avatar">${personaInit}</div>
             <div class="call-name">${personaName}</div>
-            <div class="call-status"><span class="live-blip"></span>${s.live.contact || 'Predixion Fincorp'} &middot; ${realTimeLabel()}</div>
+            <div class="call-status">${statusHtml}</div>
           </div>
-          <div class="call-captions">${captions.map(l => `<div class="cap-line">${l}</div>`).join('')}</div>
+          <div class="call-captions">${captionsHtml}</div>
           <div class="call-controls">
             <div class="call-btn">${ICON_MIC}</div>
             <div class="call-btn end">${ICON_HANGUP}</div>
@@ -729,13 +802,58 @@ function updateDockedPhone(s){
     titleEl.textContent = (s.live.audience === 'agent') ? 'Human agent\u2019s phone' : (s.live.voice ? 'Incoming call' : 'Borrower\u2019s phone');
   }
   const bodyEl = document.getElementById('phoneDockBody');
-  if(bodyEl) bodyEl.innerHTML = renderPhoneMockup(s);
+  if(!bodyEl) return;
+  const newHtml = renderPhoneMockup(s);
+  // Skip the rebuild entirely when nothing actually changed \u2014 a _voiceCall-
+  // Phase refresh (refreshVoiceCallPhone) or a re-render for an unrelated
+  // reason can call this with content identical to what's already there,
+  // and a full innerHTML replace of identical markup is exactly what read
+  // as a "flicker" with no visible reason (2026-09-08 user report).
+  // Comparing the raw newHtml string against bodyEl.innerHTML directly is
+  // NOT reliable: the browser re-serializes HTML entities when reading
+  // .innerHTML back (e.g. the literal "&#8249;" in the template comes back
+  // out as the actual "\u2039" character), so an unrelated-looking encoding
+  // difference would always register as "changed" even when nothing was.
+  // Routing newHtml through the same parse/serialize round-trip (via a
+  // detached, unrendered probe element) before comparing cancels that out.
+  const probe = document.createElement('div');
+  probe.innerHTML = newHtml;
+  if(bodyEl.innerHTML === probe.innerHTML) return;
+  bodyEl.innerHTML = newHtml;
+  // The content genuinely did change here (a new call phase, a new
+  // message) \u2014 a instant swap still reads as a jump cut, so fade the new
+  // content in rather than popping it in at full opacity.
+  bodyEl.classList.remove('phone-content-enter');
+  // Reflow so the removed class actually takes effect before re-adding it
+  // (re-adding an already-present class is a no-op, the animation wouldn't
+  // restart).
+  void bodyEl.offsetWidth;
+  bodyEl.classList.add('phone-content-enter');
 }
 
 // Tracks whether the phone pane has shown any real content yet this run ,
 // pure analysis steps (no chat/nba/decision) leave it showing whatever it
 // last displayed instead of resetting to idle, like a real phone would.
 let _phoneHasContent = false;
+
+// Real-call phase, read by renderPhoneMockup's voice-call branch so the
+// phone screen itself shows "Connecting…" during the real dial delay and a
+// live ticking timer once actually answered — not just the scripted
+// captions regardless of what's really happening (2026-09-08 user report).
+// Only meaningful when state.phone is set (a real call was actually
+// triggered); a mock/no-phone run keeps the old scripted-only display.
+let _voiceCallPhase = 'idle'; // 'idle' | 'connecting' | 'live' | 'ended'
+
+// The phone's own status-bar clock used to be a hardcoded "9:41" — now a
+// real, ticking clock like an actual phone. Queries the live DOM each tick
+// rather than caching an element reference, since the phone mockup gets
+// torn down and rebuilt on step changes; this way the interval keeps
+// working across those rebuilds with no extra wiring needed at each one.
+setInterval(() => {
+  document.querySelectorAll('.phone-statusbar .phone-clock').forEach(el => {
+    el.textContent = realTimeLabel();
+  });
+}, 15000);
 
 // Ideal/idle state, a real phone home screen, not an abstract "loading"
 // message: shows the apps that will actually be used (the lender's own
@@ -755,7 +873,7 @@ function renderPhoneIdle(){
     <div class="phone-wrap">
       <div class="phone-mockup">
         <div class="phone-notch"></div>
-        <div class="phone-statusbar"><span>9:41</span><span>100%</span></div>
+        <div class="phone-statusbar"><span class="phone-clock">${realTimeLabel()}</span><span>100%</span></div>
         <div class="phone-home">
           <img class="phone-wallpaper-logo" src="/img/logo-mark.png" alt="">
           <div class="phone-home-time">9:41</div>
@@ -806,12 +924,17 @@ function updateLastContact(s){
   if(s.lastContact){
     _lastContactState = s.lastContact;
     const lc = s.lastContact;
-    // Dedupe by (time, platform): several later steps re-point at the same
-    // real-world contact attempt rather than introducing a new one. Tag the
+    // Dedupe by key when the scripted entry carries one (see the voice-call
+    // step's lastContact) — needed because a real-time update can mutate
+    // that entry's `time` away from the scripted probe value, which would
+    // otherwise break a plain (time, platform) match on the next re-render.
+    // Falls back to (time, platform) for entries with no key (WhatsApp
+    // rounds, whose `time` is never rewritten after the fact). Tag the
     // entry with the step that FIRST created it — that's always the same
     // index the real-call/real-WhatsApp triggers fire at, so it's what
     // markRealCallOutcome/markRealWhatsAppOutcome look up later.
-    const existing = _contactHistory.find(e => e.time === lc.time && e.platform === lc.platform);
+    const existing = _contactHistory.find(e =>
+      lc.key ? e.key === lc.key : (e.time === lc.time && e.platform === lc.platform));
     if(!existing) _contactHistory.push({ ...lc, stepIdx: idx, real: false });
   }
   renderContactHistory();
@@ -932,18 +1055,25 @@ function renderStep(instant){
       <div class="sig-desc">${sg.desc}</div>
     </div>`).join('');
 
-  // Real-call WhatsApp copy override, steps 7 & 9 (borrower-facing
-  // follow-up only, never the step-9 agent-escalation handoff, which is a
-  // structurally different case-summary message) show Gemini's tailored
-  // copy instead of the scripted template once it's ready. This mutates
-  // s.live.lines BEFORE the phone-pane render below AND before the
-  // triggerWhatsApp call further down reads the same s.live.lines, the
-  // displayed bubble and the actual send can never disagree. Gated on the
-  // step's own one-shot sent-flag so re-visiting a step after its message
-  // already went out (scripted, because Gemini wasn't ready yet at the
-  // time) never repaints the bubble to something that wasn't actually sent.
-  const whatsappStepAlreadySent = (idx === 7 && whatsappRound2Sent) || (idx === 9 && whatsappEscalationSent);
-  if((idx === 7 || idx === 9) && !whatsappStepAlreadySent && s.live.audience !== 'agent'
+  // Real-call WhatsApp copy override, step 7 ONLY (Round 2, the actual
+  // follow-up "carry out the NBA" message Gemini's prompt is written for).
+  // Step 9 used to get the exact same override applied to it too — but for
+  // technical/systemic (the only archetypes where step 9 isn't the agent-
+  // escalation handoff), step 9 is a structurally different CLOSING message
+  // (payment confirmation / plan activation), not a second follow-up asking
+  // the same thing again. Applying the identical Gemini copy to both steps
+  // sent the exact same WhatsApp message out twice in a row (visible as a
+  // duplicated bubble on the phone mockup, since step 9 also shows step 7's
+  // bubble as prior context right above its own) — see 2026-09-08 user
+  // report. Step 9 now always keeps its own scripted, archetype-specific
+  // closing text; only step 7 ever gets the real AI-tailored copy.
+  // This mutates s.live.lines BEFORE the phone-pane render below AND before
+  // the triggerWhatsApp call further down reads the same s.live.lines, so
+  // the displayed bubble and the actual send can never disagree. Gated on
+  // the step's own one-shot sent-flag so re-visiting step 7 after its
+  // message already went out (scripted, because Gemini wasn't ready yet at
+  // the time) never repaints the bubble to something that wasn't actually sent.
+  if(idx === 7 && !whatsappRound2Sent && s.live.audience !== 'agent'
      && state.geminiAnalysis && state.geminiAnalysis.status === 'ready' && state.geminiAnalysis.whatsappCopy){
     s.live.lines = [state.geminiAnalysis.whatsappCopy];
   }
@@ -956,7 +1086,15 @@ function renderStep(instant){
   // 'nba' steps and analysis-only 'terminal' steps just leave the phone
   // showing whatever it last displayed (or the idle home screen, if
   // nothing real has happened yet), exactly like a real phone would.
-  if(s.live.type === 'chat'){
+  //
+  // The human-handoff case summary (audience:'agent') is excluded from this
+  // too, even though it's structurally a 'chat' step — it's an internal
+  // Kollect-to-human-agent alert, not something that ever appears on the
+  // BORROWER's phone, and this mockup represents the borrower's phone
+  // throughout. Showing it here read as if the borrower could see their own
+  // dispute/escalation being discussed about them. Its content already
+  // shows in the ACTION/DETAILS boxes above (2026-09-08 user request).
+  if(s.live.type === 'chat' && s.live.audience !== 'agent'){
     updateDockedPhone(s);
     _phoneHasContent = true;
   } else if(!_phoneHasContent){
@@ -1063,8 +1201,62 @@ function setCallStatusLine(text, mode){
   el.style.display = 'flex';
 }
 
+// Live elapsed-call timer — ticks from the moment the call actually goes
+// live (VOIZ status 'initiated', see subscribeToCallEvents below), not from
+// whenever the dashboard happened to render the voice-call step. Drives
+// both the tiny readout next to "Call in progress…" and the Communication
+// History entry's duration, so neither ever shows a guessed duration while
+// the real call is still ongoing.
+let _callTimerInterval = null;
+function formatElapsed(ms){
+  const secs = Math.max(0, Math.floor(ms / 1000));
+  return `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
+}
+function startCallTimer(startedAtMs){
+  stopCallTimer();
+  const timerEl = document.getElementById('realCallStatusTimer');
+  if(timerEl) timerEl.style.display = 'inline';
+  const tick = () => {
+    const label = formatElapsed(Date.now() - startedAtMs);
+    if(timerEl) timerEl.textContent = label;
+    // Queried fresh every tick, not cached like timerEl above — the phone
+    // mockup's own #phoneCallTimer lives inside phoneDockBody, which gets
+    // torn down and rebuilt by refreshVoiceCallPhone() at the
+    // connecting->live transition, so a reference taken before that
+    // transition would point at a now-detached element.
+    const phoneTimerEl = document.getElementById('phoneCallTimer');
+    if(phoneTimerEl) phoneTimerEl.textContent = label;
+    const entry = _contactHistory.find(e => e.stepIdx === 4);
+    // Guard on !entry.real: once the call actually completes,
+    // markRealCallOutcome has already written the real final duration —
+    // a late-firing tick (interval hasn't been cleared yet) must not
+    // overwrite that with a slightly-stale "still counting" value.
+    if(entry && !entry.real){
+      entry.statusLabel = `Connected · ${label}`;
+      renderContactHistory();
+    }
+  };
+  tick();
+  _callTimerInterval = setInterval(tick, 1000);
+}
+function stopCallTimer(){
+  if(_callTimerInterval){ clearInterval(_callTimerInterval); _callTimerInterval = null; }
+  const timerEl = document.getElementById('realCallStatusTimer');
+  if(timerEl) timerEl.style.display = 'none';
+}
+
+// Re-renders the phone mockup only if the voice-call step (index 4) is the
+// one currently on screen \u2014 a _voiceCallPhase transition that happens while
+// the attendee has already moved on to a later step must not yank the
+// phone back to showing the call screen.
+function refreshVoiceCallPhone(){
+  if(idx === 4 && stepData[4]) updateDockedPhone(stepData[4]);
+}
+
 async function triggerRealCall(){
   setCallStatusLine('Dialing your number\u2026');
+  _voiceCallPhase = 'connecting';
+  refreshVoiceCallPhone();
   try {
     const res = await fetch('/api/call', {
       method: 'POST',
@@ -1151,6 +1343,7 @@ function subscribeToCallEvents(callId){
   let outcomeTracked = false;
   let lastRenderedInboundAt = null;
   let inboundWindowTimer = null;
+  let callLiveStarted = false;
   // Safety ceiling matching server/lib/callPoller.js's own MAX_POLL_MS (3
   // minutes) plus buffer — if a 'completed' event genuinely never arrives
   // (VOIZ dropped it, dispatch got stuck), auto-play must not wait forever.
@@ -1166,9 +1359,28 @@ function subscribeToCallEvents(callId){
       lastRenderedInboundAt = update.realInboundLatest.receivedAt;
       markRealInboundReply(update.realInboundLatest);
     }
-    if(update.status === 'initiated') setCallStatusLine('Call in progress\u2026', 'live');
+    if(update.status === 'initiated'){
+      setCallStatusLine('Call in progress\u2026', 'live');
+      // Fires on every 'initiated' wave, not just the first \u2014 guard so the
+      // timer/Communication-History time only ever gets set once, at the
+      // actual moment the call went live, not reset on a later duplicate.
+      if(!callLiveStarted){
+        callLiveStarted = true;
+        const entry = _contactHistory.find(e => e.stepIdx === 4);
+        if(entry && !entry.real){
+          entry.time = realTimeLabel();
+          entry.status = 'connected';
+        }
+        _voiceCallPhase = 'live';
+        refreshVoiceCallPhone();
+        startCallTimer(Date.now());
+      }
+    }
     if(update.status === 'queued')    setCallStatusLine('Queued, waiting for a free line\u2026');
     if(update.status === 'completed'){
+      stopCallTimer();
+      _voiceCallPhase = 'ended';
+      refreshVoiceCallPhone();
       // No single "disposition" field exists (confirmed against the real
       // API), outcome comes from separate boolean flags instead.
       const outcome = update.escalation_flag || update.dispute_flag ? 'escalated'
@@ -1299,11 +1511,42 @@ function renderRealCallSummary(update){
    is the fallback that fills those same slots — never a second, competing
    set of fields. See implementation_plan.md.
 ========================================================= */
-// No visible badge for this anymore (kept as a function since subscribeTo-
-// CallEvents calls it) — the auto-play pause (isWaitingOnRealData) and the
-// call-status line already communicate "still working on it" without a
-// dedicated pill cluttering the transcript header.
-function setAnalysisPending(){}
+// Shows the 4-stage progress line (Segmenting -> Addressing -> Loading ->
+// Evaluating) the moment the real call ends and analysis starts, before
+// any field has streamed back yet. advanceAnalysisStage (below) then lights
+// stages up for real as Gemini's fields actually arrive.
+function setAnalysisPending(){
+  const line = document.getElementById('analysisStageLine');
+  if(!line) return;
+  line.style.display = 'flex';
+  line.querySelectorAll('.stage-step').forEach((el, i) => {
+    el.classList.toggle('active', i === 0);
+    el.classList.remove('done');
+  });
+}
+
+// Each stage lights up only once its real field has actually streamed in —
+// "Segmenting" counts as done the moment this runs at all, since splitting
+// the transcript is server-side work that already happened before Gemini
+// could stream back anything (there's no separate signal for it); the
+// other three map to the first three fields in the wire format's own
+// order (server/lib/geminiClient.js FIELD_MAP: SENTIMENT, SUMMARY, NBA).
+// Hides the whole line once status leaves 'streaming' — real content is on
+// screen by then (summaryPointer/nbaPointer/rt-outcome badges).
+function advanceAnalysisStage(analysis){
+  const line = document.getElementById('analysisStageLine');
+  if(!line) return;
+  if(analysis.status !== 'streaming'){
+    line.style.display = 'none';
+    return;
+  }
+  const reached = [true, !!analysis.sentiment, !!analysis.summary, !!analysis.nextBestAction];
+  const doneCount = reached.filter(Boolean).length;
+  line.querySelectorAll('.stage-step').forEach((el, i) => {
+    el.classList.toggle('done', i < doneCount);
+    el.classList.toggle('active', i === doneCount);
+  });
+}
 
 // Called once per wave — 'streaming' (0 or more times, each with whatever
 // new fields just finished generating), then exactly one terminal 'ready'
@@ -1313,6 +1556,8 @@ function setAnalysisPending(){}
 // the next wave.
 function renderGeminiAnalysis(analysis){
   if(!analysis) return;
+
+  advanceAnalysisStage(analysis);
 
   // Sentiment badge — insert once, the moment it first arrives (usually the
   // first field to stream in, well before summary/NBA finish).
