@@ -34,6 +34,7 @@
   <section class="hero" data-sc-act="pin" data-sc-span="1.9" data-sc-drift="#0b0c10">
     <div data-sc-stage class="hero__stage">
       <div class="hero__field" data-sc-parallax="0.6" aria-hidden="true"></div>
+      <div class="hero__rails" aria-hidden="true"><span class="ds-line-v hero__rail hero__rail--l"></span><span class="ds-line-v ds-line-v--late hero__rail hero__rail--r"></span></div>
 
       <div class="hero__copy" data-sc-cue="0 0.82 0">
         <h1 class="sc-display sc-display--xl hero__title" data-sc-kinetic="lines">Lending runs on conversations. We taught agents to hold them.</h1>
@@ -47,7 +48,7 @@
       <!-- Mid plane: the real Kollect case panel, built from the same design
            system as the app. Labelled sample data. -->
       <div class="hero__surface" data-sc-parallax="-2.8" aria-hidden="true">
-        <div class="hero__tilt"><div class="ds-card ds-card--float case" data-sc-tilt="4">
+        <div class="hero__tilt"><div class="ds-card ds-card--float case ds-edge-glow" data-sc-tilt="4">
           <div class="ds-card__head">
             <div class="ds-card__title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7h-3V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H4a1 1 0 0 0-1 1v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a1 1 0 0 0-1-1z"/></svg>
@@ -95,6 +96,7 @@
   <!-- 2 · TENSION: a flow section, plain type. The only act that reads like a
        document, which is why it lands here between two pinned ones. -->
   <section class="sc-section tension" data-sc-act="flow" data-sc-drift="#0d0e13">
+    <div class="ds-line-h act-rule" aria-hidden="true"></div>
     <div class="sc-wrap tension__grid">
       <div class="sc-stack" data-sc-in data-sc-stagger="70">
         <h2 class="sc-display sc-display--lg" data-fill-words>Every collections floor still runs on people dialing lists.</h2>
@@ -162,6 +164,7 @@
 
   <!-- 4 · SUBSTANCE: what is underneath. An asymmetric spread, no cards. -->
   <section id="platform" class="sc-section platform" data-sc-act="flow" data-sc-drift="#0e1015">
+    <div class="ds-line-h act-rule" aria-hidden="true"></div>
     <div class="sc-wrap">
       <div class="platform__head sc-stack" data-sc-in data-sc-stagger="70">
         <h2 class="sc-display sc-display--lg" data-fill-words>One platform underneath every agent.</h2>
@@ -201,6 +204,7 @@
        page resolves on the CTA rather than trailing into a footer. -->
   <section id="demos" class="close" data-sc-act="pin" data-sc-span="1.25" data-sc-drift="#0b0c10">
     <div data-sc-stage class="close__stage" data-sc-spotlight>
+      <div class="ds-line-h act-rule act-rule--top" aria-hidden="true"></div>
       <div class="sc-wrap close__inner">
         <div class="close__head">
           <h2 class="sc-display sc-display--lg" data-sc-cue="0 1 0 0">Choose your demo.</h2>
@@ -220,7 +224,7 @@
             <footer>In development</footer>
           </article>
 
-          <article class="agent agent--live" id="agentKollect" tabindex="0" role="link" aria-label="Start the Kollect live demo">
+          <article class="agent agent--live ds-edge-glow" id="agentKollect" tabindex="0" role="link" aria-label="Start the Kollect live demo">
             <header>
               <span class="agent__glyph agent__glyph--k">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17z"/></svg>

@@ -217,3 +217,15 @@ body { overflow-x: clip; font-size: var(--ds-t-md); }
     radial-gradient(34% 30% at 100% 100%, rgba(58,134,255,.07), transparent 70%),
     radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px) 0 0 / 24px 24px,
     var(--ds-canvas); }
+
+/* ------------------------------------------------------------- beam lines -- */
+.hero__rails { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.hero__rail { --beam-h: 100vh; }
+.hero__rail--l { left: max(var(--sc-gutter), calc((100vw - var(--sc-maxw)) / 2)); }
+.hero__rail--r { right: max(var(--sc-gutter), calc((100vw - var(--sc-maxw)) / 2)); }
+@media (max-width: 860px) { .hero__rails { display: none; } }
+.tension, .platform { position: relative; }
+.act-rule { position: absolute; top: 0; left: 0; right: 0; }
+.act-rule--top { top: 0; z-index: 3; }
+.site-bar { border-bottom-color: transparent; }
+.site-bar::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.14) 30%, rgba(58,134,255,.22) 50%, rgba(255,255,255,.14) 70%, transparent); }

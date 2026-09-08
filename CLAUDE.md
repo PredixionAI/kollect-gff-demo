@@ -79,8 +79,10 @@ self-hosted (`public/fonts/`, `css/fonts.css`): Geist for display, Inter for
 UI. Design rules that came out of review: no sidebar/app-shell around the
 demo, no emoji as icons, no uppercase mono labels as decoration, hairline
 borders at 6-12% white, glass (backdrop blur) only where something floats,
-white pill primaries, medium weights. Never edit the vendored scroll-craft
-engine; theme via tokens.
+white pill primaries, medium weights. Decorative lines are the `ds-line-h` /
+`ds-line-v` beam hairlines (gradient + slow travelling highlight) and the
+`ds-edge-glow` lip on floating glass; use them at boundaries, never as
+filler. Never edit the vendored scroll-craft engine; theme via tokens.
 
 **The dashboard is an agent console.** `public/js/dashboard.js` is the step
 engine (13 scripted steps in 4 phases, real call + WhatsApp triggers);

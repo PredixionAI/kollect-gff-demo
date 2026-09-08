@@ -31,12 +31,14 @@
       <button class="ds-btn ds-btn--secondary ds-btn--sm" id="btnOpenDirectCallModal" type="button">Direct call</button>
       <button class="ds-btn ds-btn--secondary ds-btn--sm" id="btnWhatsappModeToggle" type="button" title="Toggle real WhatsApp sends on/off">WhatsApp: &hellip;</button>
     </div>
+    <div class="ds-line-h app-bar__edge" aria-hidden="true"></div>
   </header>
 
   <!-- ============ SCREEN 1: CAPTURE ============ -->
   <div class="screen active" id="screen-capture">
     
     <div class="capture-box">
+      <div class="ds-line-h step-rule" aria-hidden="true"></div>
       <h1>You&#x2019;re about to meet Kollect</h1>
       <p class="lead">Kollect is Predixion AI&#x2019;s voice agent for loan recovery. In a moment, it&#x2019;ll build a live case around <em>you</em>: enter your details and it&#x2019;ll actually reach out.</p>
       <div class="field">
@@ -82,6 +84,7 @@
   <div class="screen" id="screen-orbs">
     
     <div class="orbs-head">
+      <div class="ds-line-h step-rule" aria-hidden="true"></div>
       <div class="eyebrow">Step 2 of 5 &middot; Voice selection</div>
       <h1>Choose your agent&#x2019;s voice</h1>
       <p>Scroll, drag, or tap either side to browse. Each orb is a different voice, tone and language.</p>
@@ -100,6 +103,7 @@
   <div class="screen" id="screen-archetype">
     
     <div class="arch-head">
+      <div class="ds-line-h step-rule" aria-hidden="true"></div>
       <div class="eyebrow">Step 3 of 5 &middot; Choose your role</div>
       <h1>Which borrower are you today?</h1>
       <p>Pick how you&#x2019;ll respond when Kollect reaches out. This shapes how the demo plays out.</p>
@@ -113,6 +117,7 @@
   <!-- ============ SCREEN 5: PERSONA TYPEWRITER ============ -->
   <div class="screen" id="screen-persona">
     <div class="persona-box">
+      <div class="ds-line-h step-rule" aria-hidden="true"></div>
       <div class="persona-tag" id="personaTag">YOUR ROLE</div>
       <div class="persona-typewriter" id="personaTypewriter"><span class="cursor"></span></div>
       <div class="persona-numbers" id="personaNumbers">
@@ -150,7 +155,7 @@
       <div class="tab-row" id="tabRow" hidden></div>
 
       <div class="wf-panels">
-        <aside class="wf-panel wf-panel--case">
+        <aside class="wf-panel wf-panel--case ds-edge-glow">
           <div class="wf-panel__head"><span>Case file</span><span class="wf-panel__meta" id="footClass">Technical Defaulter</span></div>
           <div class="wf-panel__body">
             <div class="call-status-line" id="realCallStatus" style="display:none;"><span class="dot"></span><span id="realCallStatusText"></span></div>
@@ -225,7 +230,7 @@
         </div>
         </section>
 
-        <aside class="wf-panel wf-panel--inspector">
+        <aside class="wf-panel wf-panel--inspector ds-edge-glow">
           <div class="wf-panel__head"><span>Inspector</span><span class="wf-panel__meta">Current node</span></div>
           <div class="wf-panel__body">
             <div class="wf-inspector__title">

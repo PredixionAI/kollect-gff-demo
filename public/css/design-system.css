@@ -144,3 +144,40 @@
   background: var(--ds-glass); -webkit-backdrop-filter: var(--ds-blur); backdrop-filter: var(--ds-blur);
   border: 1px solid var(--ds-line);
 }
+
+/* ------------------------------------------------------------ beam lines ---
+   Hairlines with a soft colour gradient and a slow travelling highlight.
+   Decorative only (aria-hidden), transform/opacity motion, off under reduced
+   motion. --beam-w is the distance the highlight travels (the line's width). */
+.ds-line-h {
+  position: relative; height: 1px; width: 100%; pointer-events: none; --beam-w: 100vw;
+  background: linear-gradient(90deg, transparent 0%, rgba(58,134,255,.28) 28%, rgba(255,255,255,.22) 50%, rgba(58,134,255,.28) 72%, transparent 100%);
+}
+.ds-line-h::after {
+  content: ''; position: absolute; top: -1px; left: 0; width: 140px; height: 3px; border-radius: 3px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55) 50%, transparent);
+  opacity: 0; animation: dsBeamH 7.5s cubic-bezier(.45, 0, .2, 1) infinite;
+}
+@keyframes dsBeamH { 0% { transform: translateX(-140px); opacity: 0; } 12% { opacity: .9; } 88% { opacity: .9; } 100% { transform: translateX(var(--beam-w)); opacity: 0; } }
+.ds-line-h--soft { background: linear-gradient(90deg, transparent, rgba(255,255,255,.14) 50%, transparent); }
+.ds-line-h--soft::after { display: none; }
+
+.ds-line-v {
+  position: absolute; top: 0; bottom: 0; width: 1px; pointer-events: none; --beam-h: 100vh;
+  background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,.12) 18%, rgba(58,134,255,.22) 50%, rgba(255,255,255,.12) 82%, transparent 100%);
+}
+.ds-line-v::after {
+  content: ''; position: absolute; left: -1px; top: 0; width: 3px; height: 140px; border-radius: 3px;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,.5) 50%, transparent);
+  opacity: 0; animation: dsBeamV 9s cubic-bezier(.45, 0, .2, 1) infinite;
+}
+.ds-line-v--late::after { animation-delay: 4.5s; }
+@keyframes dsBeamV { 0% { transform: translateY(-140px); opacity: 0; } 12% { opacity: .8; } 88% { opacity: .8; } 100% { transform: translateY(var(--beam-h)); opacity: 0; } }
+
+/* tinted top edge for floating glass: the light catching the lip */
+.ds-edge-glow { position: relative; }
+.ds-edge-glow::before {
+  content: ''; position: absolute; top: 0; left: 12%; right: 12%; height: 1px; pointer-events: none; z-index: 1;
+  background: linear-gradient(90deg, transparent, rgba(58,134,255,.45) 35%, rgba(255,255,255,.4) 50%, rgba(58,134,255,.45) 65%, transparent);
+}
+@media (prefers-reduced-motion: reduce) { .ds-line-h::after, .ds-line-v::after { animation: none; } }

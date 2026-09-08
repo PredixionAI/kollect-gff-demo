@@ -1366,3 +1366,11 @@ body[data-screen="dash"] .app-bar__actions{opacity:1; pointer-events:auto;}
     radial-gradient(70% 60% at 50% 0%, rgba(255,255,255,.03), transparent 70%),
     radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px) 0 0 / 22px 22px,
     rgba(255,255,255,.012);}
+
+/* beam lines: the bar's edge, a rule above each step heading, the console's lip */
+.app-bar{border-bottom-color:transparent;}
+.app-bar__edge{position:absolute; left:0; right:0; bottom:-1px;}
+.step-rule{width:280px; margin:0 auto 28px; --beam-w:280px;}
+.persona-box .step-rule{margin-bottom:24px;}
+.wf-canvas{position:relative;}
+.wf-canvas::before{content:''; position:absolute; top:-1px; left:18%; right:18%; height:1px; pointer-events:none; background:linear-gradient(90deg, transparent, rgba(58,134,255,.35) 35%, rgba(255,255,255,.3) 50%, rgba(58,134,255,.35) 65%, transparent);}
