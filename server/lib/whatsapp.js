@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
 const config = require('../config');
 const templates = require('../whatsappTemplates');
-const rateLimit = require('./whatsappRateLimit');
 const modeState = require('./whatsappModeState');
 
 const VOBIZ_SEND_URL = 'https://api.vobiz.ai/api/v1/messaging/messages';
@@ -30,18 +29,14 @@ async function postToVobiz(payload) {
   };
 }
 
-// caseKey should be stable per real-world case (call_id or recipient phone),
-// so the per-case cap actually limits a case, not a single message.
+// caseKey identifies the real-world case (call_id or recipient phone) —
+// kept as a param even with no rate limiter consuming it, since callers
+// (callOutcome.js, dashboard triggers) already pass it and it's useful
+// context in logs.
 async function sendTemplate(templateKey, { to, caseKey, vars }) {
   const tpl = templates[templateKey];
   if (!tpl) throw new Error(`Unknown WhatsApp template key: ${templateKey}`);
   if (!to) throw new Error('sendTemplate requires "to"');
-
-  const gate = rateLimit.checkAndConsume(caseKey || to);
-  if (!gate.allowed) {
-    console.warn(`[whatsapp] BLOCKED (${gate.reason}) — template=${templateKey} to=${to}`);
-    return { status: 'blocked', reason: gate.reason, template: tpl.name, to };
-  }
 
   // TEMPORARY fallback (config.whatsapp.useTemplates=false) while templates
   // await Meta approval: send the same content as free-form text instead.
@@ -95,12 +90,6 @@ async function sendTemplate(templateKey, { to, caseKey, vars }) {
 async function sendText(to, body, caseKey) {
   if (!to) throw new Error('sendText requires "to"');
   if (!body) throw new Error('sendText requires "body"');
-
-  const gate = rateLimit.checkAndConsume(caseKey || to);
-  if (!gate.allowed) {
-    console.warn(`[whatsapp] BLOCKED (${gate.reason}) — text send to=${to}`);
-    return { status: 'blocked', reason: gate.reason, to };
-  }
 
   if (modeState.getMode() !== 'live') {
     console.log(`[whatsapp:mock] would send text to ${to}:`, body);

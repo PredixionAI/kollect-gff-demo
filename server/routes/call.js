@@ -11,7 +11,7 @@ const router = express.Router();
 // ever sends voiceId, never an agent_id, so it can't be spoofed into calling
 // a different agent than the one it displayed.
 router.post('/call', async (req, res) => {
-  const { name, phone, voiceId, lang, firstMessage } = req.body || {};
+  const { name, phone, voiceId, lang, firstMessage, archetypeId, overdueDays } = req.body || {};
   if (!name || !phone) {
     return res.status(400).json({ error: 'name and phone are required' });
   }
@@ -31,6 +31,21 @@ router.post('/call', async (req, res) => {
       customerName: name,
       dueAmount: config.demo.dueAmount,
       dueDate: config.demo.dueDate,
+      // Extra context beyond the 3 variables VOIZ_API_REFERENCE.md confirms
+      // the registered agent's own prompt actually consumes
+      // (customer_name/due_amount/due_date) — VOIZ tolerates unknown keys
+      // in customer_data without erroring, but tolerating isn't the same as
+      // the live agent actually saying anything different because of them.
+      // This is forwarded so it's ready the moment the registered agent's
+      // prompt template is updated to reference {archetype}/{overdue_days};
+      // until then it has NO effect on what the agent actually says on the
+      // call (2026-09-08 user request — see chat for the full explanation
+      // of why this is a VOIZ-agent-registration limitation, not a bug
+      // fixable from this codebase alone).
+      customData: {
+        archetype: archetypeId || undefined,
+        overdue_days: overdueDays !== undefined && overdueDays !== null ? String(overdueDays) : undefined,
+      },
     });
 
     if (httpStatus !== 200 && httpStatus !== 202) {

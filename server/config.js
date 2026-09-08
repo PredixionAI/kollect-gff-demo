@@ -87,11 +87,10 @@ module.exports = {
     // Only useful for rehearsal with known numbers. Flip back to `true`
     // (or delete the env var) the moment templates are approved.
     useTemplates: process.env.WHATSAPP_USE_TEMPLATES !== 'false',
-    // Strict caps — a bug that loops this WILL spend real money on Meta's
-    // per-conversation pricing. Deliberately conservative; raise only if
-    // rehearsal actually needs more.
-    maxPerMinute: Number(process.env.WHATSAPP_MAX_PER_MINUTE || 5),
-    maxPerCase: Number(process.env.WHATSAPP_MAX_PER_CASE || 3),
-    maxPerDay: Number(process.env.WHATSAPP_MAX_PER_DAY || 30),
+    // Rate limiting removed 2026-09-08 (explicit user request) — every real
+    // send now goes out uncapped, including every escalation alert to the
+    // human agent. There is no longer a safety net against a bug that loops
+    // a send spending real money on Meta's per-conversation pricing; that
+    // risk is accepted, not overlooked.
   },
 };

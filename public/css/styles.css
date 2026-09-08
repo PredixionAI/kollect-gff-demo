@@ -1239,13 +1239,16 @@ body{
 .rt-transcript .rt-line-agent{color:var(--blue);}
 .rt-transcript .rt-line-customer{color:var(--text-dim);}
 
-/* ---------- ANALYSIS STAGE INDICATOR (real call ended, Gemini streaming) ----------
-   Between the call completing and its analysis finishing — each step lights
-   up only once its real field has actually streamed in (see
-   advanceAnalysisStage in dashboard.js), not a blind timed loop. */
-.analysis-stage-line{display:flex; align-items:center; gap:9px; padding:2px 0;}
+/* ---------- ANALYSIS STAGE INDICATOR (real call ended, GLM/Gemini streaming) ----------
+   Between the call completing and its analysis finishing — a single line
+   explaining, in plain English, what's happening right now and why it
+   takes a moment. Changes only when its real field has actually streamed
+   in (see advanceAnalysisStage in dashboard.js), never a blind timed loop.
+   Deliberately small and stays inside the Call Transcript card — not a
+   separate overlay (2026-09-08 user request). */
+.analysis-stage-line{display:flex; align-items:flex-start; gap:8px; padding:3px 0;}
 .stage-spinner{
-  width:12px; height:12px; border-radius:50%; flex-shrink:0;
+  width:11px; height:11px; margin-top:2px; border-radius:50%; flex-shrink:0;
   border:2px solid var(--border); border-top-color:var(--blue);
   animation:stageSpin .8s linear infinite;
 }
@@ -1253,11 +1256,11 @@ body{
 @media (prefers-reduced-motion: reduce){
   .stage-spinner{ animation:none; border-top-color:var(--border); }
 }
-.stage-steps{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
-.stage-step{
-  font-size:10.5px; font-weight:600; color:var(--text-faint);
-  transition:color .25s ease;
+.stage-text{
+  font-size:11.5px; color:var(--text-dim); line-height:1.4;
 }
-.stage-step:not(:last-child)::after{content:'\2192'; margin-left:6px; color:var(--border);}
-.stage-step.active{color:var(--blue);}
-.stage-step.done{color:var(--text-dim);}
+.stage-text.stage-text-enter{ animation:stageTextFadeIn .2s var(--ease-out); }
+@keyframes stageTextFadeIn{ from{ opacity:.25; } to{ opacity:1; } }
+@media (prefers-reduced-motion: reduce){
+  .stage-text.stage-text-enter{ animation:none; }
+}

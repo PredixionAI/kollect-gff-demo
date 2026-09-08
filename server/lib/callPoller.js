@@ -7,7 +7,12 @@ const callOutcome = require('./callOutcome');
 // best-effort secondary path in case VOIZ ever pushes one, but nothing here
 // depends on it.
 const TERMINAL_STATUSES = new Set(['completed', 'failed', 'no_answer', 'cancelled']);
-const POLL_INTERVAL_MS = 5000;
+// Raised from 5000ms 2026-09-08 (user report: real transcript/completion
+// felt slow to show up) — this only controls how quickly WE notice VOIZ's
+// own terminal status once it's there, not how fast VOIZ itself finishes
+// the call/transcript. 1s means at most ~1s of added latency after VOIZ is
+// actually done, vs up to 5s before.
+const POLL_INTERVAL_MS = 1000;
 // PRD targets 35-70s per branch; 3 minutes is a generous safety cap so a
 // stuck poll can't run forever.
 const MAX_POLL_MS = 3 * 60 * 1000;

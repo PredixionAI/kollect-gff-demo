@@ -296,19 +296,17 @@
               <div class="real-transcript-card" id="realTranscriptCard">
                 <div class="rt-outcome" id="rtOutcome"></div>
                 <div class="rt-transcript" id="rtTranscript">Awaiting first call.</div>
-                <!-- Shown between the real call completing and Gemini's
+                <!-- Shown between the real call completing and GLM/Gemini's
                      streamed analysis finishing (see setAnalysisPending /
-                     advanceAnalysisStage in dashboard.js). Each stage lights
-                     up only once its real field has actually streamed in —
-                     not a blind timed animation. -->
+                     advanceAnalysisStage in dashboard.js). One line of plain-
+                     English explanation of what's happening right now and
+                     why it takes a moment — changes only when its real field
+                     has actually streamed in, never a blind timed animation.
+                     Deliberately small and contained inside this same card,
+                     not a separate overlay (2026-09-08 user request). -->
                 <div class="analysis-stage-line" id="analysisStageLine" style="display:none;">
                   <span class="stage-spinner"></span>
-                  <span class="stage-steps">
-                    <span class="stage-step" data-stage="1">Segmenting</span>
-                    <span class="stage-step" data-stage="2">Addressing</span>
-                    <span class="stage-step" data-stage="3">Loading</span>
-                    <span class="stage-step" data-stage="4">Evaluating</span>
-                  </span>
+                  <span class="stage-text" id="analysisStageText">Reading the call to understand what happened…</span>
                 </div>
               </div>
             </div>

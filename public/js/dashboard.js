@@ -57,6 +57,10 @@ function personaPacks(nm, agent, lang){
       w2Title:'Payment Confirmation', w2Subtitle:'Thank-you message with receipt link',
       w2Lines:[`Dhanyawad ${nm} ji!`,``,`Aapka payment safaltapoorvak mil gaya hai.`,``,`Receipt: https://pay.link/receipt/45k`],
       w2Action:'Confirmation sent 11:35 AM', w2Details:'Auto-triggered after payment gateway confirms receipt',
+      // A confirmation receipt, not a question — nothing to wait for a
+      // reply on (2026-09-08 user request: only pause for a real reply
+      // when the outgoing message actually asks one).
+      w2ExpectsReply:false,
       s9Title:'Payment Verification', s9Subtitle:'Confirming funds cleared, no escalation needed',
       s9Lines:['Payment gateway: confirmed','LMS: reconciling balance','Account status updating to CURRENT','','No escalation required, case will auto-close'],
       s9Action:'Funds verified, reconciling with LMS', s9Details:'Escalation protocol not triggered',
@@ -91,9 +95,18 @@ function personaPacks(nm, agent, lang){
       w2Title:'Round 2: Payment Plan Offer', w2Subtitle:'Firm-but-fair plan offer, WhatsApp',
       w2Lines:[`${nm} ji,`,``,`Hum samajhte hain ki abhi thoda mushkil hai.`,`Aapke liye 2 installments ka option hai:`,`\u20b922,500 abhi + \u20b922,500 agle hafte.`,``,`Reply karein "SPLIT" confirm karne ke liye.`],
       w2Action:'Plan offer sent 3:00 PM', w2Details:'Offers 2-installment split, empathetic tone',
+      // Explicitly asks the borrower to reply "SPLIT" — this is the one
+      // real trigger word wired up in server/routes/whatsappWebhook.js.
+      // Auto-play pauses here for a real reply (isWaitingOnRealData);
+      // s9Lines/s9Action below are the scripted assumption for the case a
+      // real reply matches (or none arrives before the wait times out and
+      // s9TimeoutLines takes over — see renderStep).
+      w2ExpectsReply:true,
       s9Title:'Plan Acceptance Check', s9Subtitle:'Borrower reviewing installment offer',
       s9Lines:['Reply received: "SPLIT"','Plan accepted, 2 installments confirmed','No escalation needed','','Scheduling first installment reminder'],
       s9Action:'Borrower replied SPLIT at 3:22 PM', s9Details:'Plan accepted, scheduling installments',
+      s9TimeoutLines:['No reply received within the wait window','Plan offer still open, not withdrawn','','Next best action: follow-up call scheduled for later today'],
+      s9TimeoutAction:'No reply yet, follow-up scheduled', s9TimeoutDetails:'Plan offer stays open; escalation not warranted from silence alone',
       s10Title:'Plan Activated', s10Subtitle:'Installment schedule confirmed via WhatsApp', s10Audience:'borrower', s10Contact:'Predixion Fincorp', s10ContactSub:'Business Account',
       s10Lines:[`Perfect, ${nm} ji!`,``,`Installment 1: \u20b922,500, due today`,`Installment 2: \u20b922,500, due in 7 days`,``,`Hum aapko reminder bhejenge har installment se pehle.`],
       s10Action:'Schedule confirmed 3:25 PM', s10Details:'Case closed without human involvement',
@@ -125,6 +138,9 @@ function personaPacks(nm, agent, lang){
       w2Title:'Round 2: WhatsApp', w2Subtitle:'Dispute acknowledgement, WhatsApp',
       w2Lines:[`${nm} ji,`,``,`Hum aapki dispute note kar rahe hain.`,`Hamari team jald aapse contact karegi is charge ko clarify karne ke liye.`],
       w2Action:'Acknowledgement sent 3:00 PM', w2Details:'Confirms dispute logged, sets expectation for human contact',
+      // Sets an expectation, doesn't ask a question — already escalating
+      // regardless of whether the borrower replies to this.
+      w2ExpectsReply:false,
       s9Title:'Escalation Check', s9Subtitle:'Explicit human request, evaluating hand-off',
       s9Lines:['Escalation trigger: explicit human request (not confidence-based)','Dispute flag: charge validity questioned','','Escalating to human collections agent...','Preparing case summary + dispute context'],
       s9Action:'Borrower explicitly requested human, immediate escalation', s9Details:'Not a confidence-threshold escalation, trust/dispute issue',
@@ -161,6 +177,11 @@ function personaPacks(nm, agent, lang){
       w2Title:'Round 2: WhatsApp', w2Subtitle:'Final attempt, WhatsApp',
       w2Lines:[`${nm} ji,`,``,`Hum aapse sampark karne ki koshish kar rahe hain.`,`Kripya jab possible ho, is number par reply karein ya call back karein.`,``,`Payment link: https://pay.link/45k`],
       w2Action:'Final message sent 3:00 PM, not yet read', w2Details:'Last automated attempt before human escalation',
+      // Explicitly asks the borrower to reply or call back — but this
+      // archetype's own premise is that they don't, so no separate timeout
+      // override is needed: the existing s9Lines below already describe
+      // "0 responses" as the expected outcome, not a fallback.
+      w2ExpectsReply:true,
       s9Title:'Escalation Check', s9Subtitle:'Channels exhausted, evaluating hand-off',
       s9Lines:['2 channels attempted, 0 responses','Automated contact exhausted','','Escalating to human for manual outreach...','Preparing case summary + alternate contact search'],
       s9Action:'No response across 2 channels, 2 attempts each', s9Details:'Escalating for manual follow-up, not a dispute',
@@ -320,6 +341,11 @@ function steps(){
     action:P.w2Action, details:P.w2Details, classV:archTitle, status:'progress',
     lastContact:{key:'wa-round2', time:'3:00 PM', platform:'whatsapp', platformLabel:'WhatsApp', status:P.escalate?'pending':'connected', statusLabel:P.escalate?'Sent \u00b7 Not Read':'Sent \u00b7 Delivered'},
     live:{type:'chat', tag:'WHATSAPP', time:'3:00 PM', voice:false, contact:'Predixion Fincorp', contactSub:'Business Account', lines:P.w2Lines},
+    // Whether auto-play pauses after this send to actually wait for a real
+    // reply (isWaitingOnRealData) \u2014 only true when the message itself asks
+    // a question (2026-09-08 user request: don't wait on a reply to a
+    // message that was never open-ended in the first place).
+    expectsReply:P.w2ExpectsReply,
     nbaNow:P.nba.s8,
     agents:['Firm Reminder Agent','Payment Plan Agent'], models:['Template Generator (GPT-4)','Plan Structuring Model'],
     signals:[{name:'WhatsApp API', tag:'sent', desc:'Dispatched: 3:00:00 PM'},{name:'WhatsApp API', tag:'delivered', desc:'Delivered: 3:00:04 PM'}],
@@ -333,6 +359,12 @@ function steps(){
     // "Accepted" row appears (2026-09-08 user report).
     lastContact:{key:'wa-round2', time:'3:00 PM', platform:'whatsapp', platformLabel:'WhatsApp', status:P.escalate?'pending':'connected', statusLabel:P.escalate?'Sent \u00b7 Not Read':'Accepted'},
     live:{type:'terminal', tag:'ESCALATION CHECK', voice:false, lines:P.s9Lines},
+    // Only set where the scripted s9Lines above actually assumes a reply
+    // arrived (systemic's "SPLIT") \u2014 renderStep swaps these in if the
+    // real-reply wait (isWaitingOnRealData, gated by expectsReply above)
+    // timed out with nothing received. Undefined for archetypes whose
+    // s9Lines don't assume a reply either way.
+    timeoutAction:P.s9TimeoutAction, timeoutDetails:P.s9TimeoutDetails, timeoutLines:P.s9TimeoutLines,
     nbaNow:P.nba.s9,
     agents:['Escalation Agent','Case Summary Agent'], models:['Confidence Scoring','Summarization (GPT-4)'],
     signals:[{name:'Confidence Model', tag:'evaluated', desc:P.escalate?'Escalation triggered':'No escalation needed'},{name:'Escalation Rules', tag:'policy', desc:'SOP applied'}],
@@ -389,6 +421,14 @@ let realCallTriggered = false;
 let whatsappRound1Sent = false;
 let whatsappRound2Sent = false;
 let whatsappEscalationSent = false;
+// Real-reply wait for an open-ended Round 2 send (expectsReply, see
+// steps()) — 2026-09-08 user request: pause auto-play for a genuine
+// WhatsApp reply only when the message actually asked one, bounded so a
+// live booth demo can never hang forever waiting for a human to type back.
+const REPLY_WAIT_MS = 45000;
+let whatsappOpenEndedSentAt = null;
+let whatsappReplyMatched = false;
+let whatsappReplyTimedOut = false;
 // Drives the auto-play pause below — a real call/analysis in flight holds
 // auto-play on the current step instead of rushing past it on a fixed timer.
 // Manual next/prev always works regardless of these; only the play timer checks them.
@@ -428,6 +468,9 @@ function startDash(){
   whatsappRound1Sent = false;
   whatsappRound2Sent = false;
   whatsappEscalationSent = false;
+  whatsappOpenEndedSentAt = null;
+  whatsappReplyMatched = false;
+  whatsappReplyTimedOut = false;
   _lastContactState = null;
   _contactHistory = [];
   _phoneHasContent = false;
@@ -450,10 +493,9 @@ function startDash(){
   if(rtOutcomeEl) rtOutcomeEl.innerHTML = '';
   if(rtTranscriptEl) rtTranscriptEl.textContent = 'Awaiting first call.';
   const stageLineEl = document.getElementById('analysisStageLine');
-  if(stageLineEl){
-    stageLineEl.style.display = 'none';
-    stageLineEl.querySelectorAll('.stage-step').forEach(el => el.classList.remove('active', 'done'));
-  }
+  if(stageLineEl) stageLineEl.style.display = 'none';
+  const stageTextEl = document.getElementById('analysisStageText');
+  if(stageTextEl){ stageTextEl.textContent = ANALYSIS_STAGE_COPY[0]; stageTextEl.classList.remove('stage-text-enter'); }
 
   // Communication History starts empty each run.
   const commEmpty = document.getElementById('commEmpty');
@@ -1014,6 +1056,13 @@ function markRealInboundReply(inbound){
     real: true,
   });
   renderContactHistory();
+  // Unblocks the bounded real-reply wait (isWaitingOnRealData, idx===7) —
+  // only a genuine trigger-word match counts as "the question got answered"
+  // (a reply that doesn't match anything doesn't tell the flow what to do
+  // next, so it still falls through to the timeout path).
+  if(inbound.triggerMatched && whatsappOpenEndedSentAt && !whatsappReplyMatched){
+    whatsappReplyMatched = true;
+  }
   if (window.track) track('whatsapp_inbound_reply', { text: inbound.text, triggerMatched: inbound.triggerMatched });
 }
 
@@ -1023,6 +1072,19 @@ function markRealInboundReply(inbound){
 function renderStep(instant){
   const s = stepData[idx];
   renderTabs();
+
+  // The bounded real-reply wait (isWaitingOnRealData, idx===7) timed out
+  // with nothing received — swap this step's scripted content (which
+  // otherwise assumes the reply arrived, e.g. systemic's "SPLIT") for the
+  // honest "no reply yet" version. Only steps that actually defined a
+  // timeout variant have one (see steps() timeoutLines/timeoutAction/
+  // timeoutDetails) — archetypes whose scripted content never assumed a
+  // reply in the first place are left untouched.
+  if(idx === 8 && whatsappReplyTimedOut && s.timeoutLines){
+    s.action = s.timeoutAction;
+    s.details = s.timeoutDetails;
+    s.live.lines = s.timeoutLines;
+  }
 
   document.getElementById('stepTitle').textContent   = s.title;
   document.getElementById('stepSubtitle').textContent= s.subtitle;
@@ -1122,6 +1184,9 @@ function renderStep(instant){
   if(idx === 7 && state.phone && !whatsappRound2Sent){
     whatsappRound2Sent = true;
     triggerWhatsApp('followup', s.live.lines.join('\n'), 7);
+    // Starts the bounded real-reply wait (isWaitingOnRealData) only when
+    // this specific message actually asked one (see expectsReply, steps()).
+    if(s.expectsReply) whatsappOpenEndedSentAt = Date.now();
   }
   if(idx === 9 && state.phone && !whatsappEscalationSent){
     whatsappEscalationSent = true;
@@ -1155,11 +1220,13 @@ const btnPlay = document.getElementById('btnPlay');
 btnPlay.addEventListener('click', () => {
   if(playTimer){ stopPlay(); } else { startPlay(); }
 });
-// Auto-play must not rush past a real call or its analysis on a fixed
-// timer — it waits for the real thing to actually finish. Manual next/prev
-// (above) always works regardless; this only gates the automatic advance.
-// Steps 4 (voice call) and 5 (call analysis, "Step 6/13") are the only ones
-// that ever wait on real backend work; everything else advances as before.
+// Auto-play must not rush past a real call, its analysis, or a real reply
+// it's genuinely waiting on — it waits for the real thing to actually
+// finish. Manual next/prev (above) always works regardless; this only
+// gates the automatic advance. Steps 4 (voice call), 5 (call analysis,
+// "Step 6/13") and 7 (Round 2 WhatsApp, only when it asked a question) are
+// the only ones that ever wait on real backend work; everything else
+// advances as before.
 function isWaitingOnRealData(){
   if(!state.phone) return false; // mock/simulated run, nothing real to wait for
   if(idx === 4) return !realCallCompleted;
@@ -1168,6 +1235,13 @@ function isWaitingOnRealData(){
     if(!realCallAnswered) return false; // no-answer/failed calls have no transcript to analyze
     const status = state.geminiAnalysis && state.geminiAnalysis.status;
     return status !== 'ready' && status !== 'unavailable';
+  }
+  if(idx === 7 && stepData[7] && stepData[7].expectsReply && whatsappOpenEndedSentAt && !whatsappReplyMatched){
+    if(Date.now() - whatsappOpenEndedSentAt < REPLY_WAIT_MS) return true;
+    // Bound hit with nothing received — stop waiting for good (checked
+    // once, not re-armed) and let step 9's render pick up whatsappReplyTimedOut.
+    whatsappReplyTimedOut = true;
+    return false;
   }
   return false;
 }
@@ -1272,6 +1346,12 @@ async function triggerRealCall(){
         // restart. stepData[3] is always populated by here regardless of
         // which step is currently showing.
         firstMessage: (stepData[3] && stepData[3].live.lines || []).filter(l => l.trim()).join('\n'),
+        // Forwarded to VOIZ as extra customer_data context (server/routes/
+        // call.js) — has no effect on the live call today (the registered
+        // agent's prompt doesn't reference these), but is ready for the
+        // moment it does.
+        archetypeId: state.archetype ? state.archetype.id : null,
+        overdueDays: state.archetype ? state.archetype.overdueDays : null,
       }),
     });
     const data = await res.json();
@@ -1344,6 +1424,7 @@ function subscribeToCallEvents(callId){
   let lastRenderedInboundAt = null;
   let inboundWindowTimer = null;
   let callLiveStarted = false;
+  let guessedConnectTimer = null;
   // Safety ceiling matching server/lib/callPoller.js's own MAX_POLL_MS (3
   // minutes) plus buffer — if a 'completed' event genuinely never arrives
   // (VOIZ dropped it, dispatch got stuck), auto-play must not wait forever.
@@ -1360,24 +1441,42 @@ function subscribeToCallEvents(callId){
       markRealInboundReply(update.realInboundLatest);
     }
     if(update.status === 'initiated'){
-      setCallStatusLine('Call in progress\u2026', 'live');
-      // Fires on every 'initiated' wave, not just the first \u2014 guard so the
-      // timer/Communication-History time only ever gets set once, at the
-      // actual moment the call went live, not reset on a later duplicate.
-      if(!callLiveStarted){
-        callLiveStarted = true;
-        const entry = _contactHistory.find(e => e.stepIdx === 4);
-        if(entry && !entry.real){
-          entry.time = realTimeLabel();
-          entry.status = 'connected';
-        }
-        _voiceCallPhase = 'live';
-        refreshVoiceCallPhone();
-        startCallTimer(Date.now());
+      // VOIZ has no real "picked up" event \u2014 'initiated' only means the
+      // call was dispatched to the phone network, not that a human
+      // answered (that's only ever revealed after the fact, inside the
+      // terminal 'completed' record's answered flag). Claiming "Connected"
+      // right here was a real bug (2026-09-08 user report). This waits a
+      // guessed 9s (raised from an initial 5s guess, same day) \u2014 a rough
+      // estimate of how long dispatch-to-actually-ringing takes \u2014 before
+      // showing "Connected", instead of claiming it the instant the call
+      // was merely dispatched. It's still a guess, not a real signal;
+      // markRealCallOutcome below always corrects this to the true
+      // answered/not-answered outcome once the call actually ends.
+      setCallStatusLine('Ringing\u2026', 'live');
+      if(!callLiveStarted && !guessedConnectTimer){
+        guessedConnectTimer = setTimeout(() => {
+          callLiveStarted = true;
+          setCallStatusLine('Call in progress\u2026', 'live');
+          const entry = _contactHistory.find(e => e.stepIdx === 4);
+          if(entry && !entry.real){
+            entry.time = realTimeLabel();
+            entry.status = 'connected';
+          }
+          _voiceCallPhase = 'live';
+          refreshVoiceCallPhone();
+          startCallTimer(Date.now());
+        }, 9000);
       }
     }
     if(update.status === 'queued')    setCallStatusLine('Queued, waiting for a free line\u2026');
     if(update.status === 'completed'){
+      // A call that ends within the 5s guess window (near-instant failure,
+      // voicemail, etc.) must never flip to "Connected" after the fact \u2014
+      // cancel the guess if it hasn't fired yet.
+      if(guessedConnectTimer && !callLiveStarted){
+        clearTimeout(guessedConnectTimer);
+        guessedConnectTimer = null;
+      }
       stopCallTimer();
       _voiceCallPhase = 'ended';
       refreshVoiceCallPhone();
@@ -1511,28 +1610,40 @@ function renderRealCallSummary(update){
    is the fallback that fills those same slots — never a second, competing
    set of fields. See implementation_plan.md.
 ========================================================= */
-// Shows the 4-stage progress line (Segmenting -> Addressing -> Loading ->
-// Evaluating) the moment the real call ends and analysis starts, before
-// any field has streamed back yet. advanceAnalysisStage (below) then lights
-// stages up for real as Gemini's fields actually arrive.
+// One line of plain-English explanation, shown inside the Call Transcript
+// card (never a separate/bigger overlay — 2026-09-08 user request) between
+// the real call ending and analysis finishing. Each phrase names what's
+// genuinely happening right now and, implicitly, why it takes a moment —
+// not jargon, and not a blind timed loop: advanceAnalysisStage (below)
+// only moves to the next phrase once its real field has actually streamed
+// back from GLM/Gemini.
+const ANALYSIS_STAGE_COPY = [
+  'Reading the call to understand what happened…',
+  'Picked up the tone — working out what it means for this case…',
+  'Outcome summarized — deciding the next best action…',
+  'Wrapping up the recommendation…',
+];
+function setAnalysisStageText(text){
+  const textEl = document.getElementById('analysisStageText');
+  if(!textEl || textEl.textContent === text) return;
+  textEl.textContent = text;
+  textEl.classList.remove('stage-text-enter');
+  void textEl.offsetWidth; // restart the fade even if the same class was just removed
+  textEl.classList.add('stage-text-enter');
+}
 function setAnalysisPending(){
   const line = document.getElementById('analysisStageLine');
   if(!line) return;
   line.style.display = 'flex';
-  line.querySelectorAll('.stage-step').forEach((el, i) => {
-    el.classList.toggle('active', i === 0);
-    el.classList.remove('done');
-  });
+  setAnalysisStageText(ANALYSIS_STAGE_COPY[0]);
 }
 
-// Each stage lights up only once its real field has actually streamed in —
-// "Segmenting" counts as done the moment this runs at all, since splitting
-// the transcript is server-side work that already happened before Gemini
-// could stream back anything (there's no separate signal for it); the
-// other three map to the first three fields in the wire format's own
-// order (server/lib/geminiClient.js FIELD_MAP: SENTIMENT, SUMMARY, NBA).
-// Hides the whole line once status leaves 'streaming' — real content is on
-// screen by then (summaryPointer/nbaPointer/rt-outcome badges).
+// Advances to the next real phrase only once its field has actually
+// streamed in — the phrase order matches the wire format's own real
+// arrival order (server/lib/geminiClient.js FIELD_MAP: SENTIMENT, SUMMARY,
+// NBA), not a guessed or decorative sequence. Hides the whole line once
+// status leaves 'streaming' — real content is on screen by then
+// (summaryPointer/nbaPointer/rt-outcome badges).
 function advanceAnalysisStage(analysis){
   const line = document.getElementById('analysisStageLine');
   if(!line) return;
@@ -1540,12 +1651,11 @@ function advanceAnalysisStage(analysis){
     line.style.display = 'none';
     return;
   }
-  const reached = [true, !!analysis.sentiment, !!analysis.summary, !!analysis.nextBestAction];
-  const doneCount = reached.filter(Boolean).length;
-  line.querySelectorAll('.stage-step').forEach((el, i) => {
-    el.classList.toggle('done', i < doneCount);
-    el.classList.toggle('active', i === doneCount);
-  });
+  // One real field in = one phrase forward, so every phrase actually gets
+  // shown in turn (a baseline "always true" entry here would make the
+  // first field received jump two phrases at once instead of one).
+  const fieldsIn = [analysis.sentiment, analysis.summary, analysis.nextBestAction].filter(Boolean).length;
+  setAnalysisStageText(ANALYSIS_STAGE_COPY[Math.min(fieldsIn, ANALYSIS_STAGE_COPY.length - 1)]);
 }
 
 // Called once per wave — 'streaming' (0 or more times, each with whatever
