@@ -1,6 +1,8 @@
 const express = require('express');
 const config = require('../config');
 const voizClient = require('../lib/voizClient');
+const elevenLabsClient = require('../lib/elevenLabsClient');
+const elevenLabsPoller = require('../lib/elevenLabsPoller');
 const store = require('../lib/store');
 const callPoller = require('../lib/callPoller');
 
@@ -11,13 +13,55 @@ const router = express.Router();
 // ever sends voiceId, never an agent_id, so it can't be spoofed into calling
 // a different agent than the one it displayed.
 router.post('/call', async (req, res) => {
-  const { name, phone, voiceId, lang, firstMessage, archetypeId, overdueDays } = req.body || {};
+  const { name, phone, voiceId, lang, firstMessage, archetypeId, overdueDays, enhancedQuality } = req.body || {};
   if (!name || !phone) {
     return res.status(400).json({ error: 'name and phone are required' });
   }
 
   let formattedPhone = phone.replace(/[^0-9+]/g, '');
   if (!formattedPhone.startsWith('+')) formattedPhone = '+91' + formattedPhone;
+
+  // "Enhanced Quality" (2026-09-08/09 user request) — ElevenLabs is tried
+  // FIRST only when both requested AND actually configured. Dispatch,
+  // outcome polling (elevenLabsPoller.js) and outcome mapping
+  // (callOutcome.js handleElevenLabsOutcome) are all wired and verified
+  // against the real API (2026-09-09) — see elevenLabsClient.js for the
+  // path-correction history and what's still unconfirmed (the exact shape
+  // of a genuinely ANSWERED call's transcript/status, only a failed-to-
+  // connect one has been inspected so far).
+  //
+  // A 2xx HTTP status here is NOT sufficient on its own — ElevenLabs can
+  // return HTTP 200 with `success:false` in the body for a same-request
+  // dial failure (confirmed: a SIP 404 on an unreachable number came back
+  // this way, not as a non-2xx). Both conditions must hold before this is
+  // treated as a real success; anything else falls through to VOIZ below,
+  // same as a real ElevenLabs outage would.
+  //
+  // Per-voice agent — each persona has its own registered ElevenLabs agent
+  // (config.elevenLabs.agentIdsByVoice), not one agent that switches voice.
+  // A voice with no ElevenLabs agent configured (e.g. Swara) skips this
+  // branch entirely and goes straight to VOIZ, even with the toggle on.
+  const elevenAgentId = voiceId && config.elevenLabs.agentIdsByVoice[voiceId];
+  if (enhancedQuality && config.elevenLabs.apiKey && elevenAgentId) {
+    const elevenResult = await elevenLabsClient.placeCall({
+      agentId: elevenAgentId,
+      customerPhone: formattedPhone,
+      customerName: name,
+    });
+    const dispatchedOk = elevenResult.httpStatus >= 200 && elevenResult.httpStatus < 300 && elevenResult.body.success !== false;
+    if (dispatchedOk) {
+      const callId = elevenResult.body.call_id || `unknown-${Date.now()}`;
+      store.createCase(callId, {
+        name, phone: formattedPhone, voiceId: voiceId || null, lang: lang || null,
+        firstMessage: firstMessage || null,
+        status: 'initiated',
+        provider: 'elevenlabs',
+      });
+      elevenLabsPoller.pollConversation(callId);
+      return res.status(elevenResult.httpStatus).json({ call_id: callId, status: 'initiated', provider: 'elevenlabs' });
+    }
+    console.warn(`[call] Enhanced Quality requested but ElevenLabs dispatch failed (${elevenResult.body && (elevenResult.body.message || elevenResult.body.reason)}) — falling back to VOIZ`);
+  }
 
   const targetAgentId = (voiceId && config.voiz.agentIdsByVoice[voiceId]) || config.voiz.defaultAgentId;
   if (!targetAgentId) {

@@ -30,6 +30,30 @@ module.exports = {
     },
   },
 
+  // "Enhanced Quality" real-call routing (2026-09-08/09 user request) —
+  // ElevenLabs Conversational AI as an alternative to VOIZ, opted into per
+  // attendee. Dispatch, outcome polling, and outcome mapping are all real
+  // and confirmed against the live API (2026-09-09) — see
+  // server/lib/elevenLabsClient.js for the endpoint-correction history and
+  // what's still unconfirmed (a genuinely ANSWERED call's exact shape).
+  // Blank apiKey means the toggle is harmless: call.js falls back to VOIZ.
+  //
+  // Per-voice agent mapping, same pattern as voiz.agentIdsByVoice below —
+  // each persona has its OWN ElevenLabs agent (they're different registered
+  // agents, not one agent that switches voice). Only personas with a real
+  // agent_id here are eligible for Enhanced Quality; call.js falls back to
+  // VOIZ for any other voice selection even if the toggle is on.
+  elevenLabs: {
+    apiKey: process.env.ELEVENLABS_API_KEY || '',
+    phoneNumberId: process.env.ELEVENLABS_PHONE_NUMBER_ID || '',
+    agentIdsByVoice: {
+      // id 'priya' = Neha (see server/voiceCatalog.js) — "Collections Agent
+      // - Live Demo", confirmed by user 2026-09-09.
+      priya: process.env.ELEVENLABS_AGENT_ID_PRIYA || 'agent_8801m0c50hq8fz08th1mggr19nfr',
+      vikram: process.env.ELEVENLABS_AGENT_ID_VIKRAM || 'agent_9001m218ytv2eqgshx4wdqap8w9e', // confirmed by user 2026-09-09
+    },
+  },
+
   demo: {
     dueAmount: Number(process.env.DEMO_DUE_AMOUNT || 45000),
     dueDate: process.env.DEMO_DUE_DATE || '2026-09-05',

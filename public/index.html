@@ -97,6 +97,10 @@
         <input type="checkbox" id="consentBox" checked>
         <label for="consentBox">I agree to be contacted on WhatsApp / voice by the Kollect demo agent for this live simulation only. No real debt, no real data retained beyond this event.</label>
       </div>
+      <div class="consent">
+        <input type="checkbox" id="enhancedQualityBox">
+        <label for="enhancedQualityBox">Enroll for a higher quality voice call</label>
+      </div>
       <button class="btn-primary" id="btnStart">Start the simulation</button>
       <button class="btn-ghost" id="btnBypass" type="button">Skip: use demo defaults (Vatsal &middot; +91 8879185247)</button>
       <div class="foot-note">Step 1 of 5 &middot; Identity capture</div>
@@ -195,6 +199,7 @@
       <div class="status-flex">
         <button class="btn-direct-trigger" id="btnOpenDirectCallModal">&#128222; Direct VOIZ Call</button>
         <button class="btn-direct-trigger" id="btnWhatsappModeToggle" title="Toggle real WhatsApp sends on/off">&#128241; WhatsApp: &hellip;</button>
+        <button class="btn-direct-trigger" id="btnEnhancedQualityToggle" title="Route the next real call through ElevenLabs instead of VOIZ">&#127911; Enhanced Quality: OFF</button>
         <button class="theme-toggle" id="btnThemeToggle" title="Switch light/dark" aria-label="Switch light/dark theme">
           <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8"/></svg>

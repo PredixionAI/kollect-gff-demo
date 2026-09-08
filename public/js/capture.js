@@ -1,6 +1,7 @@
 const inputName = document.getElementById('inputName');
 const inputPhone = document.getElementById('inputPhone');
 const consentBox = document.getElementById('consentBox');
+const enhancedQualityBox = document.getElementById('enhancedQualityBox');
 const btnStart = document.getElementById('btnStart');
 
 function validateCapture(){
@@ -13,13 +14,15 @@ consentBox.addEventListener('change', validateCapture);
 btnStart.addEventListener('click', () => {
   state.name = inputName.value.trim() || 'Vatsal';
   state.phone = inputPhone.value.trim() || '+918879185247';
-  if (window.track) track('login', { name: state.name, phone: state.phone, method: 'start_button' });
+  state.enhancedQuality = enhancedQualityBox.checked;
+  if (window.track) track('login', { name: state.name, phone: state.phone, method: 'start_button', enhancedQuality: state.enhancedQuality });
   enterSoftLaunch();
 });
 document.getElementById('btnBypass').addEventListener('click', () => {
   state.name = 'Vatsal';
   state.phone = '+918879185247';
-  if (window.track) track('login', { name: state.name, phone: state.phone, method: 'bypass' });
+  state.enhancedQuality = enhancedQualityBox.checked;
+  if (window.track) track('login', { name: state.name, phone: state.phone, method: 'bypass', enhancedQuality: state.enhancedQuality });
   enterSoftLaunch();
 });
 

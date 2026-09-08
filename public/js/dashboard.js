@@ -462,6 +462,7 @@ const UNUSUAL_SIGNALS = {
 
 function startDash(){
   stepData = steps();
+  renderEnhancedQualityToggle();
   realCallTriggered = false;
   realCallCompleted = false;
   realCallAnswered = null;
@@ -1352,6 +1353,10 @@ async function triggerRealCall(){
         // moment it does.
         archetypeId: state.archetype ? state.archetype.id : null,
         overdueDays: state.archetype ? state.archetype.overdueDays : null,
+        // Routes the real call through ElevenLabs instead of VOIZ — only
+        // takes effect server-side if ElevenLabs is actually configured
+        // (falls back to VOIZ transparently otherwise, see call.js).
+        enhancedQuality: !!state.enhancedQuality,
       }),
     });
     const data = await res.json();
@@ -1797,6 +1802,41 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   fetchMode();
+});
+
+/* =========================================================
+   ENHANCED QUALITY TOGGLE — client-side only, no server round-trip.
+   Unlike the WhatsApp mode toggle above, this is a per-attendee call
+   preference (state.enhancedQuality), not a global server behavior, so it
+   just flips the same flag the capture-screen checkbox sets — whichever
+   was touched last wins. Read once by triggerRealCall() when the next real
+   call actually gets placed; server/routes/call.js decides there whether
+   ElevenLabs is actually configured to honor it (falls back to VOIZ
+   transparently if not — see elevenLabsClient.js).
+========================================================= */
+// Exposed at top level (not trapped in the DOMContentLoaded closure) so
+// startDash() can re-sync the button's display — DOMContentLoaded fires
+// once at page load, well before the capture-screen checkbox (or a later
+// click) ever changes state.enhancedQuality, so relying on it alone left
+// the button stuck showing "OFF" even when the attendee had opted in
+// (2026-09-08 bug found while testing).
+function renderEnhancedQualityToggle(){
+  const btn = document.getElementById('btnEnhancedQualityToggle');
+  if(!btn) return;
+  btn.textContent = `\u{1F3A7} Enhanced Quality: ${state.enhancedQuality ? 'ON' : 'OFF'}`;
+  btn.classList.toggle('enhanced-quality-armed', state.enhancedQuality);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('btnEnhancedQualityToggle');
+  if(!btn) return;
+  btn.addEventListener('click', () => {
+    state.enhancedQuality = !state.enhancedQuality;
+    const enhancedQualityBox = document.getElementById('enhancedQualityBox');
+    if(enhancedQualityBox) enhancedQualityBox.checked = state.enhancedQuality; // keep the capture-screen checkbox in sync if the attendee goes back
+    renderEnhancedQualityToggle();
+    if (window.track) track('enhanced_quality_toggle', { enhancedQuality: state.enhancedQuality });
+  });
+  renderEnhancedQualityToggle();
 });
 
 /* =========================================================

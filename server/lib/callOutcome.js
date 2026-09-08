@@ -167,4 +167,75 @@ async function handleCallOutcome(callId, record) {
   return updated;
 }
 
-module.exports = { handleCallOutcome, ESCALATION_FLAGS };
+// "Enhanced Quality" (ElevenLabs) equivalent of handleCallOutcome above —
+// same downstream pipeline (analyzeWithFallback, the SSE-visible case
+// record), different provider shape going in. Confirmed against ONE real
+// conversation record (2026-09-09, a call that failed to connect at the SIP
+// level — see server/lib/elevenLabsClient.js's path history) — the shape
+// for a genuinely ANSWERED conversation, in particular the transcript
+// entries' exact field names and what a successful `status` value looks
+// like, is NOT yet confirmed. `answered` below is a best-effort proxy
+// (no explicit boolean field was present on the one record inspected);
+// correct it once a real answered call has actually been inspected.
+function flattenElevenLabsTranscript(record) {
+  const turns = record.transcript;
+  if (!Array.isArray(turns) || turns.length === 0) return null;
+  return turns.map(t => `${t.role || t.speaker || 'unknown'}: ${t.message || t.text || ''}`).join('\n');
+}
+
+async function handleElevenLabsOutcome(callId, record) {
+  const existing = store.getCase(callId) || {};
+  const transcriptText = flattenElevenLabsTranscript(record);
+  const meta = record.metadata || {};
+  // No explicit "answered" boolean in the one real response shape seen so
+  // far — proxy: didn't fail outright AND had measurable call time.
+  const answered = record.status !== 'failed' && (meta.call_duration_secs || 0) > 0;
+  const callEndReason = meta.termination_reason || (meta.error && meta.error.reason) || record.status;
+
+  const updated = store.updateCase(callId, {
+    status: 'completed',
+    call_end_reason: callEndReason,
+    answered,
+    duration: meta.call_duration_secs || 0,
+    transcript: transcriptText,
+  });
+
+  // ElevenLabs' conversation record has no VOIZ-style escalation_flag/
+  // dispute_flag — this provider never auto-triggers the human-handoff
+  // WhatsApp send the way a VOIZ call can (see ESCALATION_FLAGS above).
+
+  const runningAnalysis = { status: 'streaming', hasTranscript: answered };
+  const onPartial = (partial) => {
+    Object.assign(runningAnalysis, partial);
+    store.updateCase(callId, { geminiAnalysis: { ...runningAnalysis } });
+  };
+  const analysisPromise = answered
+    ? analyzeWithFallback('transcript', {
+        transcript: transcriptText,
+        borrowerName: existing.name,
+        language: existing.lang,
+        dueAmount: existing.dueAmount || config.demo.dueAmount,
+        dueDate: existing.dueDate || config.demo.dueDate,
+        callDurationSeconds: meta.call_duration_secs,
+        answered,
+      }, onPartial)
+    : analyzeWithFallback('no_answer', {
+        borrowerName: existing.name,
+        language: existing.lang,
+        dueAmount: existing.dueAmount || config.demo.dueAmount,
+        dueDate: existing.dueDate || config.demo.dueDate,
+        firstMessageText: existing.firstMessage,
+        callEndReason,
+      }, onPartial);
+
+  analysisPromise.then(finalAnalysis => {
+    store.updateCase(callId, { geminiAnalysis: { hasTranscript: runningAnalysis.hasTranscript, ...finalAnalysis } });
+  }).catch(err => {
+    console.error(`[callOutcome] ElevenLabs post-call analysis threw for ${callId}`, err);
+    store.updateCase(callId, { geminiAnalysis: { status: 'unavailable', reason: 'threw' } });
+  });
+
+  return updated;
+}
+
+module.exports = { handleCallOutcome, handleElevenLabsOutcome, ESCALATION_FLAGS };
