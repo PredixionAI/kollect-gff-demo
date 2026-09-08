@@ -19,15 +19,14 @@ module.exports = {
     defaultAgentId: required('VOIZ_DEFAULT_AGENT_ID'),
     // Which VOIZ agent_id an orb dials. Neha (id 'priya') falls back to
     // VOIZ_DEFAULT_AGENT_ID since that's the one agent registered so far.
-    // Add VOIZ_AGENT_ID_SWARA / _MEERA / _VIKRAM / _RITU to .env as each new
-    // agent is registered — no code change needed, the orb lights up
-    // ("active") automatically once its env var is set (see routes/voices.js).
+    // Add VOIZ_AGENT_ID_SWARA / _VIKRAM to .env as each new agent is
+    // registered — no code change needed, the orb lights up ("active")
+    // automatically once its env var is set (see routes/voices.js). Meera
+    // and Ritu removed 2026-09-08 (user request, see voiceCatalog.js).
     agentIdsByVoice: {
       priya: process.env.VOIZ_AGENT_ID_PRIYA || process.env.VOIZ_DEFAULT_AGENT_ID || '',
       swara: process.env.VOIZ_AGENT_ID_SWARA || '',
-      meera: process.env.VOIZ_AGENT_ID_MEERA || '',
       vikram: process.env.VOIZ_AGENT_ID_VIKRAM || '',
-      ritu: process.env.VOIZ_AGENT_ID_RITU || '',
     },
   },
 
@@ -63,6 +62,11 @@ module.exports = {
     wabaId: process.env.WHATSAPP_WABA_ID || '',
     // Escalation hand-off goes here, not to the borrower (PRD §7.1).
     humanAgentNumber: process.env.WHATSAPP_HUMAN_AGENT_NUMBER || '',
+    // Secret for verifying inbound Vobiz webhook deliveries (message.inbound
+    // / message.status / call.*) — returned once when you register a
+    // subscription via POST https://api.vobiz.ai/api/v1/messaging/webhooks,
+    // never re-shown after that. See server/routes/whatsappWebhook.js.
+    webhookSecret: process.env.WHATSAPP_WEBHOOK_SECRET || '',
     // TEMPORARY, until the 3 templates are Meta-approved: send free-form
     // `text` instead of `type: "template"`. Only works for a recipient who
     // has already messaged in within 24h (open window) — this does NOT

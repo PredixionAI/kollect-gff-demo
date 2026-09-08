@@ -875,6 +875,25 @@ function markRealWhatsAppOutcome(stepIdx, { ok, mode, label }){
   renderContactHistory();
 }
 
+// A genuine borrower reply arrived (server/routes/whatsappWebhook.js,
+// message.inbound, matched to this case by phone number) — unlike every
+// other Communication History entry, which starts as a scripted guess and
+// gets overwritten in place, this one has no scripted counterpart to
+// overwrite: nothing in the timeline predicts what a real person will type
+// back, so it's always a new append-only entry, never a match-and-replace.
+function markRealInboundReply(inbound){
+  _contactHistory.push({
+    time: realTimeLabel(),
+    platform: 'whatsapp',
+    platformLabel: 'WhatsApp (Borrower reply)',
+    status: inbound.triggerMatched ? 'connected' : 'pending',
+    statusLabel: inbound.triggerMatched ? inbound.triggerMatched : `"${inbound.text}"`,
+    real: true,
+  });
+  renderContactHistory();
+  if (window.track) track('whatsapp_inbound_reply', { text: inbound.text, triggerMatched: inbound.triggerMatched });
+}
+
 /* =========================================================
    MAIN RENDER STEP
 ========================================================= */
@@ -1130,12 +1149,23 @@ function subscribeToCallEvents(callId){
   const source = new EventSource(`/api/call/${callId}/events`);
   let analysisTimer = null;
   let outcomeTracked = false;
+  let lastRenderedInboundAt = null;
+  let inboundWindowTimer = null;
   // Safety ceiling matching server/lib/callPoller.js's own MAX_POLL_MS (3
   // minutes) plus buffer — if a 'completed' event genuinely never arrives
   // (VOIZ dropped it, dispatch got stuck), auto-play must not wait forever.
   const giveUpTimer = setTimeout(() => { realCallCompleted = true; }, 3.5 * 60 * 1000);
   source.onmessage = (evt) => {
     const update = JSON.parse(evt.data);
+    // A real inbound WhatsApp reply (server/routes/whatsappWebhook.js) can
+    // land minutes after the call itself completes — this check runs on
+    // every SSE wave regardless of call status, so a reply is never missed
+    // just because it arrived before or long after the 'completed' branch's
+    // own one-time work below.
+    if(update.realInboundLatest && update.realInboundLatest.receivedAt !== lastRenderedInboundAt){
+      lastRenderedInboundAt = update.realInboundLatest.receivedAt;
+      markRealInboundReply(update.realInboundLatest);
+    }
     if(update.status === 'initiated') setCallStatusLine('Call in progress\u2026', 'live');
     if(update.status === 'queued')    setCallStatusLine('Queued, waiting for a free line\u2026');
     if(update.status === 'completed'){
@@ -1183,7 +1213,16 @@ function subscribeToCallEvents(callId){
       if(update.geminiAnalysis) renderGeminiAnalysis(update.geminiAnalysis);
       if(analysisDone){
         clearTimeout(analysisTimer);
-        source.close();
+        // Used to close the connection right here. Doesn't anymore — a real
+        // inbound WhatsApp reply (server/routes/whatsappWebhook.js) can
+        // arrive minutes after the call and analysis are both done, and
+        // that's exactly what markRealInboundReply above is waiting for.
+        // Instead, stay open until the longer inboundWindowTimer below
+        // gives up, matching how long a booth visitor might plausibly still
+        // be standing at the booth re-reading their phone.
+        if(!inboundWindowTimer){
+          inboundWindowTimer = setTimeout(() => source.close(), 10 * 60 * 1000);
+        }
       }
     }
   };

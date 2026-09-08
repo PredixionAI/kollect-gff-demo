@@ -43,6 +43,11 @@ async function initOrbs(){
 
 function renderOrbCarousel(autoplay){
   if(autoplay === undefined) autoplay = true;
+  // Whatever the previously-front orb was playing (a real recording or the
+  // TTS fallback) must not keep going once the carousel moves to a
+  // different orb — otherwise browsing past a talking orb leaves it
+  // narrating over whatever comes next.
+  stopOrbAudio();
   if(!orbList.length){ orbList = BUILTIN_ORBS; }
   const track = document.getElementById('orbCarousel');
   track.innerHTML = '';
@@ -105,6 +110,17 @@ function renderOrbCarousel(autoplay){
 }
 
 let _orbAudioEl = null;
+
+// Stops whatever the orb carousel is currently playing — a real recording
+// or the Web Speech fallback — and clears the "speaking" glow. Called
+// before browsing to a different orb and before confirming one, so a voice
+// preview never keeps talking past the moment it stopped being relevant.
+function stopOrbAudio(){
+  if(_orbAudioEl){ _orbAudioEl.pause(); _orbAudioEl = null; }
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  document.querySelectorAll('.orb-sphere.speaking').forEach(s => s.classList.remove('speaking'));
+  document.querySelectorAll('[data-role="play"].playing').forEach(b => b.classList.remove('playing'));
+}
 
 function playOrbSample(o, el){
   if (window.track) track('voice_sample_played', { orbName: o.name, isAutoplay: false });
@@ -182,6 +198,7 @@ _orbCarousel.addEventListener('pointerup', (e) => {
 });
 
 document.getElementById('btnOrbNext').addEventListener('click', () => {
+  stopOrbAudio();
   if (window.track) track('voice_confirmed', { voiceName: (state.voice || {}).name, voiceLang: (state.voice || {}).lang });
   if (window.track) track('archetype_screen_entered', {});
   goTo('screen-archetype');

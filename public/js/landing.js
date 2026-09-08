@@ -10,6 +10,14 @@ function enterKollectDemo(){
 
 document.getElementById('btnLandingStartDemo').addEventListener('click', enterKollectDemo);
 document.getElementById('btnLandingStartKollect').addEventListener('click', enterKollectDemo);
+// Whole-card tap, not just the pill inside it — a bigger, more forgiving
+// touch target at a booth kiosk, and the same affordance LeadX's card
+// already has (see below). Guard against the button's own click bubbling
+// up and firing this a second time.
+document.getElementById('cardKollect').addEventListener('click', (e) => {
+  if(e.target.closest('#btnLandingStartKollect')) return;
+  enterKollectDemo();
+});
 
 // The "Open LeadX" pill is a real <a target="_blank">, so its own click
 // needs no JS — that's also what makes it work as a native link (middle-click,

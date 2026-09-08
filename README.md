@@ -21,10 +21,11 @@ build next — this section is just a quick summary.
   carousel → archetype select → persona reveal → dashboard.
 - Each orb in the voice carousel maps to its own VOIZ agent
   (`server/config.js` → `agentIdsByVoice`, keyed off `VOIZ_AGENT_ID_PRIYA` /
-  `_ARJUN` / `_MEERA` / `_VIKRAM` / `_RITU` in `.env`). Only Neha has a real
-  agent today — the rest show as "Coming soon" until their env var is set.
-  Voice-picker previews are spoken client-side via the Web Speech API, not
-  pre-recorded clips.
+  `_SWARA` / `_VIKRAM` in `.env` — Meera and Ritu were removed from the
+  roster). Neha, Swara and Vikram all have real registered agents. Voice-
+  picker previews play a real recorded clip of that agent's own voice when
+  one exists (`server/voiceCatalog.js` `sampleAudio`), falling back to the
+  Web Speech API otherwise.
 - Live in-call transcript is deferred — the dashboard shows a status line
   (dialing / in progress / queued) and only reveals the transcript after the
   `call_completed` webhook lands.

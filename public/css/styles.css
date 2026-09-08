@@ -217,7 +217,23 @@ body{
   margin-top:18px; padding-top:16px; border-top:1px solid var(--border-soft);
   font-size:12px; color:var(--text-faint);
 }
-.demo-card-btn{width:auto; align-self:flex-start; margin-top:18px; padding:10px 22px;}
+.demo-card-btn{
+  width:auto; align-self:flex-start; margin-top:18px; padding:10px 22px;
+  opacity:0; transform:translateY(4px); pointer-events:none;
+  transition:opacity 150ms var(--ease-out), transform 150ms var(--ease-out);
+}
+/* Revealed on hover/tap of the card, not shown by default — the whole card
+   is already the click target (see landing.js), so the pill is a
+   discoverability hint that appears on approach rather than a permanently-
+   on second call-to-action. :focus-within keeps it reachable for keyboard
+   users tabbing to the button itself even without a hover/active card. */
+.demo-card-live:hover .demo-card-btn, .demo-card-live:active .demo-card-btn, .demo-card-live:focus-within .demo-card-btn,
+.demo-card-link:hover .demo-card-btn, .demo-card-link:active .demo-card-btn, .demo-card-link:focus-within .demo-card-btn{
+  opacity:1; transform:translateY(0); pointer-events:auto;
+}
+@media (prefers-reduced-motion: reduce){
+  .demo-card-btn{ transition:opacity 150ms linear; transform:none; }
+}
 
 .landing-foot{
   width:100%; max-width:1040px; display:flex; align-items:center; gap:12px;
