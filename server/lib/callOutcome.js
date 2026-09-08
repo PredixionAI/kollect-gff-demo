@@ -97,7 +97,14 @@ async function handleCallOutcome(callId, record) {
   // is the only case that gets the transcript-analysis path; anything else
   // (false, or missing/undefined on a genuinely weird terminal status)
   // gets the no-answer path.
-  const runningAnalysis = { status: 'streaming' };
+  // hasTranscript gates the dashboard's Next Best Action pointer (see
+  // dashboard.js renderGeminiAnalysis): a genuine transcript can justify
+  // replacing the templated NBA with the AI's own read; a call that was
+  // never answered has no real conversation to reason from, so its NBA
+  // must stay the templated one even though sentiment/summary/WhatsApp
+  // copy from the no-answer prompt are still shown (they're honest about
+  // "no reply happened", not a fabricated recommendation).
+  const runningAnalysis = { status: 'streaming', hasTranscript: a.answered === true };
   const analysisPromise = a.answered === true
     ? geminiClient.analyzeCallTranscriptStreaming({
         transcript: transcriptText,
@@ -124,7 +131,12 @@ async function handleCallOutcome(callId, record) {
       });
 
   analysisPromise.then(finalAnalysis => {
-    store.updateCase(callId, { geminiAnalysis: finalAnalysis });
+    // finalAnalysis is a fresh object from geminiClient (status/fields/
+    // latencyMs) — it doesn't carry hasTranscript, which only exists on
+    // runningAnalysis above, so it has to be merged back in explicitly or
+    // the terminal 'ready' write would silently drop it after the streaming
+    // partials (which do carry it) already set the frontend's expectation.
+    store.updateCase(callId, { geminiAnalysis: { hasTranscript: runningAnalysis.hasTranscript, ...finalAnalysis } });
   }).catch(err => {
     console.error(`[callOutcome] gemini analysis threw for ${callId}`, err);
     store.updateCase(callId, { geminiAnalysis: { status: 'unavailable', reason: 'threw' } });

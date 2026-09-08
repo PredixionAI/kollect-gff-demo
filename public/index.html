@@ -12,8 +12,69 @@
 <body>
 <div id="app">
 
+  <!-- ============ SCREEN 0: DEMO PICKER (Predixion AI product landing) ============ -->
+  <div class="screen active" id="screen-landing">
+    <nav class="landing-nav">
+      <div class="landing-brand">
+        <div class="landing-mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
+        <div class="landing-brand-text"><div class="name">Predixion AI</div></div>
+      </div>
+      <div class="landing-nav-links">
+        <a href="#">How it works</a>
+        <a href="#">Platform</a>
+        <a href="#">Demos</a>
+      </div>
+      <button class="btn-pill-primary" id="btnLandingStartDemo">Start the demo</button>
+    </nav>
+
+    <div class="landing-hero">
+      <h1>Choose your demo.</h1>
+      <p>Kollect is live at the booth today. It will build a case around you and actually call your phone.</p>
+    </div>
+
+    <div class="landing-grid">
+      <div class="demo-card demo-card-disabled" id="cardAgentX">
+        <div class="demo-card-top">
+          <div class="demo-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+          <div class="demo-badge">Coming soon</div>
+        </div>
+        <h3>AgentX</h3>
+        <p>Autonomous outreach across the whole customer lifecycle. Plans the journey, runs it on every channel.</p>
+        <div class="demo-card-foot">In development</div>
+      </div>
+
+      <div class="demo-card demo-card-live" id="cardKollect">
+        <div class="demo-card-top">
+          <div class="demo-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div class="demo-badge demo-badge-live"><span class="live-dot"></span>Live demo</div>
+        </div>
+        <h3>Kollect</h3>
+        <p>The loan-recovery agent. It builds a live case around you, calls your phone, negotiates a plan and follows up on WhatsApp.</p>
+        <button class="btn-pill-primary demo-card-btn" id="btnLandingStartKollect">Start the demo</button>
+      </div>
+
+      <div class="demo-card demo-card-link demo-card-leadx" id="cardLeadX">
+        <div class="demo-card-top">
+          <div class="demo-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></div>
+          <div class="demo-badge demo-badge-live demo-badge-leadx"><span class="live-dot live-dot-leadx"></span>Live demo</div>
+        </div>
+        <h3>LeadX</h3>
+        <p>Lead qualification that engages every inbound lead in minutes and hands sales a booked, briefed conversation.</p>
+        <a class="btn-pill-primary demo-card-btn" id="btnLandingOpenLeadX" href="https://leadx-predixion-ai.netlify.app/" target="_blank" rel="noopener">Open LeadX</a>
+      </div>
+    </div>
+
+    <div class="landing-foot">
+      <div class="landing-mark landing-mark-sm"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
+      <div class="landing-foot-text">
+        <div>Global Fintech Fest 2026 &middot; Mumbai</div>
+        <div>Demo scenario. No real debt, no data retained beyond the event.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ SCREEN 1: CAPTURE ============ -->
-  <div class="screen active" id="screen-capture">
+  <div class="screen" id="screen-capture">
     <div class="brand">
       <div class="mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
       <div><div class="name">Predixion AI</div><div class="sub">Agentic Collections</div></div>
@@ -411,6 +472,7 @@
           <div class="flow-col flow-decision">
             <div class="flow-col-label">Decision</div>
             <div class="decision-card" id="strategyDecisionInitial"></div>
+            <div class="decision-card decision-restrategy" id="strategyDecisionRestrategy"></div>
             <div class="decision-card decision-final" id="strategyDecisionFinal"></div>
           </div>
         </div>
@@ -424,6 +486,7 @@
 <script src="/js/telemetry.js"></script>
 <script src="/js/state.js"></script>
 
+<script src="/js/landing.js"></script>
 <script src="/js/capture.js"></script>
 <script src="/js/softlaunch.js"></script>
 <script src="/js/orbs.js"></script>

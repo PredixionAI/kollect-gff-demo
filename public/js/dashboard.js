@@ -13,6 +13,33 @@ const TABS = [
 function personaTone(){ return state.voice ? state.voice.name : 'Neha'; }
 function personaLang(){ return (state.voice && state.voice.lang) ? state.voice.lang : 'Hinglish'; }
 
+// Initial strategy (Step 3/13, before any contact has happened) — grounded
+// in the same pre-existing behavioral hypothesis as UNUSUAL_SIGNALS below
+// (recurring cash-flow timing for systemic, historical dispute pattern for
+// disputed, falling engagement for unreachable), so channel/tone/urgency
+// genuinely differ per archetype instead of every case getting an identical
+// "omnichannel, friendly, low urgency" readout. Technical Defaulter has no
+// prior risk signal (clean history, single miss), so its low-pressure
+// default IS the correct call, not a placeholder.
+const STRATEGY_INIT = {
+  technical: {
+    agent2:'Friendly Reminder Agent', channels:'WhatsApp + Voice', tone:'Low-pressure, friendly',
+    urgency:'Low', successRate:'91% success rate', timing:'10–11 AM: +32% response',
+  },
+  systemic: {
+    agent2:'Plan-Ready Reminder Agent', channels:'WhatsApp + Voice, plan-ready', tone:'Empathetic, primed to offer a split',
+    urgency:'Low', successRate:'84% success rate', timing:'10–11 AM: +28% response',
+  },
+  disputed: {
+    agent2:'Neutral Tone Agent', channels:'WhatsApp-led, voice as backup', tone:'Neutral, fact-first',
+    urgency:'Medium', successRate:'77% success rate', timing:'11 AM–12 PM: +19% response',
+  },
+  unreachable: {
+    agent2:'Multi-Channel Push Agent', channels:'Voice-first, WhatsApp in parallel', tone:'Direct, time-boxed',
+    urgency:'Medium-High', successRate:'68% success rate', timing:'Two windows: 10 AM & 4 PM',
+  },
+};
+
 /* =========================================================
    ARCHETYPE PERSONA PACKS (chat lines + action strings per archetype)
 ========================================================= */
@@ -199,6 +226,7 @@ function steps(){
   const P           = personaPacks(nm, agent, lang)[archId];
   const finalStatus = P.escalate ? 'escalated' : 'done';
   const finalClassV = archTitle;
+  const STRAT       = STRATEGY_INIT[archId] || STRATEGY_INIT.technical;
 
   return [
   { tab:'b360', pill:'Step 1/13', title:'Default Detection', subtitle:`Payment of \u20b945,000 missed on due date`,
@@ -214,10 +242,10 @@ function steps(){
     signals:[{name:'CRM', tag:'profile', desc:'Employment & income verified'},{name:'Bank Feed', tag:'balance', desc:'\u20b91.2L available, funds present'},{name:'App Analytics', tag:'engagement', desc:'Daily active, WhatsApp preferred'}],
   },
   { tab:'strategy', pill:'Step 3/13', title:'Strategy Generation', subtitle:`${agent} Agent activated, reasoning over classification`,
-    action:'Omnichannel approach: WhatsApp + Voice', details:`Low pressure, friendly tone (${lang})`, classV:archTitle, status:'progress',
-    live:{type:'terminal', tag:'STRATEGY READY', voice:false, lines:['STRATEGY READY','',`Agent: ${agent}, Friendly Reminder`,'Channels: WhatsApp + Voice',`Tone: Friendly (${lang})`,'Urgency: Low','Time: 10:15 AM']},
-    agents:['Strategy Gen Agent','Friendly Reminder Agent'], models:['Strategy Recommender','Tone Calibration (GPT)'],
-    signals:[{name:'Strategy Engine', tag:'recommendation', desc:'Omnichannel: 91% success rate'},{name:'RAG KB', tag:'policy', desc:`${archTitle} SOP retrieved`},{name:'Timing Model', tag:'optimal', desc:'10\u201311 AM: +32% response'}],
+    action:`${STRAT.channels}`, details:`${STRAT.tone} tone (${lang})`, classV:archTitle, status:'progress',
+    live:{type:'terminal', tag:'STRATEGY READY', voice:false, lines:['STRATEGY READY','',`Agent: ${agent}, ${STRAT.agent2}`,`Channels: ${STRAT.channels}`,`Tone: ${STRAT.tone} (${lang})`,`Urgency: ${STRAT.urgency}`,'Time: 10:15 AM']},
+    agents:['Strategy Gen Agent',STRAT.agent2], models:['Strategy Recommender','Tone Calibration (GPT)'],
+    signals:[{name:'Strategy Engine', tag:'recommendation', desc:`Omnichannel: ${STRAT.successRate}`},{name:'RAG KB', tag:'policy', desc:`${archTitle} SOP retrieved`},{name:'Timing Model', tag:'optimal', desc:STRAT.timing}],
   },
   { tab:'execution', pill:'Step 4/13', title:'Round 1: WhatsApp', subtitle:'Friendly Reminder, WhatsApp',
     action:P.w1Action, details:P.w1Details, classV:archTitle, status:'progress',
@@ -511,9 +539,24 @@ function openStrategyModal(){
   const genStep = stepData.find(s => s.title === 'Strategy Generation');
   const nbaStep = stepData.find(s => s.title === 'Next Best Action');
   const aggStep = stepData.find(s => s.title === 'Signal Aggregation');
+  // The "restrategize" moment — after Round 1 executes, the outcome (or the
+  // lack of one) gets fed back in and the plan gets re-evaluated before the
+  // final NBA is chosen. Identified by nbaNow.state==='analyzing' rather
+  // than by title since the step's own title varies (P.sentTitle).
+  const restrategyStep = stepData.find(s => s.nbaNow && s.nbaNow.state === 'analyzing');
   if(!genStep || !nbaStep) return;
 
-  const sourceSignals = [...(aggStep ? aggStep.signals : []), ...genStep.signals];
+  const relevantSteps = [aggStep, genStep, restrategyStep, nbaStep].filter(Boolean);
+  const sourceSignals = [];
+  const seenSignals = new Set();
+  relevantSteps.forEach(step => {
+    (step.signals || []).forEach(sg => {
+      const key = sg.name + '|' + sg.desc;
+      if(seenSignals.has(key)) return;
+      seenSignals.add(key);
+      sourceSignals.push(sg);
+    });
+  });
   document.getElementById('strategySources').innerHTML = sourceSignals.map(sg => `
     <div class="source-node">
       <div class="src-name">${sg.name}</div>
@@ -522,7 +565,7 @@ function openStrategyModal(){
 
   const pairs = [];
   const seenAgents = new Set();
-  [genStep, nbaStep].forEach(step => {
+  relevantSteps.forEach(step => {
     (step.agents || []).forEach((name, i) => {
       if(seenAgents.has(name)) return;
       seenAgents.add(name);
@@ -539,10 +582,29 @@ function openStrategyModal(){
     <div class="dcard-label">Initial Strategy</div>
     <div class="dcard-title">${genStep.action}</div>
     <div class="dcard-desc">${genStep.details}</div>`;
+  const restrategyEl = document.getElementById('strategyDecisionRestrategy');
+  if(restrategyStep){
+    restrategyEl.hidden = false;
+    restrategyEl.innerHTML = `
+      <div class="dcard-label">Restrategized After Round 1</div>
+      <div class="dcard-title">${restrategyStep.nbaNow.title}</div>
+      <div class="dcard-desc">${restrategyStep.nbaNow.reason}</div>`;
+  } else {
+    restrategyEl.hidden = true;
+  }
+  // Single source of truth for "what's the NBA" — read the same live
+  // pointer the Signals panel shows (real, transcript-backed, once
+  // _nbaIsReal flips true) instead of re-deriving from the static scripted
+  // value, so this modal and the rest of the dashboard never disagree.
+  const nbaPointerEl = document.getElementById('nbaPointer');
+  const liveNbaTitle = (_nbaIsReal && nbaPointerEl && nbaPointerEl.textContent && nbaPointerEl.textContent !== '-')
+    ? nbaPointerEl.textContent : nbaStep.action;
+  const liveNbaReason = (_nbaIsReal && state.geminiAnalysis && state.geminiAnalysis.nextBestActionReason)
+    ? state.geminiAnalysis.nextBestActionReason : nbaStep.details;
   document.getElementById('strategyDecisionFinal').innerHTML = `
     <div class="dcard-label">Chosen Next Best Action</div>
-    <div class="dcard-title">${nbaStep.action}</div>
-    <div class="dcard-desc">${nbaStep.details}</div>`;
+    <div class="dcard-title">${liveNbaTitle}</div>
+    <div class="dcard-desc">${liveNbaReason}</div>`;
 
   const archTitle = state.archetype ? state.archetype.title : '';
   document.getElementById('strategyModalSub').textContent =
@@ -1231,7 +1293,14 @@ function renderGeminiAnalysis(analysis){
     }
   }
 
-  if(!_nbaIsReal && analysis.nextBestAction){
+  // The NBA pointer only ever gets replaced by a real transcript-backed
+  // read (hasTranscript===true, set server-side in callOutcome.js from
+  // a.answered). A no-answer/cut call has no real conversation to reason
+  // from — its sentiment/summary/WhatsApp copy above are still genuine
+  // (they're honest about "no reply happened"), but the NBA stays the
+  // templated per-archetype guess (s.nbaNow.title) rather than showing an
+  // AI-invented recommendation with nothing behind it.
+  if(!_nbaIsReal && analysis.hasTranscript && analysis.nextBestAction){
     const nbaEl = document.getElementById('nbaPointer');
     if(nbaEl){
       nbaEl.textContent = analysis.nextBestAction;
