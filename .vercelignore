@@ -1,0 +1,7 @@
+legacy
+scrollcraft
+recordings
+.claude
+docs
+*.md
+!README.md

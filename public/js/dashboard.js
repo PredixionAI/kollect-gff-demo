@@ -991,8 +991,7 @@ function subscribeToCallEvents(callId){
   // minutes) plus buffer — if a 'completed' event genuinely never arrives
   // (VOIZ dropped it, dispatch got stuck), auto-play must not wait forever.
   const giveUpTimer = setTimeout(() => { realCallCompleted = true; }, 3.5 * 60 * 1000);
-  source.onmessage = (evt) => {
-    const update = JSON.parse(evt.data);
+  const handleUpdate = (update) => {
     if(update.status === 'initiated') setCallStatusLine('Call in progress\u2026', 'live', 'listening');
     if(update.status === 'queued')    setCallStatusLine('Queued, waiting for a free line\u2026', null, 'breathing');
     if(update.status === 'completed'){
@@ -1041,10 +1040,31 @@ function subscribeToCallEvents(callId){
       if(analysisDone){
         clearTimeout(analysisTimer);
         source.close();
+        if(pollTimer) clearInterval(pollTimer);
       }
     }
   };
-  source.onerror = () => { /* SSE will auto-retry */ };
+  source.onmessage = (evt) => handleUpdate(JSON.parse(evt.data));
+
+  // Fallback for hosts that cap long-lived responses (serverless): if the
+  // stream drops repeatedly, poll GET /api/call/:id instead. The server
+  // refreshes the case from the provider on every read, so polling is a
+  // complete substitute for the stream, just 5s coarser.
+  let sseErrors = 0;
+  let pollTimer = null;
+  source.onerror = () => {
+    sseErrors += 1;
+    if(sseErrors < 2 || pollTimer) return;
+    source.close();
+    pollTimer = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/call/${callId}`);
+        if(!res.ok) return;
+        handleUpdate(await res.json());
+      } catch(err){ /* transient, keep polling */ }
+    }, 5000);
+    setTimeout(() => { if(pollTimer) clearInterval(pollTimer); }, 3.5 * 60 * 1000);
+  };
 }
 
 /* =========================================================

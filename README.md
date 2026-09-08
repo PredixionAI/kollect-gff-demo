@@ -71,6 +71,49 @@ npm run dev
 
 Open http://localhost:3001
 
+## Deploy to Vercel
+
+The repo is Vercel-ready with zero build step. `vercel.json` serves
+`public/` from the CDN and rewrites every `/api/*` request to one Node
+function (`api/index.js`) that wraps the same Express app used locally.
+
+1. In Vercel: **Add New Project → Import** `PredixionAI/kollect-gff-demo`.
+   Framework preset: **Other**. Leave build command empty. Production branch:
+   `main` (or point it at `dev` for the demo build); every push to `dev`
+   gets a preview URL.
+2. **Environment variables** (Project → Settings → Environment Variables),
+   copied from `.env.example`:
+   - Voice: `VOICE_PROVIDER` plus either the `ELEVENLABS_*` set
+     (`ELEVENLABS_API_KEY`, `ELEVENLABS_PHONE_NUMBER_ID`,
+     `ELEVENLABS_TRANSPORT`, `ELEVENLABS_DEFAULT_AGENT_ID`,
+     `ELEVENLABS_AGENT_ID_*`, `ELEVENLABS_TOOL_SECRET`) or the `VOIZ_*` set
+     (`VOIZ_BASE_URL`, `VOIZ_API_KEY`, `SIP_TRUNK_ID`, `VOIZ_DEFAULT_AGENT_ID`,
+     `VOIZ_AGENT_ID_*`).
+   - WhatsApp: `WHATSAPP_MODE=mock` (keep it mock until templates are
+     approved), `WHATSAPP_CHANNEL_ID`, `WHATSAPP_WABA_ID`,
+     `WHATSAPP_HUMAN_AGENT_NUMBER`, and `WHATSAPP_AUTH_ID` /
+     `WHATSAPP_AUTH_TOKEN` only when going live.
+   - Optional: `GEMINI_API_KEY` (post-call analysis),
+     `GOOGLE_SHEET_WEBHOOK_URL` (**recommended on Vercel**: the function's
+     filesystem is read-only, so `server/data/sessions.json` is never
+     written there; Sheets is the only durable telemetry), `DEMO_DUE_AMOUNT`,
+     `DEMO_DUE_DATE`.
+3. Deploy. The public URL doubles as the base for the ElevenLabs agent
+   webhook tools (`https://<your-app>.vercel.app/api/agent-tools/...`), so no
+   tunnel is needed for those either.
+
+What changes on a serverless host, and how the code copes:
+- Functions are frozen after responding, so the background call poller
+  cannot run between requests. `GET /api/call/:id` and the SSE stream now
+  refresh a non-terminal case from the provider on every read
+  (`callPoller.refresh`), and the dashboard falls back to polling that
+  endpoint if the stream is cut. Outcomes still arrive within ~5s.
+- Case state, the WhatsApp rate counters and the mock/live toggle are
+  per-instance memory. Fine for one attendee at a time; a cold instance
+  rebuilds a case from the provider on demand.
+- Streaming responses are capped by `maxDuration` (60s in `vercel.json`;
+  raise it on Pro if you want longer SSE sessions).
+
 ## How this app learns a call ended
 
 No public tunnel needed. `server/lib/callPoller.js` polls `GET

@@ -98,10 +98,21 @@ router.post('/call-direct', async (req, res) => {
   }
 });
 
-router.get('/call/:callId', (req, res) => {
-  const record = store.getCase(req.params.callId);
-  if (!record) return res.status(404).json({ error: 'unknown call_id' });
-  res.json(record);
+// Poll-through: every read refreshes a non-terminal case from the provider
+// (throttled inside callPoller.refresh). On a long-lived server the
+// background poller usually got there first; on Vercel this IS the poller.
+router.get('/call/:callId', async (req, res) => {
+  const { callId } = req.params;
+  try {
+    const record = await callPoller.refresh(callId);
+    if (!record) return res.status(404).json({ error: 'unknown call_id' });
+    res.json(record);
+  } catch (err) {
+    console.error('[call] refresh error', err);
+    const cached = store.getCase(callId);
+    if (cached) return res.json(cached);
+    res.status(502).json({ error: 'Could not fetch the call right now' });
+  }
 });
 
 // SSE stream so the dashboard can watch a case update live without polling.
@@ -122,7 +133,19 @@ router.get('/call/:callId/events', (req, res) => {
   const onUpdate = (updated) => send(updated);
   store.bus.on(`update:${callId}`, onUpdate);
 
+  // While this stream is open, keep the case fresh ourselves. Locally this
+  // duplicates the background poller harmlessly (refresh is throttled); on
+  // Vercel it is what makes completion arrive before the function's
+  // maxDuration ends the stream (the client then reconnects or polls).
+  const tick = setInterval(() => {
+    callPoller.refresh(callId).then((record) => {
+      if (callPoller.isTerminal(record)) clearInterval(tick);
+    }).catch(() => {});
+  }, callPoller.POLL_INTERVAL_MS);
+  if (typeof tick.unref === 'function') tick.unref();
+
   req.on('close', () => {
+    clearInterval(tick);
     store.bus.off(`update:${callId}`, onUpdate);
   });
 });

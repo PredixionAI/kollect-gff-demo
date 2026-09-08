@@ -30,6 +30,12 @@ app.use('/api', agentToolsRoutes);
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-app.listen(config.port, () => {
-  console.log(`Kollect GFF demo server listening on http://localhost:${config.port}`);
-});
+// Exported for serverless hosts (api/index.js on Vercel wraps this app as a
+// single function). Listening happens only when run directly.
+module.exports = app;
+
+if (require.main === module) {
+  app.listen(config.port, () => {
+    console.log(`Kollect GFF demo server listening on http://localhost:${config.port}`);
+  });
+}
