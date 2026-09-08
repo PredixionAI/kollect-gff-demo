@@ -10,6 +10,11 @@ function validateCapture(){
 }
 [inputName, inputPhone].forEach(el => el.addEventListener('input', validateCapture));
 consentBox.addEventListener('change', validateCapture);
+// Was only ever called reactively (on input/change) — harmless while the
+// fields were prefilled with valid defaults, but left the Start button
+// wrongly enabled from a blank page load now that they aren't (2026-09-09
+// user request to stop prefilling name/phone).
+validateCapture();
 
 btnStart.addEventListener('click', () => {
   state.name = inputName.value.trim() || 'Vatsal';
