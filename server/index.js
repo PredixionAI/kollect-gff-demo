@@ -9,6 +9,7 @@ const escalationRoutes = require('./routes/escalations');
 const whatsappRoutes = require('./routes/whatsapp');
 const whatsappWebhookRoutes = require('./routes/whatsappWebhook');
 const telemetryRoutes = require('./routes/telemetry');
+const agentCatalogRoutes = require('./routes/agentCatalog');
 
 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/api', escalationRoutes);
 app.use('/api', whatsappRoutes);
 app.use('/api', whatsappWebhookRoutes);
 app.use('/api', telemetryRoutes);
+app.use('/api', agentCatalogRoutes);
 
 
 app.use(express.static(path.join(__dirname, '..', 'public')));

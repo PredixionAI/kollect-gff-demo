@@ -14,7 +14,14 @@ const callOutcome = require('./callOutcome');
 // terminal status this list didn't anticipate.
 const IN_PROGRESS_STATUSES = new Set(['initiated', 'in-progress', 'processing', 'ringing', 'queued']);
 const POLL_INTERVAL_MS = 1000;
-const MAX_POLL_MS = 3 * 60 * 1000;
+// Confirmed via a real answered test call (2026-09-19, conv_2301m2wa6dv1fqcs3ge56saa06wa,
+// 23-turn transcript): ElevenLabs' post-call "processing" phase (transcription
+// + analysis) runs on top of the call's own talk time and pushed this one
+// past the previous 3-minute cap — the poller gave up and the transcript
+// never reached the dashboard even though ElevenLabs had it moments later.
+// VOIZ's callPoller.js keeps 3 minutes since VOIZ has no equivalent
+// post-call processing lag; this is deliberately longer only here.
+const MAX_POLL_MS = 6 * 60 * 1000;
 
 function pollConversation(callId) {
   const startedAt = Date.now();

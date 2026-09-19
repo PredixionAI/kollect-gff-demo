@@ -19,11 +19,10 @@
         <div class="landing-mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
         <div class="landing-brand-text"><div class="name">Predixion AI</div></div>
       </div>
-      <div class="landing-nav-links">
-        <a href="#">How it works</a>
-        <a href="#">Platform</a>
-        <a href="#">Demos</a>
-      </div>
+      <button class="btn-pill-catalog" id="navPlatform">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Agent Catalog
+      </button>
       <button class="btn-pill-primary" id="btnLandingStartDemo">Start the demo</button>
     </nav>
 
@@ -32,17 +31,7 @@
       <p>Kollect is live at the booth today. It will build a case around you and actually call your phone.</p>
     </div>
 
-    <div class="landing-grid">
-      <div class="demo-card demo-card-disabled" id="cardAgentX">
-        <div class="demo-card-top">
-          <div class="demo-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
-          <div class="demo-badge">Coming soon</div>
-        </div>
-        <h3>AgentX</h3>
-        <p>Autonomous outreach across the whole customer lifecycle. Plans the journey, runs it on every channel.</p>
-        <div class="demo-card-foot">In development</div>
-      </div>
-
+    <div class="landing-grid landing-grid-2">
       <div class="demo-card demo-card-live" id="cardKollect">
         <div class="demo-card-top">
           <div class="demo-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
@@ -64,11 +53,69 @@
       </div>
     </div>
 
+    <div class="landing-metrics">
+      <div class="landing-metric">
+        <div class="landing-metric-value">140+</div>
+        <div class="landing-metric-label">Voice &amp; chat agents</div>
+      </div>
+      <div class="landing-metric-divider"></div>
+      <div class="landing-metric">
+        <div class="landing-metric-value">9M+</div>
+        <div class="landing-metric-label">Minutes of real conversations</div>
+      </div>
+      <div class="landing-metric-divider"></div>
+      <div class="landing-metric">
+        <div class="landing-metric-value">10+</div>
+        <div class="landing-metric-label">Fintech &amp; BFSI use cases</div>
+      </div>
+    </div>
+
     <div class="landing-foot">
       <div class="landing-mark landing-mark-sm"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
       <div class="landing-foot-text">
         <div>Global Fintech Fest 2026 &middot; Mumbai</div>
         <div>Demo scenario. No real debt, no data retained beyond the event.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN: AGENT CATALOG (Platform library) ============ -->
+  <div class="screen" id="screen-agent-catalog">
+    <nav class="landing-nav">
+      <div class="landing-brand">
+        <div class="landing-mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
+        <div class="landing-brand-text"><div class="name">Predixion AI</div></div>
+      </div>
+      <button class="btn-pill-primary" id="btnCatalogBack">&larr; Back</button>
+    </nav>
+
+    <div class="catalog-head">
+      <h1>Agent catalog</h1>
+      <p>140+ voice &amp; chat agents across use cases. Search by what you need, browse by use case, or filter by metadata.</p>
+    </div>
+
+    <div class="catalog-shell">
+      <aside class="catalog-sidebar" id="catalogSidebar"><!-- use-case tree injected by agentCatalog.js --></aside>
+
+      <div class="catalog-body">
+        <div class="catalog-controls">
+          <div class="catalog-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" id="catalogSearchInput" placeholder="Search by meaning — e.g. &quot;someone who handles refund disputes&quot;" autocomplete="off">
+            <span class="catalog-search-mode" id="catalogSearchMode"></span>
+          </div>
+          <div class="catalog-filters" id="catalogFilters"><!-- filter dropdowns injected by agentCatalog.js --></div>
+        </div>
+
+        <div class="catalog-grid" id="catalogGrid"><!-- agent cards injected by agentCatalog.js --></div>
+        <div class="catalog-empty" id="catalogEmpty" style="display:none;">No agents match these filters.</div>
+      </div>
+    </div>
+
+    <div class="agent-modal-overlay" id="agentModalOverlay" style="display:none;">
+      <div class="agent-modal">
+        <button class="agent-modal-close" id="agentModalClose">&times;</button>
+        <div id="agentModalBody"><!-- injected by agentCatalog.js --></div>
       </div>
     </div>
   </div>
@@ -504,6 +551,7 @@
 <script src="/js/state.js"></script>
 
 <script src="/js/landing.js"></script>
+<script src="/js/agentCatalog.js"></script>
 <script src="/js/capture.js"></script>
 <script src="/js/softlaunch.js"></script>
 <script src="/js/orbs.js"></script>

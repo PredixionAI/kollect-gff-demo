@@ -1,0 +1,2538 @@
+[
+  {
+    "id": "kollect-neha",
+    "name": "Neha",
+    "gender": "Female",
+    "useCase": "Loan Collections",
+    "persona": "Warm, empathetic collections voice for Kollect — de-escalates first, negotiates second.",
+    "languages": [
+      "Hindi",
+      "Gujarati",
+      "Punjabi",
+      "Hinglish"
+    ],
+    "rating": 4.8,
+    "status": "Live",
+    "real": true,
+    "provider": "VOIZ + ElevenLabs",
+    "buckets": [
+      "Bucket 1",
+      "Personal Loan",
+      "EMI"
+    ],
+    "minutesSpoken": 6261
+  },
+  {
+    "id": "kollect-swara",
+    "name": "Swara",
+    "gender": "Female",
+    "useCase": "Loan Collections",
+    "persona": "Assertive but fair collections voice for Kollect, tuned for borrowers who need a firmer nudge.",
+    "languages": [
+      "Hindi",
+      "English"
+    ],
+    "rating": 4.6,
+    "status": "Live",
+    "real": true,
+    "provider": "VOIZ",
+    "buckets": [
+      "Bucket 2",
+      "Vehicle Loan"
+    ],
+    "minutesSpoken": 5002
+  },
+  {
+    "id": "kollect-vikram",
+    "name": "Vikram",
+    "gender": "Male",
+    "useCase": "Loan Collections",
+    "persona": "Clear, authoritative collections voice for Kollect, Marathi/Hindi speaking borrowers.",
+    "languages": [
+      "Marathi",
+      "Hindi"
+    ],
+    "rating": 4.7,
+    "status": "Live",
+    "real": true,
+    "provider": "VOIZ + ElevenLabs",
+    "buckets": [
+      "Bucket 3",
+      "Business Loan"
+    ],
+    "minutesSpoken": 12355
+  },
+  {
+    "id": "leadx-scout",
+    "name": "Scout",
+    "gender": "Neutral",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "LeadX’s inbound qualifier — engages a new loan/insurance lead within minutes and hands sales a booked, briefed call.",
+    "languages": [
+      "English",
+      "Hindi"
+    ],
+    "rating": 4.5,
+    "status": "Live",
+    "real": true,
+    "provider": "LeadX",
+    "minutesSpoken": 8009
+  },
+  {
+    "id": "agent-1",
+    "name": "Ananya",
+    "gender": "Female",
+    "useCase": "Complaint Resolution",
+    "persona": "De-escalates NPS-detractor callers and routes unresolved cases to a retention specialist.",
+    "languages": [
+      "Tamil",
+      "Hinglish"
+    ],
+    "rating": 4.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1120
+  },
+  {
+    "id": "agent-2",
+    "name": "Scout",
+    "gender": "Neutral",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Confirms a suspicious login attempt with the account holder in real time.",
+    "languages": [
+      "Odia",
+      "Marathi",
+      "Telugu"
+    ],
+    "rating": 4.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 532
+  },
+  {
+    "id": "agent-3",
+    "name": "Rohan",
+    "gender": "Male",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
+    "languages": [
+      "Bhojpuri",
+      "Assamese",
+      "Hindi"
+    ],
+    "rating": 4.3,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 714
+  },
+  {
+    "id": "agent-4",
+    "name": "Aarav",
+    "gender": "Male",
+    "useCase": "KYC & Onboarding",
+    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "languages": [
+      "Urdu",
+      "Marathi"
+    ],
+    "rating": 4.8,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 11617
+  },
+  {
+    "id": "agent-5",
+    "name": "Priya",
+    "gender": "Female",
+    "useCase": "Credit Card Recovery",
+    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "languages": [
+      "Gujarati",
+      "Telugu"
+    ],
+    "rating": 4.2,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "Personal Loan"
+    ],
+    "minutesSpoken": 9429
+  },
+  {
+    "id": "agent-6",
+    "name": "Alex",
+    "gender": "Neutral",
+    "useCase": "Customer Support",
+    "persona": "Resolves failed UPI/NEFT transaction queries and files a dispute ticket when needed.",
+    "languages": [
+      "Bhojpuri",
+      "Malayalam",
+      "Punjabi"
+    ],
+    "rating": 3.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 842
+  },
+  {
+    "id": "agent-7",
+    "name": "Shreya",
+    "gender": "Female",
+    "useCase": "KYC & Onboarding",
+    "persona": "Walks a new loan applicant through pending KYC documents and re-uploads.",
+    "languages": [
+      "Bhojpuri",
+      "Telugu",
+      "Gujarati"
+    ],
+    "rating": 4.6,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1506
+  },
+  {
+    "id": "agent-8",
+    "name": "Meera",
+    "gender": "Female",
+    "useCase": "Customer Support",
+    "persona": "First-line triage for net-banking login issues before routing to a human agent.",
+    "languages": [
+      "Kannada",
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 14
+  },
+  {
+    "id": "agent-9",
+    "name": "Alex",
+    "gender": "Neutral",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
+    "languages": [
+      "Hindi",
+      "Rajasthani",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 54
+  },
+  {
+    "id": "agent-10",
+    "name": "Nova",
+    "gender": "Neutral",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
+    "languages": [
+      "Malayalam",
+      "Marathi"
+    ],
+    "rating": 3.8,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 12560
+  },
+  {
+    "id": "agent-11",
+    "name": "Rahul",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
+    "languages": [
+      "Rajasthani"
+    ],
+    "rating": 3.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Vehicle Loan",
+      "Personal Loan"
+    ],
+    "minutesSpoken": 1588
+  },
+  {
+    "id": "agent-12",
+    "name": "Aarav Das",
+    "gender": "Male",
+    "useCase": "Loan Collections",
+    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
+    "languages": [
+      "Punjabi",
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 3",
+      "BNPL"
+    ],
+    "minutesSpoken": 31
+  },
+  {
+    "id": "agent-13",
+    "name": "Veer Verma",
+    "gender": "Male",
+    "useCase": "Complaint Resolution",
+    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
+    "languages": [
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 42
+  },
+  {
+    "id": "agent-14",
+    "name": "Arjun Menon",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
+    "languages": [
+      "English"
+    ],
+    "rating": 3.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "Business Loan"
+    ],
+    "minutesSpoken": 1271
+  },
+  {
+    "id": "agent-15",
+    "name": "Kavya",
+    "gender": "Female",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
+    "languages": [
+      "Malayalam"
+    ],
+    "rating": 4.2,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1382
+  },
+  {
+    "id": "agent-16",
+    "name": "Sarthak",
+    "gender": "Male",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
+    "languages": [
+      "Punjabi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 32
+  },
+  {
+    "id": "agent-17",
+    "name": "Sarthak",
+    "gender": "Male",
+    "useCase": "Loan Collections",
+    "persona": "Firm but fair reminder call for early-cycle overdue accounts, tuned to avoid churn.",
+    "languages": [
+      "Telugu",
+      "Tamil"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "Business Loan"
+    ],
+    "minutesSpoken": 5
+  },
+  {
+    "id": "agent-18",
+    "name": "Scout",
+    "gender": "Neutral",
+    "useCase": "Complaint Resolution",
+    "persona": "Listens through an escalated billing complaint, logs it accurately, and sets a clear resolution timeline.",
+    "languages": [
+      "Punjabi",
+      "Marathi",
+      "Odia"
+    ],
+    "rating": 4.2,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 10266
+  },
+  {
+    "id": "agent-19",
+    "name": "Divya",
+    "gender": "Female",
+    "useCase": "Customer Support",
+    "persona": "Handles account balance, statement, and card-block queries for retail banking customers.",
+    "languages": [
+      "Hinglish",
+      "English"
+    ],
+    "rating": 4.3,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 710
+  },
+  {
+    "id": "agent-20",
+    "name": "Dev",
+    "gender": "Male",
+    "useCase": "Loan Collections",
+    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
+    "languages": [
+      "Urdu",
+      "Rajasthani"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket X",
+      "Vehicle Loan"
+    ],
+    "minutesSpoken": 26
+  },
+  {
+    "id": "agent-21",
+    "name": "Rahul",
+    "gender": "Male",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
+    "languages": [
+      "Tamil",
+      "Bhojpuri",
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 53
+  },
+  {
+    "id": "agent-22",
+    "name": "Isha",
+    "gender": "Female",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Cross-sells top-up loans to existing good-standing borrowers based on repayment history.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 18
+  },
+  {
+    "id": "agent-23",
+    "name": "Scout",
+    "gender": "Neutral",
+    "useCase": "Credit Card Recovery",
+    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "languages": [
+      "English",
+      "Kannada"
+    ],
+    "rating": 4.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket X",
+      "Credit Cards"
+    ],
+    "minutesSpoken": 1281
+  },
+  {
+    "id": "agent-24",
+    "name": "Rahul",
+    "gender": "Male",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Marathi",
+      "Rajasthani"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 18
+  },
+  {
+    "id": "agent-25",
+    "name": "Nikhil",
+    "gender": "Male",
+    "useCase": "Complaint Resolution",
+    "persona": "Listens through an escalated billing complaint, logs it accurately, and sets a clear resolution timeline.",
+    "languages": [
+      "Tamil",
+      "Bhojpuri",
+      "Assamese"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 22
+  },
+  {
+    "id": "agent-26",
+    "name": "Yash",
+    "gender": "Male",
+    "useCase": "KYC & Onboarding",
+    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "languages": [
+      "Punjabi",
+      "Urdu",
+      "Assamese"
+    ],
+    "rating": 4.6,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1486
+  },
+  {
+    "id": "agent-27",
+    "name": "Aniket",
+    "gender": "Male",
+    "useCase": "KYC & Onboarding",
+    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": 3.8,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 4985
+  },
+  {
+    "id": "agent-28",
+    "name": "Aditya",
+    "gender": "Male",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Tamil",
+      "Kannada"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 49
+  },
+  {
+    "id": "agent-29",
+    "name": "Dev",
+    "gender": "Male",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
+    "languages": [
+      "Kannada"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 17
+  },
+  {
+    "id": "agent-30",
+    "name": "Nova",
+    "gender": "Neutral",
+    "useCase": "Credit Card Recovery",
+    "persona": "Negotiates EMI conversion for high-outstanding cardholders before an account is written off.",
+    "languages": [
+      "English",
+      "Bhojpuri",
+      "Urdu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Vehicle Loan"
+    ],
+    "minutesSpoken": 6
+  },
+  {
+    "id": "agent-31",
+    "name": "Aditya",
+    "gender": "Male",
+    "useCase": "Complaint Resolution",
+    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
+    "languages": [
+      "Kannada",
+      "Telugu",
+      "Hinglish"
+    ],
+    "rating": 4.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1222
+  },
+  {
+    "id": "agent-32",
+    "name": "Priya",
+    "gender": "Female",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Qualifies inbound loan leads within minutes and hands the sales team a booked, briefed call.",
+    "languages": [
+      "English"
+    ],
+    "rating": 4.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 6723
+  },
+  {
+    "id": "agent-33",
+    "name": "Sam",
+    "gender": "Neutral",
+    "useCase": "KYC & Onboarding",
+    "persona": "Walks a new loan applicant through pending KYC documents and re-uploads.",
+    "languages": [
+      "Rajasthani",
+      "Telugu",
+      "Punjabi"
+    ],
+    "rating": 3.7,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 6573
+  },
+  {
+    "id": "agent-34",
+    "name": "Ira Iyer",
+    "gender": "Female",
+    "useCase": "Complaint Resolution",
+    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
+    "languages": [
+      "Hindi",
+      "Kannada"
+    ],
+    "rating": 4.2,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1286
+  },
+  {
+    "id": "agent-35",
+    "name": "Sneha",
+    "gender": "Female",
+    "useCase": "Loan Collections",
+    "persona": "Follows up on overdue EMIs with a calm, non-confrontational tone, offering payment plans before escalating.",
+    "languages": [
+      "Kannada",
+      "Hindi"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "Business Loan"
+    ],
+    "minutesSpoken": 771
+  },
+  {
+    "id": "agent-36",
+    "name": "Yash",
+    "gender": "Male",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Odia",
+      "Telugu"
+    ],
+    "rating": 4.8,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 12089
+  },
+  {
+    "id": "agent-37",
+    "name": "Ira Iyer",
+    "gender": "Female",
+    "useCase": "Credit Card Recovery",
+    "persona": "Negotiates EMI conversion for high-outstanding cardholders before an account is written off.",
+    "languages": [
+      "Tamil",
+      "Urdu",
+      "Bengali"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "minutesSpoken": 21
+  },
+  {
+    "id": "agent-38",
+    "name": "Kritika",
+    "gender": "Female",
+    "useCase": "Loan Collections",
+    "persona": "Firm but fair reminder call for early-cycle overdue accounts, tuned to avoid churn.",
+    "languages": [
+      "Kannada",
+      "Assamese"
+    ],
+    "rating": 3.9,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "EMI"
+    ],
+    "minutesSpoken": 6310
+  },
+  {
+    "id": "agent-39",
+    "name": "Aditya",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "languages": [
+      "Bhojpuri",
+      "Malayalam"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "Vehicle Loan",
+      "Credit Cards"
+    ],
+    "minutesSpoken": 25
+  },
+  {
+    "id": "agent-40",
+    "name": "Alex",
+    "gender": "Neutral",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
+    "languages": [
+      "Assamese",
+      "Hinglish",
+      "Gujarati"
+    ],
+    "rating": 3.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 594
+  },
+  {
+    "id": "agent-41",
+    "name": "Kabir Gupta",
+    "gender": "Male",
+    "useCase": "Customer Support",
+    "persona": "Handles account balance, statement, and card-block queries for retail banking customers.",
+    "languages": [
+      "Bengali"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 45
+  },
+  {
+    "id": "agent-42",
+    "name": "Nova",
+    "gender": "Neutral",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "English",
+      "Telugu",
+      "Assamese"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 20
+  },
+  {
+    "id": "agent-43",
+    "name": "Sarthak",
+    "gender": "Male",
+    "useCase": "Loan Collections",
+    "persona": "Follows up on overdue EMIs with a calm, non-confrontational tone, offering payment plans before escalating.",
+    "languages": [
+      "Tamil"
+    ],
+    "rating": 3.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "Vehicle Loan"
+    ],
+    "minutesSpoken": 12787
+  },
+  {
+    "id": "agent-44",
+    "name": "Ritu",
+    "gender": "Female",
+    "useCase": "Loan Collections",
+    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
+    "languages": [
+      "Hinglish",
+      "Bengali",
+      "Urdu"
+    ],
+    "rating": 3.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "BNPL",
+      "Loans"
+    ],
+    "minutesSpoken": 1407
+  },
+  {
+    "id": "agent-45",
+    "name": "Divya",
+    "gender": "Female",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Hinglish",
+      "Rajasthani"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 2
+  },
+  {
+    "id": "agent-46",
+    "name": "Alex",
+    "gender": "Neutral",
+    "useCase": "Loan Collections",
+    "persona": "De-escalates first, negotiates second — built for borrowers already in a dispute with the lender.",
+    "languages": [
+      "Tamil",
+      "Telugu",
+      "Hinglish"
+    ],
+    "rating": 4.2,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Personal Loan",
+      "Business Loan"
+    ],
+    "minutesSpoken": 725
+  },
+  {
+    "id": "agent-47",
+    "name": "Rohan",
+    "gender": "Male",
+    "useCase": "KYC & Onboarding",
+    "persona": "Calls to complete video-KYC scheduling for account activation.",
+    "languages": [
+      "Malayalam",
+      "Urdu",
+      "Bengali"
+    ],
+    "rating": 3.6,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1129
+  },
+  {
+    "id": "agent-48",
+    "name": "Pooja",
+    "gender": "Female",
+    "useCase": "Customer Support",
+    "persona": "Handles account balance, statement, and card-block queries for retail banking customers.",
+    "languages": [
+      "Bengali",
+      "Gujarati"
+    ],
+    "rating": 4.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1162
+  },
+  {
+    "id": "agent-49",
+    "name": "Alex",
+    "gender": "Neutral",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Confirms a suspicious login attempt with the account holder in real time.",
+    "languages": [
+      "Bengali",
+      "Gujarati",
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 4
+  },
+  {
+    "id": "agent-50",
+    "name": "Tanvi",
+    "gender": "Female",
+    "useCase": "Loan Collections",
+    "persona": "Follows up on overdue EMIs with a calm, non-confrontational tone, offering payment plans before escalating.",
+    "languages": [
+      "Malayalam"
+    ],
+    "rating": 3.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Vehicle Loan",
+      "EMI"
+    ],
+    "minutesSpoken": 572
+  },
+  {
+    "id": "agent-51",
+    "name": "Aditya",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "languages": [
+      "Bengali",
+      "Tamil"
+    ],
+    "rating": 3.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "EMI",
+      "BNPL"
+    ],
+    "minutesSpoken": 1282
+  },
+  {
+    "id": "agent-52",
+    "name": "Priya",
+    "gender": "Female",
+    "useCase": "Complaint Resolution",
+    "persona": "Listens through an escalated billing complaint, logs it accurately, and sets a clear resolution timeline.",
+    "languages": [
+      "Malayalam"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 26
+  },
+  {
+    "id": "agent-53",
+    "name": "Aniket",
+    "gender": "Male",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Confirms a suspicious login attempt with the account holder in real time.",
+    "languages": [
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 46
+  },
+  {
+    "id": "agent-54",
+    "name": "Meera",
+    "gender": "Female",
+    "useCase": "Customer Support",
+    "persona": "Handles account balance, statement, and card-block queries for retail banking customers.",
+    "languages": [
+      "Bhojpuri",
+      "Hinglish",
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 46
+  },
+  {
+    "id": "agent-55",
+    "name": "Sam",
+    "gender": "Neutral",
+    "useCase": "Credit Card Recovery",
+    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
+    "languages": [
+      "Bhojpuri"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Loans",
+      "Business Loan"
+    ],
+    "minutesSpoken": 45
+  },
+  {
+    "id": "agent-56",
+    "name": "Nova",
+    "gender": "Neutral",
+    "useCase": "Loan Collections",
+    "persona": "Firm but fair reminder call for early-cycle overdue accounts, tuned to avoid churn.",
+    "languages": [
+      "Rajasthani",
+      "Gujarati",
+      "Urdu"
+    ],
+    "rating": 3.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Business Loan",
+      "Vehicle Loan"
+    ],
+    "minutesSpoken": 1036
+  },
+  {
+    "id": "agent-57",
+    "name": "Divya",
+    "gender": "Female",
+    "useCase": "Complaint Resolution",
+    "persona": "De-escalates NPS-detractor callers and routes unresolved cases to a retention specialist.",
+    "languages": [
+      "Tamil",
+      "Assamese"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1592
+  },
+  {
+    "id": "agent-58",
+    "name": "Ira Iyer",
+    "gender": "Female",
+    "useCase": "Loan Collections",
+    "persona": "Follows up on overdue EMIs with a calm, non-confrontational tone, offering payment plans before escalating.",
+    "languages": [
+      "Rajasthani",
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Business Loan",
+      "Loans"
+    ],
+    "minutesSpoken": 13
+  },
+  {
+    "id": "agent-59",
+    "name": "Kiran Reddy",
+    "gender": "Male",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Tamil"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 47
+  },
+  {
+    "id": "agent-60",
+    "name": "Aarav",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
+    "languages": [
+      "Hindi",
+      "Tamil",
+      "Assamese"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Personal Loan"
+    ],
+    "minutesSpoken": 38
+  },
+  {
+    "id": "agent-61",
+    "name": "Sam",
+    "gender": "Neutral",
+    "useCase": "Loan Collections",
+    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
+    "languages": [
+      "Punjabi",
+      "Odia"
+    ],
+    "rating": 4.6,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 3",
+      "BNPL"
+    ],
+    "minutesSpoken": 12747
+  },
+  {
+    "id": "agent-62",
+    "name": "Scout",
+    "gender": "Neutral",
+    "useCase": "Loan Collections",
+    "persona": "De-escalates first, negotiates second — built for borrowers already in a dispute with the lender.",
+    "languages": [
+      "English",
+      "Telugu",
+      "Hinglish"
+    ],
+    "rating": 4,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 3",
+      "EMI",
+      "Loans"
+    ],
+    "minutesSpoken": 872
+  },
+  {
+    "id": "agent-63",
+    "name": "Nisha",
+    "gender": "Female",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Assamese"
+    ],
+    "rating": 4.1,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 977
+  },
+  {
+    "id": "agent-64",
+    "name": "Kiran Reddy",
+    "gender": "Male",
+    "useCase": "Customer Support",
+    "persona": "Resolves failed UPI/NEFT transaction queries and files a dispute ticket when needed.",
+    "languages": [
+      "Tamil",
+      "English",
+      "Rajasthani"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 17
+  },
+  {
+    "id": "agent-65",
+    "name": "Scout",
+    "gender": "Neutral",
+    "useCase": "Customer Support",
+    "persona": "Handles account balance, statement, and card-block queries for retail banking customers.",
+    "languages": [
+      "Tamil",
+      "Rajasthani",
+      "Marathi"
+    ],
+    "rating": 3.6,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 874
+  },
+  {
+    "id": "agent-66",
+    "name": "Yash",
+    "gender": "Male",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Qualifies inbound loan leads within minutes and hands the sales team a booked, briefed call.",
+    "languages": [
+      "Bengali"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 15
+  },
+  {
+    "id": "agent-67",
+    "name": "Rohan",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
+    "languages": [
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "Personal Loan",
+      "Loans"
+    ],
+    "minutesSpoken": 33
+  },
+  {
+    "id": "agent-68",
+    "name": "Sam",
+    "gender": "Neutral",
+    "useCase": "Credit Card Recovery",
+    "persona": "Negotiates EMI conversion for high-outstanding cardholders before an account is written off.",
+    "languages": [
+      "Bengali",
+      "English"
+    ],
+    "rating": 4.3,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Loans"
+    ],
+    "minutesSpoken": 636
+  },
+  {
+    "id": "agent-69",
+    "name": "Alex",
+    "gender": "Neutral",
+    "useCase": "KYC & Onboarding",
+    "persona": "Calls to complete video-KYC scheduling for account activation.",
+    "languages": [
+      "Urdu",
+      "Rajasthani",
+      "Kannada"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 48
+  },
+  {
+    "id": "agent-70",
+    "name": "Anjali",
+    "gender": "Female",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
+    "languages": [
+      "Marathi",
+      "Kannada",
+      "Rajasthani"
+    ],
+    "rating": 4.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 665
+  },
+  {
+    "id": "agent-71",
+    "name": "Robin Nair",
+    "gender": "Male",
+    "useCase": "KYC & Onboarding",
+    "persona": "Walks a new loan applicant through pending KYC documents and re-uploads.",
+    "languages": [
+      "Tamil",
+      "Punjabi",
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 37
+  },
+  {
+    "id": "agent-72",
+    "name": "Scout",
+    "gender": "Neutral",
+    "useCase": "Complaint Resolution",
+    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 13
+  },
+  {
+    "id": "agent-73",
+    "name": "Isha",
+    "gender": "Female",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Marathi",
+      "Telugu",
+      "Gujarati"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1056
+  },
+  {
+    "id": "agent-74",
+    "name": "Nikhil",
+    "gender": "Male",
+    "useCase": "KYC & Onboarding",
+    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "languages": [
+      "Hindi",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 48
+  },
+  {
+    "id": "agent-75",
+    "name": "Tanvi",
+    "gender": "Female",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Cross-sells top-up loans to existing good-standing borrowers based on repayment history.",
+    "languages": [
+      "Odia",
+      "Urdu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 45
+  },
+  {
+    "id": "agent-76",
+    "name": "Sarthak",
+    "gender": "Male",
+    "useCase": "Loan Collections",
+    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
+    "languages": [
+      "Marathi",
+      "Odia",
+      "Gujarati"
+    ],
+    "rating": 3.8,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 3",
+      "Loans",
+      "Personal Loan"
+    ],
+    "minutesSpoken": 7081
+  },
+  {
+    "id": "agent-77",
+    "name": "Aniket",
+    "gender": "Male",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
+    "languages": [
+      "Rajasthani",
+      "Kannada",
+      "Bhojpuri"
+    ],
+    "rating": 4.1,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1575
+  },
+  {
+    "id": "agent-78",
+    "name": "Pooja",
+    "gender": "Female",
+    "useCase": "Credit Card Recovery",
+    "persona": "Negotiates EMI conversion for high-outstanding cardholders before an account is written off.",
+    "languages": [
+      "Bengali",
+      "Malayalam",
+      "Marathi"
+    ],
+    "rating": 4.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "BNPL",
+      "EMI"
+    ],
+    "minutesSpoken": 8235
+  },
+  {
+    "id": "agent-79",
+    "name": "Sam",
+    "gender": "Neutral",
+    "useCase": "KYC & Onboarding",
+    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "languages": [
+      "Odia",
+      "Bengali",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 8
+  },
+  {
+    "id": "agent-80",
+    "name": "Anjali",
+    "gender": "Female",
+    "useCase": "KYC & Onboarding",
+    "persona": "Calls to complete video-KYC scheduling for account activation.",
+    "languages": [
+      "Bengali",
+      "Hinglish"
+    ],
+    "rating": 3.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 524
+  },
+  {
+    "id": "agent-81",
+    "name": "Kavya",
+    "gender": "Female",
+    "useCase": "Loan Collections",
+    "persona": "Follows up on overdue EMIs with a calm, non-confrontational tone, offering payment plans before escalating.",
+    "languages": [
+      "Gujarati",
+      "Tamil"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket X",
+      "Loans"
+    ],
+    "minutesSpoken": 18
+  },
+  {
+    "id": "agent-82",
+    "name": "Yash",
+    "gender": "Male",
+    "useCase": "KYC & Onboarding",
+    "persona": "Walks a new loan applicant through pending KYC documents and re-uploads.",
+    "languages": [
+      "Bengali",
+      "English",
+      "Malayalam"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 2
+  },
+  {
+    "id": "agent-83",
+    "name": "Divya",
+    "gender": "Female",
+    "useCase": "Customer Support",
+    "persona": "Resolves failed UPI/NEFT transaction queries and files a dispute ticket when needed.",
+    "languages": [
+      "English",
+      "Odia",
+      "Rajasthani"
+    ],
+    "rating": 4.4,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 731
+  },
+  {
+    "id": "agent-84",
+    "name": "Tanvi",
+    "gender": "Female",
+    "useCase": "KYC & Onboarding",
+    "persona": "Calls to complete video-KYC scheduling for account activation.",
+    "languages": [
+      "Bhojpuri",
+      "Tamil",
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 34
+  },
+  {
+    "id": "agent-85",
+    "name": "Rohan",
+    "gender": "Male",
+    "useCase": "Complaint Resolution",
+    "persona": "Listens through an escalated billing complaint, logs it accurately, and sets a clear resolution timeline.",
+    "languages": [
+      "Assamese",
+      "Gujarati",
+      "Rajasthani"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 14
+  },
+  {
+    "id": "agent-86",
+    "name": "Rohan",
+    "gender": "Male",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
+    "languages": [
+      "Punjabi",
+      "Bhojpuri"
+    ],
+    "rating": 4.7,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 11586
+  },
+  {
+    "id": "agent-87",
+    "name": "Robin Rao",
+    "gender": "Neutral",
+    "useCase": "Credit Card Recovery",
+    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": 4.1,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 3",
+      "Loans"
+    ],
+    "minutesSpoken": 553
+  },
+  {
+    "id": "agent-88",
+    "name": "Veer Verma",
+    "gender": "Male",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Assamese",
+      "Bhojpuri",
+      "Hindi"
+    ],
+    "rating": 4.1,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 10024
+  },
+  {
+    "id": "agent-89",
+    "name": "Divya",
+    "gender": "Female",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
+    "languages": [
+      "Odia"
+    ],
+    "rating": 4.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 6241
+  },
+  {
+    "id": "agent-90",
+    "name": "Nova",
+    "gender": "Neutral",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Guides policyholders through a claim status update and required document checklist.",
+    "languages": [
+      "Gujarati",
+      "Hinglish",
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 53
+  },
+  {
+    "id": "agent-91",
+    "name": "Yash",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
+    "languages": [
+      "Bengali",
+      "Tamil"
+    ],
+    "rating": 4.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket X",
+      "Credit Cards",
+      "Vehicle Loan"
+    ],
+    "minutesSpoken": 841
+  },
+  {
+    "id": "agent-92",
+    "name": "Shreya",
+    "gender": "Female",
+    "useCase": "Customer Support",
+    "persona": "First-line triage for net-banking login issues before routing to a human agent.",
+    "languages": [
+      "Marathi",
+      "Urdu",
+      "English"
+    ],
+    "rating": 4.8,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 8907
+  },
+  {
+    "id": "agent-93",
+    "name": "Yash",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
+    "languages": [
+      "Punjabi",
+      "Urdu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "minutesSpoken": 4
+  },
+  {
+    "id": "agent-94",
+    "name": "Ananya",
+    "gender": "Female",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Guides policyholders through a claim status update and required document checklist.",
+    "languages": [
+      "Urdu"
+    ],
+    "rating": 4.1,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 788
+  },
+  {
+    "id": "agent-95",
+    "name": "Ritu",
+    "gender": "Female",
+    "useCase": "Credit Card Recovery",
+    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "languages": [
+      "Gujarati",
+      "Telugu",
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "Business Loan"
+    ],
+    "minutesSpoken": 60
+  },
+  {
+    "id": "agent-96",
+    "name": "Scout",
+    "gender": "Neutral",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Malayalam",
+      "Kannada",
+      "Odia"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1131
+  },
+  {
+    "id": "agent-97",
+    "name": "Robin Rao",
+    "gender": "Neutral",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Confirms a suspicious login attempt with the account holder in real time.",
+    "languages": [
+      "Odia",
+      "Punjabi",
+      "Telugu"
+    ],
+    "rating": 4.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 895
+  },
+  {
+    "id": "agent-98",
+    "name": "Kabir Gupta",
+    "gender": "Male",
+    "useCase": "Complaint Resolution",
+    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
+    "languages": [
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 6
+  },
+  {
+    "id": "agent-99",
+    "name": "Dev",
+    "gender": "Male",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Guides policyholders through a claim status update and required document checklist.",
+    "languages": [
+      "Bhojpuri"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 15
+  },
+  {
+    "id": "agent-100",
+    "name": "Yash",
+    "gender": "Male",
+    "useCase": "Loan Collections",
+    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
+    "languages": [
+      "Bhojpuri",
+      "Kannada"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Credit Cards",
+      "Business Loan"
+    ],
+    "minutesSpoken": 54
+  },
+  {
+    "id": "agent-101",
+    "name": "Kavya",
+    "gender": "Female",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Malayalam",
+      "Rajasthani",
+      "Assamese"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 23
+  },
+  {
+    "id": "agent-102",
+    "name": "Nova",
+    "gender": "Neutral",
+    "useCase": "KYC & Onboarding",
+    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "languages": [
+      "Rajasthani"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 13
+  },
+  {
+    "id": "agent-103",
+    "name": "Anjali",
+    "gender": "Female",
+    "useCase": "Complaint Resolution",
+    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
+    "languages": [
+      "Assamese",
+      "Kannada"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 564
+  },
+  {
+    "id": "agent-104",
+    "name": "Rahul",
+    "gender": "Male",
+    "useCase": "Loan Collections",
+    "persona": "Firm but fair reminder call for early-cycle overdue accounts, tuned to avoid churn.",
+    "languages": [
+      "Odia",
+      "Bhojpuri"
+    ],
+    "rating": 3.4,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket X",
+      "Business Loan",
+      "Credit Cards"
+    ],
+    "minutesSpoken": 5609
+  },
+  {
+    "id": "agent-105",
+    "name": "Veer Verma",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "languages": [
+      "Odia"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "EMI",
+      "BNPL"
+    ],
+    "minutesSpoken": 21
+  },
+  {
+    "id": "agent-106",
+    "name": "Nikhil",
+    "gender": "Male",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Runs outbound verification for a new card activation on a high-risk profile.",
+    "languages": [
+      "Hindi",
+      "Assamese"
+    ],
+    "rating": 4.3,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 533
+  },
+  {
+    "id": "agent-107",
+    "name": "Ananya",
+    "gender": "Female",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
+    "languages": [
+      "Tamil",
+      "Kannada"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 43
+  },
+  {
+    "id": "agent-108",
+    "name": "Dev",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "languages": [
+      "Kannada",
+      "Hindi",
+      "Urdu"
+    ],
+    "rating": 4.2,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "BNPL",
+      "Vehicle Loan"
+    ],
+    "minutesSpoken": 11893
+  },
+  {
+    "id": "agent-109",
+    "name": "Robin Nair",
+    "gender": "Male",
+    "useCase": "KYC & Onboarding",
+    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "languages": [
+      "Kannada"
+    ],
+    "rating": 4,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 968
+  },
+  {
+    "id": "agent-110",
+    "name": "Nova",
+    "gender": "Neutral",
+    "useCase": "KYC & Onboarding",
+    "persona": "Calls to complete video-KYC scheduling for account activation.",
+    "languages": [
+      "Gujarati",
+      "Bhojpuri"
+    ],
+    "rating": 4.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 848
+  },
+  {
+    "id": "agent-111",
+    "name": "Dev",
+    "gender": "Male",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
+    "languages": [
+      "Punjabi"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1003
+  },
+  {
+    "id": "agent-112",
+    "name": "Meera",
+    "gender": "Female",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
+    "languages": [
+      "Telugu"
+    ],
+    "rating": 4.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 753
+  },
+  {
+    "id": "agent-113",
+    "name": "Sneha",
+    "gender": "Female",
+    "useCase": "Complaint Resolution",
+    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
+    "languages": [
+      "Gujarati"
+    ],
+    "rating": 3.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1583
+  },
+  {
+    "id": "agent-114",
+    "name": "Isha",
+    "gender": "Female",
+    "useCase": "Complaint Resolution",
+    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
+    "languages": [
+      "Telugu",
+      "Punjabi",
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 8
+  },
+  {
+    "id": "agent-115",
+    "name": "Nova",
+    "gender": "Neutral",
+    "useCase": "Credit Card Recovery",
+    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "languages": [
+      "Assamese",
+      "Kannada",
+      "Bhojpuri"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 1",
+      "Credit Cards",
+      "BNPL"
+    ],
+    "minutesSpoken": 37
+  },
+  {
+    "id": "agent-116",
+    "name": "Pooja",
+    "gender": "Female",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Guides policyholders through a claim status update and required document checklist.",
+    "languages": [
+      "Bhojpuri"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 13
+  },
+  {
+    "id": "agent-117",
+    "name": "Sam",
+    "gender": "Neutral",
+    "useCase": "KYC & Onboarding",
+    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "languages": [
+      "Bengali"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 22
+  },
+  {
+    "id": "agent-118",
+    "name": "Nova",
+    "gender": "Neutral",
+    "useCase": "Complaint Resolution",
+    "persona": "De-escalates NPS-detractor callers and routes unresolved cases to a retention specialist.",
+    "languages": [
+      "Punjabi",
+      "Gujarati",
+      "Telugu"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 916
+  },
+  {
+    "id": "agent-119",
+    "name": "Kavya",
+    "gender": "Female",
+    "useCase": "Customer Support",
+    "persona": "First-line triage for net-banking login issues before routing to a human agent.",
+    "languages": [
+      "Punjabi",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 15
+  },
+  {
+    "id": "agent-120",
+    "name": "Veer Verma",
+    "gender": "Male",
+    "useCase": "Customer Support",
+    "persona": "First-line triage for net-banking login issues before routing to a human agent.",
+    "languages": [
+      "Telugu",
+      "Rajasthani"
+    ],
+    "rating": 4.6,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 446
+  },
+  {
+    "id": "agent-121",
+    "name": "Meera",
+    "gender": "Female",
+    "useCase": "Credit Card Recovery",
+    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "languages": [
+      "Assamese",
+      "Tamil",
+      "Hindi"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket X",
+      "Personal Loan"
+    ],
+    "minutesSpoken": 953
+  },
+  {
+    "id": "agent-122",
+    "name": "Nikhil",
+    "gender": "Male",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
+    "languages": [
+      "Telugu",
+      "Bengali",
+      "Tamil"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 31
+  },
+  {
+    "id": "agent-123",
+    "name": "Yash",
+    "gender": "Male",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Cross-sells top-up loans to existing good-standing borrowers based on repayment history.",
+    "languages": [
+      "Tamil",
+      "Urdu",
+      "Kannada"
+    ],
+    "rating": 3.4,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 900
+  },
+  {
+    "id": "agent-124",
+    "name": "Aditya",
+    "gender": "Male",
+    "useCase": "Loan Collections",
+    "persona": "De-escalates first, negotiates second — built for borrowers already in a dispute with the lender.",
+    "languages": [
+      "Punjabi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 2",
+      "Business Loan"
+    ],
+    "minutesSpoken": 7
+  },
+  {
+    "id": "agent-125",
+    "name": "Robin Rao",
+    "gender": "Neutral",
+    "useCase": "Credit Card Recovery",
+    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
+    "languages": [
+      "Hinglish",
+      "English",
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 3",
+      "Personal Loan"
+    ],
+    "minutesSpoken": 28
+  },
+  {
+    "id": "agent-126",
+    "name": "Sneha",
+    "gender": "Female",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
+    "languages": [
+      "Hinglish",
+      "Odia"
+    ],
+    "rating": 3.4,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1053
+  },
+  {
+    "id": "agent-127",
+    "name": "Sneha",
+    "gender": "Female",
+    "useCase": "Insurance Claims & Renewals",
+    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
+    "languages": [
+      "Urdu",
+      "Punjabi"
+    ],
+    "rating": 3.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 548
+  },
+  {
+    "id": "agent-128",
+    "name": "Scout",
+    "gender": "Neutral",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
+    "languages": [
+      "Punjabi"
+    ],
+    "rating": 4.9,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 4449
+  },
+  {
+    "id": "agent-129",
+    "name": "Nisha",
+    "gender": "Female",
+    "useCase": "Loan Collections",
+    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 4.1,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 3",
+      "Loans",
+      "EMI"
+    ],
+    "minutesSpoken": 8053
+  },
+  {
+    "id": "agent-130",
+    "name": "Nikhil",
+    "gender": "Male",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
+    "languages": [
+      "Punjabi",
+      "Bhojpuri",
+      "Malayalam"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 34
+  },
+  {
+    "id": "agent-131",
+    "name": "Sam",
+    "gender": "Neutral",
+    "useCase": "Fraud Alerts & Verification",
+    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
+    "languages": [
+      "Punjabi",
+      "Rajasthani",
+      "Assamese"
+    ],
+    "rating": 4.2,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1382
+  },
+  {
+    "id": "agent-132",
+    "name": "Kavya",
+    "gender": "Female",
+    "useCase": "Loan Collections",
+    "persona": "Firm but fair reminder call for early-cycle overdue accounts, tuned to avoid churn.",
+    "languages": [
+      "Urdu",
+      "Kannada"
+    ],
+    "rating": 4.4,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket 3",
+      "Vehicle Loan",
+      "Credit Cards"
+    ],
+    "minutesSpoken": 1043
+  },
+  {
+    "id": "agent-133",
+    "name": "Alex",
+    "gender": "Neutral",
+    "useCase": "KYC & Onboarding",
+    "persona": "Calls to complete video-KYC scheduling for account activation.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 7
+  },
+  {
+    "id": "agent-134",
+    "name": "Nova",
+    "gender": "Neutral",
+    "useCase": "Loan Collections",
+    "persona": "De-escalates first, negotiates second — built for borrowers already in a dispute with the lender.",
+    "languages": [
+      "Tamil",
+      "Kannada"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket X",
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "minutesSpoken": 32
+  },
+  {
+    "id": "agent-135",
+    "name": "Ananya",
+    "gender": "Female",
+    "useCase": "KYC & Onboarding",
+    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "languages": [
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 45
+  },
+  {
+    "id": "agent-136",
+    "name": "Dev",
+    "gender": "Male",
+    "useCase": "KYC & Onboarding",
+    "persona": "Walks a new loan applicant through pending KYC documents and re-uploads.",
+    "languages": [
+      "Gujarati",
+      "Bhojpuri"
+    ],
+    "rating": 4.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 568
+  },
+  {
+    "id": "agent-137",
+    "name": "Robin Nair",
+    "gender": "Male",
+    "useCase": "Credit Card Recovery",
+    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "languages": [
+      "English",
+      "Gujarati"
+    ],
+    "rating": 3.4,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "buckets": [
+      "Bucket X",
+      "Vehicle Loan",
+      "Personal Loan"
+    ],
+    "minutesSpoken": 5197
+  },
+  {
+    "id": "agent-138",
+    "name": "Rohan",
+    "gender": "Male",
+    "useCase": "Loan Sales & Cross-sell",
+    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
+    "languages": [
+      "Malayalam",
+      "Kannada",
+      "Rajasthani"
+    ],
+    "rating": 4.6,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1103
+  },
+  {
+    "id": "agent-139",
+    "name": "Veer Verma",
+    "gender": "Male",
+    "useCase": "KYC & Onboarding",
+    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "languages": [
+      "English"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 58
+  },
+  {
+    "id": "agent-140",
+    "name": "Scout",
+    "gender": "Neutral",
+    "useCase": "Complaint Resolution",
+    "persona": "De-escalates NPS-detractor callers and routes unresolved cases to a retention specialist.",
+    "languages": [
+      "Marathi",
+      "Punjabi"
+    ],
+    "rating": 3.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1108
+  }
+]
