@@ -48,9 +48,12 @@ module.exports = {
     phoneNumberId: process.env.ELEVENLABS_PHONE_NUMBER_ID || '',
     agentIdsByVoice: {
       // id 'priya' = Neha (see server/voiceCatalog.js) — "Collections Agent
-      // - Live Demo", confirmed by user 2026-09-09.
-      priya: process.env.ELEVENLABS_AGENT_ID_PRIYA || 'agent_8801m0c50hq8fz08th1mggr19nfr',
-      vikram: process.env.ELEVENLABS_AGENT_ID_VIKRAM || 'agent_9001m218ytv2eqgshx4wdqap8w9e', // confirmed by user 2026-09-09
+      // - Live Demo", confirmed by user 2026-09-09. No hardcoded fallback
+      // (unlike an earlier version of this file) — these real agent IDs
+      // belong only in .env, not in tracked source, even though an agent ID
+      // alone isn't a credential (see 2026-09-24 gitignore/secrets audit).
+      priya: process.env.ELEVENLABS_AGENT_ID_PRIYA || '',
+      vikram: process.env.ELEVENLABS_AGENT_ID_VIKRAM || '',
     },
   },
 
