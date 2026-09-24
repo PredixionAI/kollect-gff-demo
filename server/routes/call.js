@@ -31,7 +31,11 @@ router.post('/call', async (req, res) => {
   // "blank config = silently skipped" posture as every other provider here.
   if (config.sarvam.apiKey && config.sarvam.orgId && config.sarvam.workspaceId
       && config.sarvam.appId && config.sarvam.connectionId && config.sarvam.agentPhoneNumber) {
-    const sarvamResult = await sarvamClient.placeCall({ customerPhone: formattedPhone, customerName: name });
+    const sarvamResult = await sarvamClient.placeCall({
+      customerPhone: formattedPhone,
+      customerName: name,
+      overdueDays: overdueDays !== undefined && overdueDays !== null ? overdueDays : 1,
+    });
     const dispatchedOk = sarvamResult.httpStatus >= 200 && sarvamResult.httpStatus < 300 && !!sarvamResult.body.call_id;
     if (dispatchedOk) {
       const callId = sarvamResult.body.call_id;

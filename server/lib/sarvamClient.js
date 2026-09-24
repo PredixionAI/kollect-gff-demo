@@ -39,17 +39,26 @@ async function fetchJson(url, opts) {
 // per docs.sarvam.ai/conversations/api/instant-outbound/create — returns
 // { attempt_id } on success. No per-voice agent mapping yet (only one
 // Sarvam agent is deployed), so this ignores which persona was selected.
-async function placeCall({ customerPhone, customerName }) {
+//
+// agent_variables must match this specific agent's declared variables
+// exactly — sending an undeclared key 422s ("Agent variables ... not found
+// in agent variables of app"), which silently falls through to VOIZ in
+// call.js rather than surfacing the error. The 11 variables below are the
+// full declared set the user copied from the Sarvam dashboard 2026-09-24
+// (app_version bumped 1->4 the same day — v1 only recognized `user_name`,
+// the newer dashboard-visible version has the rest). Every value here is
+// either the real per-call data already flowing through this app (name,
+// dpd/overdue_days, today's real date) or this project's own existing demo
+// constants (config.demo.dueAmount/dueDate) — nothing invented. product_type
+// is the one static placeholder (user-confirmed 2026-09-24, "Personal
+// Loan" — matches Kollect's existing loan-recovery framing). prior_context
+// and link_live are deliberately left blank rather than fabricated: this
+// agent calls real phone numbers, and a made-up payment link or contact
+// history is the kind of thing that could actually mislead someone on the
+// other end of a live call.
+async function placeCall({ customerPhone, customerName, overdueDays }) {
   const url = `${BASE_URL}/api/outbounds/v1/${orgWorkspacePath()}/outbounds`;
-  // agent_variables must match this specific agent's declared variables
-  // exactly — sending customer_name/mobile_number 422'd ("Agent variables
-  // ... not found in agent variables of app"). Confirmed 2026-09-24 by
-  // inspecting a completed call's own attempt record (getAttempt returned
-  // agent_variables: {user_name, call_summary}): the real name field this
-  // agent's prompt reads is `user_name`. Without it the agent's own
-  // greeting has an audible gap ("क्या मेरी बात जी से हो रही है?" — no name
-  // before "जी") — confirmed on that same first real call, made before this
-  // fix existed.
+  const dueAmount = String(config.demo.dueAmount);
   const payload = {
     app_config: {
       app_id: config.sarvam.appId,
@@ -60,6 +69,16 @@ async function placeCall({ customerPhone, customerName }) {
       },
       agent_variables: {
         user_name: customerName || 'Valued Customer',
+        customer_name: customerName || 'Valued Customer',
+        dpd: String(overdueDays != null ? overdueDays : 1),
+        emi_amount: dueAmount,
+        emi_due_date: config.demo.dueDate,
+        outstanding_amount: dueAmount,
+        overdue_amount: dueAmount,
+        product_type: 'Personal Loan',
+        today_date: new Date().toISOString().slice(0, 10),
+        prior_context: '',
+        link_live: '',
       },
     },
     user_config: {
