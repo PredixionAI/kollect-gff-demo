@@ -109,13 +109,31 @@ async function getAttempt(attemptId) {
 // payload doc describing "agent"/"user" and a field called
 // interaction_transcript with en_text; this is the real
 // GET-transcripts-endpoint shape, which differs from that doc).
+//
+// Retries on 429/5xx (confirmed real: a third test call hit "429 Rate limit
+// exceeded" on the very first fetch, right after the same-second getAttempt
+// call — the two analytics calls back-to-back apparently trip Sarvam's own
+// rate limit). Without a retry, a transient 429 permanently lost that call's
+// transcript and, worse, made handleSarvamOutcome treat an ANSWERED call as
+// unanswered — see callOutcome.js's `answered`-driven branch, added the same
+// day this was found.
+const TRANSCRIPT_RETRIES = 3;
+const TRANSCRIPT_RETRY_DELAY_MS = 2000;
+
 async function getTranscript(interactionId) {
   const url = `${BASE_URL}/api/analytics/v1/${config.sarvam.orgId}/${config.sarvam.workspaceId}/${config.sarvam.appId}/transcripts/${interactionId}`;
-  const { httpStatus, body } = await fetchJson(url, {
-    headers: { 'X-API-Key': config.sarvam.apiKey },
-  });
-  console.log(`[sarvamClient] getTranscript ${interactionId} -> HTTP ${httpStatus}:`, JSON.stringify(body, null, 2));
-  return { httpStatus, body };
+  let last = null;
+  for (let attempt = 1; attempt <= TRANSCRIPT_RETRIES; attempt++) {
+    const { httpStatus, body } = await fetchJson(url, {
+      headers: { 'X-API-Key': config.sarvam.apiKey },
+    });
+    console.log(`[sarvamClient] getTranscript ${interactionId} attempt ${attempt} -> HTTP ${httpStatus}:`, JSON.stringify(body, null, 2));
+    last = { httpStatus, body };
+    if (httpStatus === 200) return last;
+    if (httpStatus !== 429 && !(httpStatus >= 500)) return last; // non-transient — don't retry a real error
+    if (attempt < TRANSCRIPT_RETRIES) await new Promise(r => setTimeout(r, TRANSCRIPT_RETRY_DELAY_MS));
+  }
+  return last;
 }
 
 module.exports = { placeCall, getAttempt, getTranscript };

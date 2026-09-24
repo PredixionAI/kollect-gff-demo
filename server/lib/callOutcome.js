@@ -265,10 +265,22 @@ async function handleSarvamOutcome(callId, attempt) {
     const { body } = await sarvamClient.getTranscript(attempt.interaction_id);
     transcriptText = flattenSarvamTranscript(body);
   }
+  // Sarvam's own post-call summary, written back into agent_variables —
+  // real fallback content when the transcript fetch itself failed (see
+  // sarvamClient.js's getTranscript retry comment: a real answered call hit
+  // a transient 429 on this endpoint). NOT the same as a real transcript,
+  // only used to avoid discarding a real call's outcome entirely.
+  const sarvamOwnSummary = attempt.agent_variables && attempt.agent_variables.call_summary;
 
   const updated = store.updateCase(callId, {
     status: 'completed',
     call_end_reason: callEndReason,
+    // `answered` reflects the real connectivity signal, never transcript
+    // availability — a transcript-fetch failure must NOT relabel an
+    // actually-answered call as unanswered (real bug found 2026-09-24: a
+    // 429 on getTranscript for a genuinely connected, 138s/23-message call
+    // fell into the no_answer branch below and produced "Unresponsive, call
+    // attempt failed" for a call that went fine).
     answered,
     duration,
     transcript: transcriptText,
@@ -283,24 +295,48 @@ async function handleSarvamOutcome(callId, attempt) {
     Object.assign(runningAnalysis, partial);
     store.updateCase(callId, { geminiAnalysis: { ...runningAnalysis } });
   };
-  const analysisPromise = transcriptText
-    ? analyzeWithFallback('transcript', {
-        transcript: transcriptText,
-        borrowerName: existing.name,
-        language: existing.lang,
-        dueAmount: existing.dueAmount || config.demo.dueAmount,
-        dueDate: existing.dueDate || config.demo.dueDate,
-        callDurationSeconds: duration,
-        answered,
-      }, onPartial)
-    : analyzeWithFallback('no_answer', {
-        borrowerName: existing.name,
-        language: existing.lang,
-        dueAmount: existing.dueAmount || config.demo.dueAmount,
-        dueDate: existing.dueDate || config.demo.dueDate,
-        firstMessageText: existing.firstMessage,
-        callEndReason,
-      }, onPartial);
+
+  let analysisPromise;
+  if (transcriptText) {
+    analysisPromise = analyzeWithFallback('transcript', {
+      transcript: transcriptText,
+      borrowerName: existing.name,
+      language: existing.lang,
+      dueAmount: existing.dueAmount || config.demo.dueAmount,
+      dueDate: existing.dueDate || config.demo.dueDate,
+      callDurationSeconds: duration,
+      answered,
+    }, onPartial);
+  } else if (answered && sarvamOwnSummary) {
+    // Answered, but the real transcript never arrived — use Sarvam's own
+    // summary as the transcript-analysis input rather than either
+    // fabricating a no-answer narrative or running GLM/Gemini against
+    // nothing. Labeled so a reviewer can tell this wasn't the real turn-by-
+    // turn transcript.
+    analysisPromise = analyzeWithFallback('transcript', {
+      transcript: `[Sarvam-generated call summary — real transcript unavailable]\n${sarvamOwnSummary}`,
+      borrowerName: existing.name,
+      language: existing.lang,
+      dueAmount: existing.dueAmount || config.demo.dueAmount,
+      dueDate: existing.dueDate || config.demo.dueDate,
+      callDurationSeconds: duration,
+      answered,
+    }, onPartial);
+  } else if (answered) {
+    // Answered, no transcript, no Sarvam summary either — genuinely nothing
+    // to analyze. Do NOT run the no_answer path (the call WAS answered);
+    // surface this honestly instead of guessing.
+    analysisPromise = Promise.resolve({ status: 'unavailable', reason: 'transcript_unavailable' });
+  } else {
+    analysisPromise = analyzeWithFallback('no_answer', {
+      borrowerName: existing.name,
+      language: existing.lang,
+      dueAmount: existing.dueAmount || config.demo.dueAmount,
+      dueDate: existing.dueDate || config.demo.dueDate,
+      firstMessageText: existing.firstMessage,
+      callEndReason,
+    }, onPartial);
+  }
 
   analysisPromise.then(finalAnalysis => {
     store.updateCase(callId, { geminiAnalysis: { hasTranscript: runningAnalysis.hasTranscript, ...finalAnalysis } });
