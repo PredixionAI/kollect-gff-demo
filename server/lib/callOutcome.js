@@ -238,4 +238,78 @@ async function handleElevenLabsOutcome(callId, record) {
   return updated;
 }
 
-module.exports = { handleCallOutcome, handleElevenLabsOutcome, ESCALATION_FLAGS };
+// Sarvam ("Samvaad") equivalent of handleElevenLabsOutcome above — same
+// downstream pipeline, different provider shape going in. Confirmed against
+// a real answered call 2026-09-24 (attempt_id 99cd1d66-e0dd-4d73-bbc5-
+// bb0d824cb098): connectivity_status "connected", failure_reason
+// "NO_FAILURE_REASON" when there's nothing wrong, transcript under
+// `messages` with role "assistant"/"user" and text in `content` — NOT the
+// campaigns-webhook-doc shape (interaction_transcript/en_text) this
+// originally assumed.
+const sarvamClient = require('./sarvamClient');
+
+function flattenSarvamTranscript(transcriptBody) {
+  const turns = transcriptBody && transcriptBody.messages;
+  if (!Array.isArray(turns) || turns.length === 0) return null;
+  return turns.map(t => `${t.role === 'assistant' ? 'agent' : (t.role || 'unknown')}: ${t.content || ''}`).join('\n');
+}
+
+async function handleSarvamOutcome(callId, attempt) {
+  const existing = store.getCase(callId) || {};
+  const answered = attempt.connectivity_status === 'connected';
+  const callEndReason = attempt.failure_reason || attempt.connectivity_status;
+  const duration = attempt.duration_in_seconds || 0;
+
+  let transcriptText = null;
+  if (answered && attempt.interaction_id) {
+    const { body } = await sarvamClient.getTranscript(attempt.interaction_id);
+    transcriptText = flattenSarvamTranscript(body);
+  }
+
+  const updated = store.updateCase(callId, {
+    status: 'completed',
+    call_end_reason: callEndReason,
+    answered,
+    duration,
+    transcript: transcriptText,
+  });
+
+  // Sarvam's attempt record has no VOIZ-style escalation_flag/dispute_flag —
+  // this provider never auto-triggers the human-handoff WhatsApp send the
+  // way a VOIZ call can (see ESCALATION_FLAGS above).
+
+  const runningAnalysis = { status: 'streaming', hasTranscript: !!transcriptText };
+  const onPartial = (partial) => {
+    Object.assign(runningAnalysis, partial);
+    store.updateCase(callId, { geminiAnalysis: { ...runningAnalysis } });
+  };
+  const analysisPromise = transcriptText
+    ? analyzeWithFallback('transcript', {
+        transcript: transcriptText,
+        borrowerName: existing.name,
+        language: existing.lang,
+        dueAmount: existing.dueAmount || config.demo.dueAmount,
+        dueDate: existing.dueDate || config.demo.dueDate,
+        callDurationSeconds: duration,
+        answered,
+      }, onPartial)
+    : analyzeWithFallback('no_answer', {
+        borrowerName: existing.name,
+        language: existing.lang,
+        dueAmount: existing.dueAmount || config.demo.dueAmount,
+        dueDate: existing.dueDate || config.demo.dueDate,
+        firstMessageText: existing.firstMessage,
+        callEndReason,
+      }, onPartial);
+
+  analysisPromise.then(finalAnalysis => {
+    store.updateCase(callId, { geminiAnalysis: { hasTranscript: runningAnalysis.hasTranscript, ...finalAnalysis } });
+  }).catch(err => {
+    console.error(`[callOutcome] Sarvam post-call analysis threw for ${callId}`, err);
+    store.updateCase(callId, { geminiAnalysis: { status: 'unavailable', reason: 'threw' } });
+  });
+
+  return updated;
+}
+
+module.exports = { handleCallOutcome, handleElevenLabsOutcome, handleSarvamOutcome, ESCALATION_FLAGS };

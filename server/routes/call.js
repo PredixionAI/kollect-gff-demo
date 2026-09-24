@@ -3,6 +3,8 @@ const config = require('../config');
 const voizClient = require('../lib/voizClient');
 const elevenLabsClient = require('../lib/elevenLabsClient');
 const elevenLabsPoller = require('../lib/elevenLabsPoller');
+const sarvamClient = require('../lib/sarvamClient');
+const sarvamPoller = require('../lib/sarvamPoller');
 const store = require('../lib/store');
 const callPoller = require('../lib/callPoller');
 
@@ -20,6 +22,30 @@ router.post('/call', async (req, res) => {
 
   let formattedPhone = phone.replace(/[^0-9+]/g, '');
   if (!formattedPhone.startsWith('+')) formattedPhone = '+91' + formattedPhone;
+
+  // Sarvam (2026-09-24 user request) — tried FIRST, automatically, for
+  // every real call, no manual toggle (unlike Enhanced Quality below). Only
+  // one Sarvam agent is deployed so far (no per-voice mapping), so this
+  // fires for whichever persona was picked. Falls through to Enhanced
+  // Quality/VOIZ below on any missing config or dispatch failure — same
+  // "blank config = silently skipped" posture as every other provider here.
+  if (config.sarvam.apiKey && config.sarvam.orgId && config.sarvam.workspaceId
+      && config.sarvam.appId && config.sarvam.connectionId && config.sarvam.agentPhoneNumber) {
+    const sarvamResult = await sarvamClient.placeCall({ customerPhone: formattedPhone, customerName: name });
+    const dispatchedOk = sarvamResult.httpStatus >= 200 && sarvamResult.httpStatus < 300 && !!sarvamResult.body.call_id;
+    if (dispatchedOk) {
+      const callId = sarvamResult.body.call_id;
+      store.createCase(callId, {
+        name, phone: formattedPhone, voiceId: voiceId || null, lang: lang || null,
+        firstMessage: firstMessage || null,
+        status: 'initiated',
+        provider: 'sarvam',
+      });
+      sarvamPoller.pollAttempt(callId);
+      return res.status(sarvamResult.httpStatus).json({ call_id: callId, status: 'initiated', provider: 'sarvam' });
+    }
+    console.warn(`[call] Sarvam dispatch failed (HTTP ${sarvamResult.httpStatus}, ${JSON.stringify(sarvamResult.body)}) — falling back to Enhanced Quality/VOIZ`);
+  }
 
   // "Enhanced Quality" (2026-09-08/09 user request) — ElevenLabs is tried
   // FIRST only when both requested AND actually configured. Dispatch,

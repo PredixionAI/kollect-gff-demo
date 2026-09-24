@@ -1566,7 +1566,17 @@ function renderRealCallSummary(update){
   }
   if(update.customer_sentiment) badges.push(['neutral', `Sentiment: ${update.customer_sentiment}`]);
   if(update.ptp_flag)           badges.push(['resolved', 'Promise to pay']);
-  if(!badges.length) badges.push(['neutral', update.call_end_reason || 'Call ended']);
+  // Sarvam's call_end_reason is a raw enum (e.g. "NO_FAILURE_REASON",
+  // "USER_ENDS") rather than a human phrase like VOIZ's — prettify only the
+  // SCREAMING_SNAKE_CASE shape so VOIZ's own already-readable values pass
+  // through untouched.
+  if(!badges.length){
+    const reason = update.call_end_reason;
+    const pretty = reason && /^[A-Z0-9_]+$/.test(reason)
+      ? reason.split('_').map(w => w[0] + w.slice(1).toLowerCase()).join(' ')
+      : reason;
+    badges.push(['neutral', pretty || 'Call ended']);
+  }
 
   outcomeEl.innerHTML = badges.map(([cls, label]) =>
     `<span class="rt-badge ${cls}">${label}</span>`).join('');

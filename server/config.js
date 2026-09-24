@@ -54,6 +54,22 @@ module.exports = {
     },
   },
 
+  // Sarvam ("Samvaad") voice agents — third real-call provider, added
+  // 2026-09-24. Unlike VOIZ/ElevenLabs, Sarvam has no per-persona agent
+  // catalog yet (only one agent has been deployed) — appId/appVersion below
+  // apply to whichever voice is selected, until more agents get registered.
+  // Blank config = silently skipped, same safe-by-default pattern as
+  // elevenLabs above.
+  sarvam: {
+    apiKey: process.env.SARVAM_API_KEY || '',
+    orgId: process.env.SARVAM_ORG_ID || '',
+    workspaceId: process.env.SARVAM_WORKSPACE_ID || '',
+    appId: process.env.SARVAM_APP_ID || '',
+    appVersion: Number(process.env.SARVAM_APP_VERSION || 1),
+    connectionId: process.env.SARVAM_CONNECTION_ID || '',
+    agentPhoneNumber: process.env.SARVAM_AGENT_PHONE_NUMBER || '',
+  },
+
   demo: {
     dueAmount: Number(process.env.DEMO_DUE_AMOUNT || 45000),
     dueDate: process.env.DEMO_DUE_DATE || '2026-09-05',
