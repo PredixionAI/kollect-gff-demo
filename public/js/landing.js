@@ -39,18 +39,28 @@ document.getElementById('cardLeadX').addEventListener('click', (e) => {
 // configured or its dispatch fails, same as everywhere else in the app.
 (function () {
   const toggleBtn  = document.getElementById('btnDirectCallToggle');
-  const panel      = document.getElementById('directCallPanel');
+  const fabBtn     = document.getElementById('btnDirectCallFab');
+  const overlay    = document.getElementById('directCallOverlay');
+  const closeBtn   = document.getElementById('btnDirectCallClose');
   const nameInput  = document.getElementById('dcallName');
   const phoneInput = document.getElementById('dcallPhone');
   const submitBtn  = document.getElementById('btnDcallSubmit');
   const statusEl   = document.getElementById('dcallStatus');
-  if (!toggleBtn || !panel) return;
+  if (!toggleBtn || !overlay) return;
 
-  toggleBtn.addEventListener('click', () => {
-    const open = panel.style.display === 'flex';
-    panel.style.display = open ? 'none' : 'flex';
-    if (!open) nameInput.focus();
-  });
+  function openOverlay(){
+    overlay.style.display = 'flex';
+    // Focus after the transition frame, not synchronously — mobile
+    // Safari can ignore a focus() call issued before the element has
+    // actually been painted visible.
+    requestAnimationFrame(() => nameInput.focus());
+  }
+  function closeOverlay(){ overlay.style.display = 'none'; }
+
+  toggleBtn.addEventListener('click', openOverlay);
+  fabBtn.addEventListener('click', openOverlay);
+  closeBtn.addEventListener('click', closeOverlay);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
 
   submitBtn.addEventListener('click', async () => {
     const name = nameInput.value.trim();
