@@ -285,6 +285,29 @@ body{
   .landing-metric-divider{height:38px;}
 }
 
+.direct-call-trigger{
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+  padding:0 40px;
+}
+.direct-call-panel{
+  width:100%; max-width:420px; display:flex; flex-direction:column; gap:12px;
+  background:rgba(16,18,22,.72); backdrop-filter:blur(16px);
+  border:1px solid var(--border); border-radius:14px; padding:18px;
+  animation:modalPopIn 180ms var(--ease-out) both;
+}
+@media (prefers-reduced-motion: reduce){ .direct-call-panel{animation:none;} }
+.direct-call-field input{
+  width:100%; background:var(--panel-2); border:1px solid var(--border);
+  border-radius:9px; padding:11px 14px; color:var(--text); font-size:13.5px;
+  font-family:var(--sans); transition:border-color .15s;
+}
+.direct-call-field input:focus{outline:none; border-color:var(--blue);}
+.direct-call-field input::placeholder{color:var(--text-faint);}
+.direct-call-panel .btn-pill-primary{width:100%; text-align:center;}
+.direct-call-status{font-size:12.5px; color:var(--text-faint); min-height:16px; text-align:center;}
+.direct-call-status.is-ok{color:var(--green);}
+.direct-call-status.is-error{color:var(--red);}
+
 .landing-foot{
   width:100%; max-width:1040px; display:flex; align-items:center; gap:12px;
   justify-content:space-between; padding:24px 40px 0; margin-top:auto;
