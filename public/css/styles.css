@@ -23,6 +23,17 @@
 }
 *{box-sizing:border-box; margin:0; padding:0;}
 html,body{height:100%;}
+/* One shared keyboard-focus ring for every interactive element — Apple's
+   "wayfinding" principle (every screen should answer "where am I") applies
+   to keyboard navigation too, and there was no visible focus indicator
+   anywhere in the app: several buttons/inputs explicitly set
+   `outline:none` with no replacement, and everything else relied on the
+   browser default, which barely reads against this dark palette. :focus-
+   visible (not :focus) so mouse/touch clicks never show a ring, only
+   actual keyboard navigation does. */
+:focus-visible{
+  outline:2px solid var(--blue); outline-offset:2px; border-radius:4px;
+}
 body{
   background:var(--bg);
   color:var(--text);
@@ -93,6 +104,9 @@ body{
   animation:ring 2.2s ease-out infinite;
 }
 @keyframes ring{0%{transform:scale(.85); opacity:.9;} 100%{transform:scale(1.5); opacity:0;}}
+@media (prefers-reduced-motion: reduce){
+  .pulse-ring::before{animation:none; opacity:.5;}
+}
 .pulse-ring svg{width:26px; height:26px;}
 .capture-box h1{font-size:26px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px;}
 .capture-box p.lead{color:var(--text-dim); font-size:14.5px; margin-bottom:36px; line-height:1.5;}
@@ -103,7 +117,8 @@ body{
   border-radius:10px; padding:14px 16px; color:var(--text); font-size:15px;
   font-family:var(--sans); transition:border-color .15s;
 }
-.field input:focus{outline:none; border-color:var(--blue);}
+.field input:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(59,130,246,.18);}
+.field input:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
 .field input::placeholder{color:var(--text-faint);}
 .consent{
   display:flex; gap:10px; align-items:flex-start; text-align:left;
@@ -116,11 +131,15 @@ body{
   transition:background .15s, transform .1s; letter-spacing:.1px;
 }
 .btn-primary:hover{background:#2f6fdb;}
-.btn-primary:active{transform:scale(.99);}
+/* scale(.99) is functionally invisible — real press feedback needs a
+   perceptible drop (skill's own reference value is .97), and it belongs on
+   :active alone so it fires on pointer-DOWN, not on release. */
+.btn-primary:active{transform:scale(.97);}
+@media (prefers-reduced-motion: reduce){ .btn-primary:active{transform:none;} }
 .btn-primary:disabled{background:#20242c; color:var(--text-faint); cursor:not-allowed;}
 .btn-ghost{
   width:100%; background:transparent; color:var(--text-faint); border:none;
-  padding:12px; font-size:12.5px; cursor:pointer; font-family:var(--sans); margin-top:6px;
+  padding:12px; font-size:12.5px; cursor:pointer; font-family:var(--sans); margin-top:10px;
   text-decoration:underline; text-underline-offset:3px; transition:color .15s;
 }
 .btn-ghost:hover{color:var(--text-dim);}
@@ -342,7 +361,8 @@ body{
   border-radius:10px; padding:14px 16px; color:var(--text); font-size:16px;
   font-family:var(--sans); transition:border-color .15s;
 }
-.direct-call-field input:focus{outline:none; border-color:var(--blue);}
+.direct-call-field input:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(59,130,246,.18);}
+.direct-call-field input:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
 .direct-call-field input::placeholder{color:var(--text-faint);}
 .direct-call-usecase{
   display:flex; gap:8px; background:var(--panel-2); border:1px solid var(--border);
@@ -1283,8 +1303,19 @@ body{
 .arch-head h1{font-size:24px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px;}
 .arch-head p{color:var(--text-dim); font-size:14px;}
 .arch-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; width:100%; max-width:600px;}
-.arch-card{background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:20px; cursor:pointer; transition:all .15s; text-align:left; position:relative;}
-.arch-card:hover{border-color:#3a4150; transform:translateY(-2px);}
+.arch-card{
+  background:var(--panel); border:1px solid var(--border); border-radius:16px;
+  padding:20px; cursor:pointer; text-align:left; position:relative;
+  transition:border-color .15s, transform .15s, background .15s;
+}
+@media (hover:hover) and (pointer:fine){
+  .arch-card:hover{border-color:#3a4150; transform:translateY(-2px);}
+}
+/* Instant press feedback on tap — this card is the primary interaction on
+   a touch-first booth kiosk, which never fires :hover at all, so without
+   this a tap gave zero visual response until the "selected" state landed. */
+.arch-card:active{transform:scale(.97);}
+@media (prefers-reduced-motion: reduce){ .arch-card:active{transform:none;} }
 .arch-card.selected{border-color:var(--blue); background:#0f1a2c;}
 .arch-card .a-icon{width:36px; height:36px; border-radius:10px; background:var(--panel-2); border:1px solid var(--border-soft); display:flex; align-items:center; justify-content:center; margin-bottom:12px;}
 .arch-card .a-icon svg{width:17px;height:17px; color:var(--text-dim);}
