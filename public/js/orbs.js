@@ -200,8 +200,8 @@ _orbCarousel.addEventListener('pointerup', (e) => {
 document.getElementById('btnOrbNext').addEventListener('click', () => {
   stopOrbAudio();
   if (window.track) track('voice_confirmed', { voiceName: (state.voice || {}).name, voiceLang: (state.voice || {}).lang });
-  if (window.track) track('archetype_screen_entered', {});
-  goTo('screen-archetype');
+  if (window.track) track('usecase_screen_entered', {});
+  goTo('screen-usecase');
   buildArchetypes();
 });
 

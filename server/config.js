@@ -63,14 +63,28 @@ module.exports = {
   // apply to whichever voice is selected, until more agents get registered.
   // Blank config = silently skipped, same safe-by-default pattern as
   // elevenLabs above.
+  // Two Sarvam agents as of 2026-09-30 — Collections (original) and Sales
+  // (new). Same org/workspace/connection/phone for both; only the deployed
+  // app_id/app_version differ per use case. `apps.<useCase>` is looked up
+  // by server/routes/call.js's `useCase` request field ('collections' is
+  // the default when the field is absent, for backward compatibility with
+  // every existing caller that predates the Sales agent).
   sarvam: {
     apiKey: process.env.SARVAM_API_KEY || '',
     orgId: process.env.SARVAM_ORG_ID || '',
     workspaceId: process.env.SARVAM_WORKSPACE_ID || '',
-    appId: process.env.SARVAM_APP_ID || '',
-    appVersion: Number(process.env.SARVAM_APP_VERSION || 1),
     connectionId: process.env.SARVAM_CONNECTION_ID || '',
     agentPhoneNumber: process.env.SARVAM_AGENT_PHONE_NUMBER || '',
+    apps: {
+      collections: {
+        appId: process.env.SARVAM_APP_ID_COLLECTIONS || '',
+        appVersion: Number(process.env.SARVAM_APP_VERSION_COLLECTIONS || 1),
+      },
+      sales: {
+        appId: process.env.SARVAM_APP_ID_SALES || '',
+        appVersion: Number(process.env.SARVAM_APP_VERSION_SALES || 1),
+      },
+    },
   },
 
   demo: {

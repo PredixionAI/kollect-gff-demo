@@ -37,63 +37,73 @@ async function fetchJson(url, opts) {
 
 // POST /api/outbounds/v1/orgs/{org_id}/workspaces/{workspace_id}/outbounds
 // per docs.sarvam.ai/conversations/api/instant-outbound/create — returns
-// { attempt_id } on success. No per-voice agent mapping yet (only one
-// Sarvam agent is deployed), so this ignores which persona was selected.
+// { attempt_id } on success.
 //
-// agent_variables must match this specific agent's declared variables
+// Two agents as of 2026-09-30 — Collections (original) and Sales (new) —
+// selected by `useCase` ('collections' default, or 'sales'). No per-voice
+// agent mapping within either one (one agent per use case, regardless of
+// persona selected).
+//
+// agent_variables must match the SPECIFIC AGENT's declared variables
 // exactly — sending an undeclared key 422s ("Agent variables ... not found
-// in agent variables of app"), which silently falls through to VOIZ in
-// call.js rather than surfacing the error. The 11 variables below are the
-// full declared set the user copied from the Sarvam dashboard 2026-09-24
-// (app_version bumped 1->4 the same day — v1 only recognized `user_name`,
-// the newer dashboard-visible version has the rest). Every value here is
-// either the real per-call data already flowing through this app (name,
-// dpd/overdue_days, today's real date) or this project's own existing demo
-// constants (config.demo.dueAmount/dueDate) — nothing invented. product_type
-// is the one static placeholder (user-confirmed 2026-09-24, "Personal
-// Loan" — matches Kollect's existing loan-recovery framing). prior_context
-// and link_live are deliberately left blank rather than fabricated: this
-// agent calls real phone numbers, and a made-up payment link or contact
-// history is the kind of thing that could actually mislead someone on the
-// other end of a live call.
-async function placeCall({ customerPhone, customerName, overdueDays }) {
+// in agent variables of app"). The two use cases have entirely different
+// declared variables, confirmed against each agent directly (not guessed):
+//   collections: the 11-variable set below, copied from the Sarvam
+//     dashboard 2026-09-24. Every value is either real per-call data
+//     already flowing through this app (name, dpd/overdue_days, today's
+//     real date) or this project's own existing demo constants
+//     (config.demo.dueAmount/dueDate) — nothing invented. product_type is
+//     the one static placeholder (user-confirmed, "Personal Loan").
+//     prior_context/link_live are deliberately blank rather than
+//     fabricated: a made-up payment link or contact history could actually
+//     mislead someone on a live call.
+//   sales: ONLY `user_name` as input (user-confirmed 2026-09-30) —
+//     `call_summary` is an OUTPUT this agent writes back after the call,
+//     not something to send in.
+async function placeCall({ customerPhone, customerName, overdueDays, useCase }) {
+  const resolvedUseCase = useCase === 'sales' ? 'sales' : 'collections';
+  const app = config.sarvam.apps[resolvedUseCase];
   const url = `${BASE_URL}/api/outbounds/v1/${orgWorkspacePath()}/outbounds`;
-  const dueAmount = String(config.demo.dueAmount);
-  const payload = {
-    app_config: {
-      app_id: config.sarvam.appId,
-      app_version: config.sarvam.appVersion,
-      connection_config: {
-        connection_id: config.sarvam.connectionId,
-        agent_phone_number: config.sarvam.agentPhoneNumber,
-      },
-      agent_variables: {
+
+  const agentVariables = resolvedUseCase === 'sales'
+    ? { user_name: customerName || 'Valued Customer' }
+    : {
         user_name: customerName || 'Valued Customer',
         customer_name: customerName || 'Valued Customer',
         dpd: String(overdueDays != null ? overdueDays : 1),
-        emi_amount: dueAmount,
+        emi_amount: String(config.demo.dueAmount),
         emi_due_date: config.demo.dueDate,
-        outstanding_amount: dueAmount,
-        overdue_amount: dueAmount,
+        outstanding_amount: String(config.demo.dueAmount),
+        overdue_amount: String(config.demo.dueAmount),
         product_type: 'Personal Loan',
         today_date: new Date().toISOString().slice(0, 10),
         prior_context: '',
         link_live: '',
+      };
+
+  const payload = {
+    app_config: {
+      app_id: app.appId,
+      app_version: app.appVersion,
+      connection_config: {
+        connection_id: config.sarvam.connectionId,
+        agent_phone_number: config.sarvam.agentPhoneNumber,
       },
+      agent_variables: agentVariables,
     },
     user_config: {
       user_phone_number: customerPhone,
     },
   };
 
-  console.log(`[sarvamClient] Posting to Sarvam API ${url}:`, JSON.stringify(payload, null, 2));
+  console.log(`[sarvamClient] (${resolvedUseCase}) Posting to Sarvam API ${url}:`, JSON.stringify(payload, null, 2));
   const { httpStatus, body } = await fetchJson(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-API-Key': config.sarvam.apiKey },
     body: JSON.stringify(payload),
   });
   console.log(`[sarvamClient] Response HTTP ${httpStatus}:`, JSON.stringify(body, null, 2));
-  return { httpStatus, body: { ...body, call_id: body.attempt_id || null }, payloadSent: payload };
+  return { httpStatus, body: { ...body, call_id: body.attempt_id || null }, payloadSent: payload, appId: app.appId };
 }
 
 // GET /api/analytics/v1/{org_id}/{workspace_id}/{app_id}/attempts, filtered
@@ -101,7 +111,13 @@ async function placeCall({ customerPhone, customerName, overdueDays }) {
 // The endpoint requires a start/end datetime window rather than a plain
 // get-by-id, so this passes a wide window (24h back to now) to be sure the
 // attempt falls inside it regardless of clock skew.
-async function getAttempt(attemptId) {
+//
+// `appId` is now required (not read from a single global config.sarvam.appId
+// — that stopped existing once Collections/Sales became two separate apps
+// 2026-09-30). Callers must pass the SAME app_id the call was originally
+// dispatched to, since the analytics endpoints are scoped per app and an
+// attempt made against one app_id is invisible to another's endpoint.
+async function getAttempt(attemptId, appId) {
   const now = new Date();
   const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
   const params = new URLSearchParams({
@@ -112,7 +128,7 @@ async function getAttempt(attemptId) {
   // NOTE: the analytics API's path shape is org_id/workspace_id directly,
   // NOT "orgs/{id}/workspaces/{id}" like the outbounds endpoint above —
   // confirmed 2026-09-24 after the orgs/workspaces form 404'd outright.
-  const url = `${BASE_URL}/api/analytics/v1/${config.sarvam.orgId}/${config.sarvam.workspaceId}/${config.sarvam.appId}/attempts?${params.toString()}`;
+  const url = `${BASE_URL}/api/analytics/v1/${config.sarvam.orgId}/${config.sarvam.workspaceId}/${appId}/attempts?${params.toString()}`;
   const { httpStatus, body } = await fetchJson(url, {
     headers: { 'X-API-Key': config.sarvam.apiKey },
   });
@@ -139,8 +155,8 @@ async function getAttempt(attemptId) {
 const TRANSCRIPT_RETRIES = 3;
 const TRANSCRIPT_RETRY_DELAY_MS = 2000;
 
-async function getTranscript(interactionId) {
-  const url = `${BASE_URL}/api/analytics/v1/${config.sarvam.orgId}/${config.sarvam.workspaceId}/${config.sarvam.appId}/transcripts/${interactionId}`;
+async function getTranscript(interactionId, appId) {
+  const url = `${BASE_URL}/api/analytics/v1/${config.sarvam.orgId}/${config.sarvam.workspaceId}/${appId}/transcripts/${interactionId}`;
   let last = null;
   for (let attempt = 1; attempt <= TRANSCRIPT_RETRIES; attempt++) {
     const { httpStatus, body } = await fetchJson(url, {

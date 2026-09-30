@@ -254,7 +254,7 @@ function flattenSarvamTranscript(transcriptBody) {
   return turns.map(t => `${t.role === 'assistant' ? 'agent' : (t.role || 'unknown')}: ${t.content || ''}`).join('\n');
 }
 
-async function handleSarvamOutcome(callId, attempt) {
+async function handleSarvamOutcome(callId, attempt, appId) {
   const existing = store.getCase(callId) || {};
   const answered = attempt.connectivity_status === 'connected';
   const callEndReason = attempt.failure_reason || attempt.connectivity_status;
@@ -262,7 +262,7 @@ async function handleSarvamOutcome(callId, attempt) {
 
   let transcriptText = null;
   if (answered && attempt.interaction_id) {
-    const { body } = await sarvamClient.getTranscript(attempt.interaction_id);
+    const { body } = await sarvamClient.getTranscript(attempt.interaction_id, appId);
     transcriptText = flattenSarvamTranscript(body);
   }
   // Sarvam's own post-call summary, written back into agent_variables —

@@ -15,7 +15,7 @@ const router = express.Router();
 // ever sends voiceId, never an agent_id, so it can't be spoofed into calling
 // a different agent than the one it displayed.
 router.post('/call', async (req, res) => {
-  const { name, phone, voiceId, lang, firstMessage, archetypeId, overdueDays, enhancedQuality } = req.body || {};
+  const { name, phone, voiceId, lang, firstMessage, archetypeId, overdueDays, enhancedQuality, useCase } = req.body || {};
   if (!name || !phone) {
     return res.status(400).json({ error: 'name and phone are required' });
   }
@@ -23,18 +23,30 @@ router.post('/call', async (req, res) => {
   let formattedPhone = phone.replace(/[^0-9+]/g, '');
   if (!formattedPhone.startsWith('+')) formattedPhone = '+91' + formattedPhone;
 
+  // Two Sarvam agents as of 2026-09-30: Collections (original) and Sales
+  // (new). `useCase` ('collections' default, or 'sales') picks which one —
+  // see server/lib/sarvamClient.js for the very different agent_variables
+  // each one needs.
+  const resolvedUseCase = useCase === 'sales' ? 'sales' : 'collections';
+  const sarvamApp = config.sarvam.apps[resolvedUseCase];
+
   // Sarvam (2026-09-24 user request) — tried FIRST, automatically, for
-  // every real call, no manual toggle (unlike Enhanced Quality below). Only
-  // one Sarvam agent is deployed so far (no per-voice mapping), so this
-  // fires for whichever persona was picked. Falls through to Enhanced
-  // Quality/VOIZ below on any missing config or dispatch failure — same
-  // "blank config = silently skipped" posture as every other provider here.
+  // every real call, no manual toggle (unlike Enhanced Quality below).
+  // Falls through to Enhanced Quality/VOIZ below on any missing config or
+  // dispatch failure — same "blank config = silently skipped" posture as
+  // every other provider here. Sales is the ONE exception (2026-09-30
+  // user decision): VOIZ/ElevenLabs only have the Collections persona
+  // registered, so falling back for a Sales call would hand the prospect
+  // an agent saying their "EMI is pending" — worse than just failing
+  // cleanly, so a Sales dispatch failure returns an error instead of
+  // falling through.
   if (config.sarvam.apiKey && config.sarvam.orgId && config.sarvam.workspaceId
-      && config.sarvam.appId && config.sarvam.connectionId && config.sarvam.agentPhoneNumber) {
+    && sarvamApp.appId && config.sarvam.connectionId && config.sarvam.agentPhoneNumber) {
     const sarvamResult = await sarvamClient.placeCall({
       customerPhone: formattedPhone,
       customerName: name,
       overdueDays: overdueDays !== undefined && overdueDays !== null ? overdueDays : 1,
+      useCase: resolvedUseCase,
     });
     const dispatchedOk = sarvamResult.httpStatus >= 200 && sarvamResult.httpStatus < 300 && !!sarvamResult.body.call_id;
     if (dispatchedOk) {
@@ -44,11 +56,19 @@ router.post('/call', async (req, res) => {
         firstMessage: firstMessage || null,
         status: 'initiated',
         provider: 'sarvam',
+        useCase: resolvedUseCase,
+        sarvamAppId: sarvamResult.appId,
       });
-      sarvamPoller.pollAttempt(callId);
-      return res.status(sarvamResult.httpStatus).json({ call_id: callId, status: 'initiated', provider: 'sarvam' });
+      sarvamPoller.pollAttempt(callId, sarvamResult.appId);
+      return res.status(sarvamResult.httpStatus).json({ call_id: callId, status: 'initiated', provider: 'sarvam', useCase: resolvedUseCase });
     }
-    console.warn(`[call] Sarvam dispatch failed (HTTP ${sarvamResult.httpStatus}, ${JSON.stringify(sarvamResult.body)}) — falling back to Enhanced Quality/VOIZ`);
+    console.warn(`[call] Sarvam (${resolvedUseCase}) dispatch failed (HTTP ${sarvamResult.httpStatus}, ${JSON.stringify(sarvamResult.body)})`);
+    if (resolvedUseCase === 'sales') {
+      return res.status(502).json({ error: 'Sales agent dispatch failed', detail: sarvamResult.body });
+    }
+    console.warn('[call] falling back to Enhanced Quality/VOIZ');
+  } else if (resolvedUseCase === 'sales') {
+    return res.status(500).json({ error: 'Sales agent is not configured (missing Sarvam credentials or SARVAM_APP_ID_SALES)' });
   }
 
   // "Enhanced Quality" (2026-09-08/09 user request) — ElevenLabs is tried

@@ -204,6 +204,41 @@
   </div>
 
   <!-- ============ SCREEN 4: ARCHETYPE SELECT ============ -->
+  <!-- ============ SCREEN: USE CASE (Sales vs Collection) ============
+       Sits between voice selection (screen-orbs) and the archetype picker
+       (2026-09-30 user request). Collection continues into the existing
+       archetype flow unchanged; Sales skips the archetype picker entirely
+       (state.archetype naturally defaults to archetypes[0] wherever it's
+       read — see persona.js — so the reused dashboard still has something
+       to render, per the explicit "reuse the full dashboard as-is" call)
+       and routes the real call to the new Sarvam Sales agent instead. -->
+  <div class="screen" id="screen-usecase">
+    <div class="brand">
+      <div class="mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
+      <div><div class="name">Predixion AI</div><div class="sub">Agentic Collections</div></div>
+    </div>
+    <div class="arch-head">
+      <div class="eyebrow">Choose a use case</div>
+      <h1>What should this call be about?</h1>
+      <p>Kollect can run a loan-collections conversation or a sales outreach conversation — pick which one to demo.</p>
+    </div>
+    <div class="arch-grid" id="usecaseGrid">
+      <div class="arch-card" id="usecaseCardCollection" data-usecase="collections">
+        <div class="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+        <div class="a-title">Collection</div>
+        <div class="a-desc">Loan-recovery call — negotiates an overdue EMI, picks a borrower archetype next.</div>
+      </div>
+      <div class="arch-card" id="usecaseCardSales" data-usecase="sales">
+        <div class="a-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="a-title">Sales</div>
+        <div class="a-desc">Outreach call via the Sales agent — goes straight to the call trigger, no archetype needed.</div>
+      </div>
+    </div>
+    <div class="arch-actions">
+      <button class="btn-primary" id="btnUsecaseNext" disabled>Continue</button>
+    </div>
+  </div>
+
   <div class="screen" id="screen-archetype">
     <div class="brand">
       <div class="mark"><img src="/img/logo-mark.png" alt="Predixion AI"></div>
@@ -589,6 +624,7 @@
 <script src="/js/capture.js"></script>
 <script src="/js/softlaunch.js"></script>
 <script src="/js/orbs.js"></script>
+<script src="/js/usecase.js"></script>
 <script src="/js/archetype.js"></script>
 <script src="/js/persona.js"></script>
 <script src="/js/dashboard.js"></script>

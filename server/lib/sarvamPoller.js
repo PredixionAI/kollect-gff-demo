@@ -15,7 +15,11 @@ const callOutcome = require('./callOutcome');
 const POLL_INTERVAL_MS = 1000;
 const MAX_POLL_MS = 6 * 60 * 1000;
 
-function pollAttempt(callId) {
+// `appId` is required (2026-09-30, Sales agent added) — the analytics
+// endpoints are scoped per app, so the poller must query the SAME app the
+// call was dispatched to (call.js passes through whichever app placeCall
+// actually used).
+function pollAttempt(callId, appId) {
   const startedAt = Date.now();
 
   const timer = setInterval(async () => {
@@ -26,12 +30,12 @@ function pollAttempt(callId) {
     }
 
     try {
-      const { httpStatus, attempt } = await sarvamClient.getAttempt(callId);
+      const { httpStatus, attempt } = await sarvamClient.getAttempt(callId, appId);
       if (httpStatus !== 200 || !attempt) return; // transient/not-yet-indexed, same posture as the other pollers
 
       if (attempt.connectivity_status !== null && attempt.connectivity_status !== undefined) {
         clearInterval(timer);
-        await callOutcome.handleSarvamOutcome(callId, attempt);
+        await callOutcome.handleSarvamOutcome(callId, attempt, appId);
       }
     } catch (err) {
       console.error(`[sarvamPoller] error polling ${callId}`, err);

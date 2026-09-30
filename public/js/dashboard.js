@@ -1357,6 +1357,10 @@ async function triggerRealCall(){
         // takes effect server-side if ElevenLabs is actually configured
         // (falls back to VOIZ transparently otherwise, see call.js).
         enhancedQuality: !!state.enhancedQuality,
+        // 'collections' (default) or 'sales' — picked on screen-usecase.
+        // Sales routes to a completely different Sarvam agent server-side
+        // and has NO fallback to VOIZ/ElevenLabs if it fails (call.js).
+        useCase: state.useCase || 'collections',
       }),
     });
     const data = await res.json();
