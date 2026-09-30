@@ -344,6 +344,16 @@ body{
 }
 .direct-call-field input:focus{outline:none; border-color:var(--blue);}
 .direct-call-field input::placeholder{color:var(--text-faint);}
+.direct-call-usecase{
+  display:flex; gap:8px; background:var(--panel-2); border:1px solid var(--border);
+  border-radius:10px; padding:4px;
+}
+.direct-call-usecase-btn{
+  flex:1; background:none; border:none; border-radius:7px; padding:10px 12px;
+  font-size:14px; font-weight:600; color:var(--text-dim); font-family:var(--sans);
+  cursor:pointer; transition:background .15s, color .15s;
+}
+.direct-call-usecase-btn.active{background:var(--blue); color:#fff;}
 .direct-call-panel .btn-pill-primary{width:100%; text-align:center; padding:14px; font-size:15px;}
 .direct-call-status{font-size:13px; color:var(--text-faint); min-height:18px; text-align:center;}
 .direct-call-status.is-ok{color:var(--green);}

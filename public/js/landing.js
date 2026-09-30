@@ -38,18 +38,35 @@ document.getElementById('cardLeadX').addEventListener('click', (e) => {
 // same safe fallback (Enhanced Quality, then VOIZ) if Sarvam isn't
 // configured or its dispatch fails, same as everywhere else in the app.
 (function () {
-  const toggleBtn  = document.getElementById('btnDirectCallToggle');
-  const fabBtn     = document.getElementById('btnDirectCallFab');
-  const overlay    = document.getElementById('directCallOverlay');
-  const closeBtn   = document.getElementById('btnDirectCallClose');
-  const nameInput  = document.getElementById('dcallName');
-  const phoneInput = document.getElementById('dcallPhone');
-  const submitBtn  = document.getElementById('btnDcallSubmit');
-  const statusEl   = document.getElementById('dcallStatus');
+  const toggleBtn   = document.getElementById('btnDirectCallToggle');
+  const fabBtn      = document.getElementById('btnDirectCallFab');
+  const overlay     = document.getElementById('directCallOverlay');
+  const closeBtn    = document.getElementById('btnDirectCallClose');
+  const nameInput   = document.getElementById('dcallName');
+  const phoneInput  = document.getElementById('dcallPhone');
+  const usecaseBtns = document.querySelectorAll('.direct-call-usecase-btn');
+  const submitBtn   = document.getElementById('btnDcallSubmit');
+  const statusEl    = document.getElementById('dcallStatus');
   if (!toggleBtn || !overlay) return;
+
+  // Which agent this call goes to (2026-09-30 user request) — defaults to
+  // Collections every time the panel opens, matching the main app's own
+  // default (state.js). Sales has no VOIZ/ElevenLabs fallback server-side
+  // (server/routes/call.js) — a failed Sales dispatch surfaces as a plain
+  // error here, same as everywhere else.
+  let dcallUsecase = 'collections';
+
+  usecaseBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      dcallUsecase = btn.dataset.usecase;
+      usecaseBtns.forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
 
   function openOverlay(){
     overlay.style.display = 'flex';
+    dcallUsecase = 'collections';
+    usecaseBtns.forEach(b => b.classList.toggle('active', b.dataset.usecase === 'collections'));
     // Focus after the transition frame, not synchronously — mobile
     // Safari can ignore a focus() call issued before the element has
     // actually been painted visible.
@@ -73,7 +90,7 @@ document.getElementById('cardLeadX').addEventListener('click', (e) => {
     submitBtn.disabled = true;
     statusEl.textContent = 'Calling…';
     statusEl.className = 'direct-call-status';
-    if (window.track) track('landing_direct_call_triggered', { name, phone });
+    if (window.track) track('landing_direct_call_triggered', { name, phone, useCase: dcallUsecase });
     try {
       const res = await fetch('/api/call', {
         method: 'POST',
@@ -82,6 +99,7 @@ document.getElementById('cardLeadX').addEventListener('click', (e) => {
           name, phone,
           voiceId: 'priya', lang: 'hi',
           archetypeId: 'technical', overdueDays: 12,
+          useCase: dcallUsecase,
         }),
       });
       const data = await res.json();
