@@ -86,7 +86,10 @@ document.getElementById('cardLeadX').addEventListener('click', (e) => {
       });
       const data = await res.json();
       if (res.ok && data.call_id) {
-        statusEl.textContent = `Call placed (${data.provider || 'dispatched'}).`;
+        // Which real provider (Sarvam/ElevenLabs/VOIZ) actually dispatched
+        // the call is an internal implementation detail — never surfaced
+        // to whoever's using this form (2026-09-30 user request).
+        statusEl.textContent = 'Call placed.';
         statusEl.className = 'direct-call-status is-ok';
       } else {
         statusEl.textContent = data.error || 'Could not place the call.';
