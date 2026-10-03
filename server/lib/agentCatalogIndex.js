@@ -8,12 +8,20 @@ const CACHE_PATH = path.join(__dirname, '..', 'data', 'agentCatalogEmbeddings.js
 
 const catalog = JSON.parse(fs.readFileSync(CATALOG_PATH, 'utf8'));
 
-// One combined string per agent is what actually gets embedded — name,
-// persona, use case, and languages all feed the same vector so a query
-// like "someone who handles refund disputes" can match on meaning across
-// any of those fields, not just an exact keyword in one of them.
+// The four services the library covers, and the delinquency stages, in the
+// order they should display (a sorted Set would put "Bucket 1" before
+// "Pre-due"). Anything not listed here can't appear in the sidebar/filters.
+const SERVICES = ['Retail debt collections', 'Business debt collections', 'Cross-selling', 'Cold sales'];
+const STAGES = ['Pre-due', 'Bucket X', 'Bucket 1', 'Bucket 2', 'Bucket 3'];
+
+// One combined string per agent is what actually gets embedded — service,
+// products, stage, objective, tone, languages and description all feed the
+// same vector so a query like "firm agent for credit card settlements" can
+// match on meaning across any of those fields, not just an exact keyword in
+// one of them.
 function searchTextFor(agent) {
-  return [agent.name, agent.persona, agent.useCase, agent.languages.join(', '), agent.status, (agent.buckets || []).join(', ')]
+  return [agent.name, agent.service, (agent.products || []).join(', '), agent.stage, agent.objective,
+    agent.personaTone, (agent.languages || []).join(', '), agent.description]
     .filter(Boolean).join(' — ');
 }
 
@@ -64,26 +72,37 @@ function getAllAgents() {
   return catalog;
 }
 
+// Facet lists come from the data (so they can never offer an option no
+// agent has), but services and stages keep their fixed display order.
 function getFacets() {
-  const statuses = [...new Set(catalog.map(a => a.status))];
-  const useCases = [...new Set(catalog.map(a => a.useCase))].sort();
-  const genders = [...new Set(catalog.map(a => a.gender))];
-  const languages = [...new Set(catalog.flatMap(a => a.languages))].sort();
-  return { statuses, useCases, genders, languages };
+  const present = new Set(catalog.map(a => a.service));
+  const presentStages = new Set(catalog.map(a => a.stage).filter(Boolean));
+  const uniqueSorted = (list) => [...new Set(list)].sort();
+  return {
+    services: SERVICES.filter(s => present.has(s)),
+    products: uniqueSorted(catalog.flatMap(a => a.products || [])),
+    stages: STAGES.filter(s => presentStages.has(s)),
+    objectives: uniqueSorted(catalog.map(a => a.objective)),
+    languages: uniqueSorted(catalog.flatMap(a => a.languages || [])),
+    personas: uniqueSorted(catalog.map(a => a.personaTone)),
+  };
 }
 
 // Combines real semantic similarity (when a query is given and the index is
-// ready) with exact metadata filters (status/gender/useCase/language) —
-// filters narrow the candidate set first, then similarity ranks what's left.
-// With no query, filtered results are returned in catalog order (no
-// meaningless "similarity" score to sort by).
-async function search({ query, status, gender, useCase, language } = {}) {
+// ready) with exact metadata filters (service/product/stage/objective/
+// language/persona) — filters narrow the candidate set first, then
+// similarity ranks what's left. product and language match when ANY of the
+// agent's values equals the filter. With no query, filtered results are
+// returned in catalog order (no meaningless "similarity" score to sort by).
+async function search({ query, service, product, stage, objective, language, persona } = {}) {
   let candidates = catalog.map((agent, i) => ({ agent, index: i }));
 
-  if (status) candidates = candidates.filter(c => c.agent.status === status);
-  if (gender) candidates = candidates.filter(c => c.agent.gender === gender);
-  if (useCase) candidates = candidates.filter(c => c.agent.useCase === useCase);
-  if (language) candidates = candidates.filter(c => c.agent.languages.includes(language));
+  if (service) candidates = candidates.filter(c => c.agent.service === service);
+  if (product) candidates = candidates.filter(c => (c.agent.products || []).includes(product));
+  if (stage) candidates = candidates.filter(c => c.agent.stage === stage);
+  if (objective) candidates = candidates.filter(c => c.agent.objective === objective);
+  if (language) candidates = candidates.filter(c => (c.agent.languages || []).includes(language));
+  if (persona) candidates = candidates.filter(c => c.agent.personaTone === persona);
 
   const trimmedQuery = (query || '').trim();
   if (!trimmedQuery) {

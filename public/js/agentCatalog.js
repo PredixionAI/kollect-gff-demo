@@ -6,21 +6,53 @@
 // index isn't ready — either way the UI just renders whatever `results`
 // comes back, no separate code path.
 //
-// Sidebar shows the catalog's real use-case categories (Loan Collections,
-// Lead Qualification, Technical Support, ...) rather than a made-up brand
-// taxonomy — one flat list, no Kollect/LeadX grouping, since the agents
-// themselves already carry that distinction via their persona and use case.
-// The sidebar IS the use-case filter, so there's no separate "Use case"
-// dropdown next to it — that would just be the same filter twice.
-const FILTER_KEYS = ['gender', 'language'];
-const FILTER_LABELS = { gender: 'Gender', language: 'Language' };
-const FACET_FIELD = { gender: 'genders', language: 'languages' };
+// Revamped 2026-10-03 around the four services Predixion actually sells:
+// Retail debt collections, Business debt collections, Cross-selling and Cold
+// sales. The sidebar is a flat list of exactly those four (plus "All
+// agents") and IS the service filter, so there's no separate Service
+// dropdown next to it — that would just be the same filter twice. The
+// dropdowns above the grid cover everything else (product, stage, objective,
+// language, persona tone).
+//
+// Dropdown options are derived from the agents inside the current sidebar
+// scope rather than a global list, so a dropdown never offers a value no
+// visible agent has (Sales agents have no stage and only two products, so
+// Stage disappears and Product shrinks when a Sales service is selected).
+const FILTER_KEYS = ['product', 'stage', 'objective', 'language', 'persona'];
+const FILTER_LABELS = { product: 'Product', stage: 'Stage', objective: 'Objective', language: 'Language', persona: 'Persona' };
+// Which agent field each dropdown reads — product and language are arrays.
+const AGENT_FIELD = { product: 'products', stage: 'stage', objective: 'objective', language: 'languages', persona: 'personaTone' };
 
 let catalogFacets = null;
-let catalogFilterState = { useCase: '', gender: '', language: '' };
+let catalogAllAgents = [];
+let catalogFilterState = { service: '', product: '', stage: '', objective: '', language: '', persona: '' };
 let catalogSearchTimer = null;
 let catalogLoaded = false;
 let catalogAgentsById = {}; // populated on every render so the detail modal can look an agent up by id
+
+function agentsInScope(){
+  return catalogFilterState.service
+    ? catalogAllAgents.filter(a => a.service === catalogFilterState.service)
+    : catalogAllAgents;
+}
+
+function filterOptions(key){
+  const field = AGENT_FIELD[key];
+  const values = new Set();
+  agentsInScope().forEach(a => {
+    const v = a[field];
+    if (Array.isArray(v)) v.forEach(x => values.add(x));
+    else if (v) values.add(v);
+  });
+  const list = [...values];
+  // Stages have a meaningful order (Pre-due -> Bucket 3); everything else
+  // reads best alphabetically.
+  if (key === 'stage') {
+    const order = (catalogFacets && catalogFacets.stages) || [];
+    return list.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+  }
+  return list.sort();
+}
 
 function initialsFor(name){
   return (name || '?').trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
@@ -31,13 +63,23 @@ function formatMinutes(mins){
   return `${mins.toLocaleString('en-IN')} min talked`;
 }
 
+// Shared by the card and the detail modal: stage + objective as the two
+// highlighted chips (stage only exists on collections agents), products and
+// languages as plain chips below.
+function agentChipRows(agent){
+  const highlight = [
+    agent.stage ? `<span class="agent-chip agent-chip-bucket">${agent.stage}</span>` : '',
+    agent.objective ? `<span class="agent-chip agent-chip-objective">${agent.objective}</span>` : '',
+  ].join('');
+  const products = (agent.products || []).map(p => `<span class="agent-chip">${p}</span>`).join('');
+  const languages = (agent.languages || []).map(l => `<span class="agent-chip">${l}</span>`).join('');
+  return `
+    ${highlight ? `<div class="agent-card-chips">${highlight}</div>` : ''}
+    ${products ? `<div class="agent-card-chips">${products}</div>` : ''}
+    ${languages ? `<div class="agent-card-chips">${languages}</div>` : ''}`;
+}
+
 function renderAgentCard(agent){
-  const chips = (agent.languages || []).map(l => `<span class="agent-chip">${l}</span>`).join('');
-  // Collections/recovery agents carry a DPD-stage + loan-product breakdown
-  // (Bucket 1/2/3, Personal Loan, EMI, ...) — shown only here on the card,
-  // not as a sidebar filter, since it's a per-agent specialization detail
-  // rather than a top-level catalog category.
-  const bucketChips = (agent.buckets || []).map(b => `<span class="agent-chip agent-chip-bucket">${b}</span>`).join('');
   const rating = agent.rating != null
     ? `<span class="agent-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01z"/></svg>${agent.rating.toFixed(1)}</span>`
     : `<span class="agent-rating" style="color:var(--text-faint)">Unrated</span>`;
@@ -48,15 +90,14 @@ function renderAgentCard(agent){
           <div class="agent-avatar">${initialsFor(agent.name)}</div>
           <div>
             <div class="name">${agent.name}</div>
-            <div class="usecase">${agent.useCase}</div>
+            <div class="usecase">${agent.service}</div>
           </div>
         </div>
       </div>
-      <div class="agent-card-persona">${agent.persona}</div>
-      ${bucketChips ? `<div class="agent-card-chips">${bucketChips}</div>` : ''}
-      <div class="agent-card-chips">${chips}</div>
+      <div class="agent-card-persona">${agent.description}</div>
+      ${agentChipRows(agent)}
       <div class="agent-card-foot">
-        <span>${agent.gender}</span>
+        <span>${agent.personaTone} tone</span>
         ${rating}
       </div>
       <div class="agent-card-minutes">
@@ -85,8 +126,15 @@ function renderCatalogGrid(agents){
 
 function renderCatalogFilters(){
   const container = document.getElementById('catalogFilters');
+  // Drop any selection that the new scope can't satisfy (e.g. Stage =
+  // "Bucket 2" after switching to a Sales service) instead of silently
+  // filtering to zero results behind a dropdown that no longer shows it.
+  FILTER_KEYS.forEach(key => {
+    if (catalogFilterState[key] && !filterOptions(key).includes(catalogFilterState[key])) catalogFilterState[key] = '';
+  });
   container.innerHTML = FILTER_KEYS.map(key => {
-    const options = (catalogFacets[FACET_FIELD[key]] || []).slice();
+    const options = filterOptions(key);
+    if (!options.length) return ''; // e.g. Stage for Sales services — no agent has one
     const optHtml = options.map(o => `<option value="${o}" ${catalogFilterState[key] === o ? 'selected' : ''}>${o}</option>`).join('');
     return `<select class="catalog-filter-select" data-filter-key="${key}">
       <option value="">${FILTER_LABELS[key]}: All</option>
@@ -103,25 +151,23 @@ function renderCatalogFilters(){
 
 function renderCatalogSidebar(){
   const container = document.getElementById('catalogSidebar');
-  const useCases = catalogFacets.useCases || [];
-  const itemsHtml = useCases.map(uc => {
-    const active = catalogFilterState.useCase === uc ? 'active' : '';
-    return `<button class="catalog-nav-item ${active}" data-usecase="${uc}">${uc}</button>`;
+  const services = catalogFacets.services || [];
+  const itemsHtml = services.map(s => {
+    const active = catalogFilterState.service === s ? 'active' : '';
+    return `<button class="catalog-nav-item ${active}" data-service="${s}">${s}</button>`;
   }).join('');
-  const allActive = catalogFilterState.useCase === '' ? 'active' : '';
+  const allActive = catalogFilterState.service === '' ? 'active' : '';
   container.innerHTML = `
     <div class="catalog-nav-group">
-      <button class="catalog-nav-item ${allActive}" data-usecase="">All agents</button>
-    </div>
-    <div class="catalog-nav-group">
-      <div class="catalog-nav-group-label">Use case</div>
+      <button class="catalog-nav-item ${allActive}" data-service="">All agents</button>
       ${itemsHtml}
     </div>`;
   container.querySelectorAll('.catalog-nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
-      catalogFilterState.useCase = btn.dataset.usecase;
+      catalogFilterState.service = btn.dataset.service;
       container.querySelectorAll('.catalog-nav-item').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      renderCatalogFilters(); // option lists depend on the selected service
       runCatalogSearch();
     });
   });
@@ -153,6 +199,7 @@ async function loadAgentCatalog(){
     const res = await fetch('/api/agent-catalog');
     const data = await res.json();
     catalogFacets = data.facets;
+    catalogAllAgents = data.agents || [];
     renderCatalogSidebar();
     renderCatalogFilters();
     renderCatalogGrid(data.agents || []);
@@ -181,23 +228,19 @@ function seedFromString(str){
 }
 
 function renderAgentModalBody(agent){
-  const seed = seedFromString(agent.id);
-  const chips = (agent.languages || []).map(l => `<span class="agent-chip">${l}</span>`).join('');
-  const bucketChips = (agent.buckets || []).map(b => `<span class="agent-chip agent-chip-bucket">${b}</span>`).join('');
   const rating = agent.rating != null ? `${agent.rating.toFixed(1)} rating` : 'Unrated';
   return `
     <div class="agent-modal-head">
       <div class="agent-avatar agent-avatar-lg">${initialsFor(agent.name)}</div>
       <div>
         <div class="agent-modal-name">${agent.name}</div>
-        <div class="agent-modal-usecase">${agent.useCase}</div>
+        <div class="agent-modal-usecase">${agent.service}</div>
       </div>
     </div>
-    <p class="agent-modal-persona">${agent.persona}</p>
-    ${bucketChips ? `<div class="agent-card-chips">${bucketChips}</div>` : ''}
-    <div class="agent-card-chips">${chips}</div>
+    <p class="agent-modal-persona">${agent.description}</p>
+    ${agentChipRows(agent)}
     <div class="agent-modal-stats">
-      <span>${agent.gender}</span>
+      <span>${agent.personaTone} tone</span>
       <span>${rating}</span>
       <span>${formatMinutes(agent.minutesSpoken)}</span>
     </div>

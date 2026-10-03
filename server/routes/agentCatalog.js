@@ -13,12 +13,13 @@ router.get('/agent-catalog', (req, res) => {
 });
 
 // Real semantic search (Gemini embeddings, see embeddingsClient.js) plus
-// exact metadata filters. Body: { query, status, gender, useCase, language }
-// — all optional; an empty body returns the unranked, unfiltered catalog.
+// exact metadata filters. Body: { query, service, product, stage, objective,
+// language, persona } — all optional; an empty body returns the unranked,
+// unfiltered catalog.
 router.post('/agent-catalog/search', async (req, res) => {
-  const { query, status, gender, useCase, language } = req.body || {};
+  const { query, service, product, stage, objective, language, persona } = req.body || {};
   try {
-    const result = await agentCatalogIndex.search({ query, status, gender, useCase, language });
+    const result = await agentCatalogIndex.search({ query, service, product, stage, objective, language, persona });
     res.json(result);
   } catch (err) {
     console.error('[agentCatalog] search error', err);

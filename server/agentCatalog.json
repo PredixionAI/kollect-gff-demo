@@ -3,8 +3,16 @@
     "id": "kollect-neha",
     "name": "Neha",
     "gender": "Female",
-    "useCase": "Loan Collections",
-    "persona": "Warm, empathetic collections voice for Kollect — de-escalates first, negotiates second.",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Warm, empathetic collections voice for Kollect. De-escalates first, negotiates second.",
     "languages": [
       "Hindi",
       "Gujarati",
@@ -15,39 +23,44 @@
     "status": "Live",
     "real": true,
     "provider": "VOIZ + ElevenLabs",
-    "buckets": [
-      "Bucket 1",
-      "Personal Loan",
-      "EMI"
-    ],
     "minutesSpoken": 6261
   },
   {
     "id": "kollect-swara",
     "name": "Swara",
     "gender": "Female",
-    "useCase": "Loan Collections",
-    "persona": "Assertive but fair collections voice for Kollect, tuned for borrowers who need a firmer nudge.",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Firm",
+    "description": "Assertive but fair collections voice for Kollect, tuned for borrowers who need a firmer nudge.",
     "languages": [
       "Hindi",
-      "English"
+      "Hinglish"
     ],
     "rating": 4.6,
     "status": "Live",
     "real": true,
     "provider": "VOIZ",
-    "buckets": [
-      "Bucket 2",
-      "Vehicle Loan"
-    ],
     "minutesSpoken": 5002
   },
   {
     "id": "kollect-vikram",
     "name": "Vikram",
     "gender": "Male",
-    "useCase": "Loan Collections",
-    "persona": "Clear, authoritative collections voice for Kollect, Marathi/Hindi speaking borrowers.",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Restructure EMI",
+    "personaTone": "Professional",
+    "description": "Clear, authoritative collections voice for Kollect, speaking Marathi and Hindi with business borrowers.",
     "languages": [
       "Marathi",
       "Hindi"
@@ -56,1060 +69,71 @@
     "status": "Live",
     "real": true,
     "provider": "VOIZ + ElevenLabs",
-    "buckets": [
-      "Bucket 3",
-      "Business Loan"
-    ],
     "minutesSpoken": 12355
   },
   {
-    "id": "leadx-scout",
-    "name": "Scout",
-    "gender": "Neutral",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "LeadX’s inbound qualifier — engages a new loan/insurance lead within minutes and hands sales a booked, briefed call.",
+    "id": "predixion-maya",
+    "name": "Maya",
+    "gender": "Female",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Product pitch",
+    "personaTone": "Friendly",
+    "description": "Friendly cold-sales voice for credit-card outreach. Qualifies interest in a couple of minutes and books a callback when the prospect is busy.",
     "languages": [
-      "English",
-      "Hindi"
+      "Hindi",
+      "Hinglish",
+      "Gujarati"
     ],
     "rating": 4.5,
     "status": "Live",
     "real": true,
-    "provider": "LeadX",
-    "minutesSpoken": 8009
-  },
-  {
-    "id": "agent-1",
-    "name": "Ananya",
-    "gender": "Female",
-    "useCase": "Complaint Resolution",
-    "persona": "De-escalates NPS-detractor callers and routes unresolved cases to a retention specialist.",
-    "languages": [
-      "Tamil",
-      "Hinglish"
-    ],
-    "rating": 4.7,
-    "status": "Demo",
-    "real": false,
     "provider": null,
-    "minutesSpoken": 1120
+    "minutesSpoken": 3240
   },
   {
-    "id": "agent-2",
-    "name": "Scout",
-    "gender": "Neutral",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Confirms a suspicious login attempt with the account holder in real time.",
-    "languages": [
-      "Odia",
-      "Marathi",
-      "Telugu"
-    ],
-    "rating": 4.7,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 532
-  },
-  {
-    "id": "agent-3",
-    "name": "Rohan",
+    "id": "agent-100",
+    "name": "Ketan",
     "gender": "Male",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
-    "languages": [
-      "Bhojpuri",
-      "Assamese",
-      "Hindi"
-    ],
-    "rating": 4.3,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 714
-  },
-  {
-    "id": "agent-4",
-    "name": "Aarav",
-    "gender": "Male",
-    "useCase": "KYC & Onboarding",
-    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
-    "languages": [
-      "Urdu",
-      "Marathi"
-    ],
-    "rating": 4.8,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 11617
-  },
-  {
-    "id": "agent-5",
-    "name": "Priya",
-    "gender": "Female",
-    "useCase": "Credit Card Recovery",
-    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
-    "languages": [
-      "Gujarati",
-      "Telugu"
-    ],
-    "rating": 4.2,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "Personal Loan"
-    ],
-    "minutesSpoken": 9429
-  },
-  {
-    "id": "agent-6",
-    "name": "Alex",
-    "gender": "Neutral",
-    "useCase": "Customer Support",
-    "persona": "Resolves failed UPI/NEFT transaction queries and files a dispute ticket when needed.",
-    "languages": [
-      "Bhojpuri",
-      "Malayalam",
-      "Punjabi"
-    ],
-    "rating": 3.5,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 842
-  },
-  {
-    "id": "agent-7",
-    "name": "Shreya",
-    "gender": "Female",
-    "useCase": "KYC & Onboarding",
-    "persona": "Walks a new loan applicant through pending KYC documents and re-uploads.",
-    "languages": [
-      "Bhojpuri",
-      "Telugu",
-      "Gujarati"
-    ],
-    "rating": 4.6,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1506
-  },
-  {
-    "id": "agent-8",
-    "name": "Meera",
-    "gender": "Female",
-    "useCase": "Customer Support",
-    "persona": "First-line triage for net-banking login issues before routing to a human agent.",
-    "languages": [
-      "Kannada",
-      "Hinglish"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 14
-  },
-  {
-    "id": "agent-9",
-    "name": "Alex",
-    "gender": "Neutral",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
-    "languages": [
-      "Hindi",
-      "Rajasthani",
-      "Gujarati"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 54
-  },
-  {
-    "id": "agent-10",
-    "name": "Nova",
-    "gender": "Neutral",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
-    "languages": [
-      "Malayalam",
-      "Marathi"
-    ],
-    "rating": 3.8,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 12560
-  },
-  {
-    "id": "agent-11",
-    "name": "Rahul",
-    "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
-    "languages": [
-      "Rajasthani"
-    ],
-    "rating": 3.9,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Vehicle Loan",
-      "Personal Loan"
-    ],
-    "minutesSpoken": 1588
-  },
-  {
-    "id": "agent-12",
-    "name": "Aarav Das",
-    "gender": "Male",
-    "useCase": "Loan Collections",
-    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
-    "languages": [
-      "Punjabi",
-      "Marathi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 3",
-      "BNPL"
-    ],
-    "minutesSpoken": 31
-  },
-  {
-    "id": "agent-13",
-    "name": "Veer Verma",
-    "gender": "Male",
-    "useCase": "Complaint Resolution",
-    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
-    "languages": [
-      "Marathi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 42
-  },
-  {
-    "id": "agent-14",
-    "name": "Arjun Menon",
-    "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
-    "languages": [
-      "English"
-    ],
-    "rating": 3.9,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "Business Loan"
-    ],
-    "minutesSpoken": 1271
-  },
-  {
-    "id": "agent-15",
-    "name": "Kavya",
-    "gender": "Female",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
-    "languages": [
-      "Malayalam"
-    ],
-    "rating": 4.2,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1382
-  },
-  {
-    "id": "agent-16",
-    "name": "Sarthak",
-    "gender": "Male",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
-    "languages": [
-      "Punjabi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 32
-  },
-  {
-    "id": "agent-17",
-    "name": "Sarthak",
-    "gender": "Male",
-    "useCase": "Loan Collections",
-    "persona": "Firm but fair reminder call for early-cycle overdue accounts, tuned to avoid churn.",
-    "languages": [
-      "Telugu",
-      "Tamil"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "Business Loan"
-    ],
-    "minutesSpoken": 5
-  },
-  {
-    "id": "agent-18",
-    "name": "Scout",
-    "gender": "Neutral",
-    "useCase": "Complaint Resolution",
-    "persona": "Listens through an escalated billing complaint, logs it accurately, and sets a clear resolution timeline.",
-    "languages": [
-      "Punjabi",
-      "Marathi",
-      "Odia"
-    ],
-    "rating": 4.2,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 10266
-  },
-  {
-    "id": "agent-19",
-    "name": "Divya",
-    "gender": "Female",
-    "useCase": "Customer Support",
-    "persona": "Handles account balance, statement, and card-block queries for retail banking customers.",
-    "languages": [
-      "Hinglish",
-      "English"
-    ],
-    "rating": 4.3,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 710
-  },
-  {
-    "id": "agent-20",
-    "name": "Dev",
-    "gender": "Male",
-    "useCase": "Loan Collections",
-    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
-    "languages": [
-      "Urdu",
-      "Rajasthani"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket X",
-      "Vehicle Loan"
-    ],
-    "minutesSpoken": 26
-  },
-  {
-    "id": "agent-21",
-    "name": "Rahul",
-    "gender": "Male",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
-    "languages": [
-      "Tamil",
-      "Bhojpuri",
-      "Marathi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 53
-  },
-  {
-    "id": "agent-22",
-    "name": "Isha",
-    "gender": "Female",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Cross-sells top-up loans to existing good-standing borrowers based on repayment history.",
-    "languages": [
-      "Hindi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 18
-  },
-  {
-    "id": "agent-23",
-    "name": "Scout",
-    "gender": "Neutral",
-    "useCase": "Credit Card Recovery",
-    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
-    "languages": [
-      "English",
-      "Kannada"
-    ],
-    "rating": 4.8,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket X",
-      "Credit Cards"
-    ],
-    "minutesSpoken": 1281
-  },
-  {
-    "id": "agent-24",
-    "name": "Rahul",
-    "gender": "Male",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Marathi",
-      "Rajasthani"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 18
-  },
-  {
-    "id": "agent-25",
-    "name": "Nikhil",
-    "gender": "Male",
-    "useCase": "Complaint Resolution",
-    "persona": "Listens through an escalated billing complaint, logs it accurately, and sets a clear resolution timeline.",
-    "languages": [
-      "Tamil",
-      "Bhojpuri",
-      "Assamese"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 22
-  },
-  {
-    "id": "agent-26",
-    "name": "Yash",
-    "gender": "Male",
-    "useCase": "KYC & Onboarding",
-    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
-    "languages": [
-      "Punjabi",
-      "Urdu",
-      "Assamese"
-    ],
-    "rating": 4.6,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1486
-  },
-  {
-    "id": "agent-27",
-    "name": "Aniket",
-    "gender": "Male",
-    "useCase": "KYC & Onboarding",
-    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
-    "languages": [
-      "Hinglish"
-    ],
-    "rating": 3.8,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 4985
-  },
-  {
-    "id": "agent-28",
-    "name": "Aditya",
-    "gender": "Male",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Tamil",
-      "Kannada"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 49
-  },
-  {
-    "id": "agent-29",
-    "name": "Dev",
-    "gender": "Male",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
-    "languages": [
-      "Kannada"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 17
-  },
-  {
-    "id": "agent-30",
-    "name": "Nova",
-    "gender": "Neutral",
-    "useCase": "Credit Card Recovery",
-    "persona": "Negotiates EMI conversion for high-outstanding cardholders before an account is written off.",
-    "languages": [
-      "English",
-      "Bhojpuri",
-      "Urdu"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Vehicle Loan"
-    ],
-    "minutesSpoken": 6
-  },
-  {
-    "id": "agent-31",
-    "name": "Aditya",
-    "gender": "Male",
-    "useCase": "Complaint Resolution",
-    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
-    "languages": [
-      "Kannada",
-      "Telugu",
-      "Hinglish"
-    ],
-    "rating": 4.9,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1222
-  },
-  {
-    "id": "agent-32",
-    "name": "Priya",
-    "gender": "Female",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Qualifies inbound loan leads within minutes and hands the sales team a booked, briefed call.",
-    "languages": [
-      "English"
-    ],
-    "rating": 4.5,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 6723
-  },
-  {
-    "id": "agent-33",
-    "name": "Sam",
-    "gender": "Neutral",
-    "useCase": "KYC & Onboarding",
-    "persona": "Walks a new loan applicant through pending KYC documents and re-uploads.",
-    "languages": [
-      "Rajasthani",
-      "Telugu",
-      "Punjabi"
-    ],
-    "rating": 3.7,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 6573
-  },
-  {
-    "id": "agent-34",
-    "name": "Ira Iyer",
-    "gender": "Female",
-    "useCase": "Complaint Resolution",
-    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
-    "languages": [
-      "Hindi",
-      "Kannada"
-    ],
-    "rating": 4.2,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1286
-  },
-  {
-    "id": "agent-35",
-    "name": "Sneha",
-    "gender": "Female",
-    "useCase": "Loan Collections",
-    "persona": "Follows up on overdue EMIs with a calm, non-confrontational tone, offering payment plans before escalating.",
-    "languages": [
-      "Kannada",
-      "Hindi"
-    ],
-    "rating": 4.5,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "Business Loan"
-    ],
-    "minutesSpoken": 771
-  },
-  {
-    "id": "agent-36",
-    "name": "Yash",
-    "gender": "Male",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Odia",
-      "Telugu"
-    ],
-    "rating": 4.8,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 12089
-  },
-  {
-    "id": "agent-37",
-    "name": "Ira Iyer",
-    "gender": "Female",
-    "useCase": "Credit Card Recovery",
-    "persona": "Negotiates EMI conversion for high-outstanding cardholders before an account is written off.",
-    "languages": [
-      "Tamil",
-      "Urdu",
-      "Bengali"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
       "Credit Cards",
       "Personal Loan"
     ],
-    "minutesSpoken": 21
-  },
-  {
-    "id": "agent-38",
-    "name": "Kritika",
-    "gender": "Female",
-    "useCase": "Loan Collections",
-    "persona": "Firm but fair reminder call for early-cycle overdue accounts, tuned to avoid churn.",
+    "objective": "Application follow-up",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that follows up on an application the customer started for Credit Cards & Personal Loan.",
     "languages": [
-      "Kannada",
-      "Assamese"
+      "Hindi",
+      "Punjabi",
+      "Gujarati"
     ],
-    "rating": 3.9,
+    "rating": 4.1,
     "status": "Live",
     "real": false,
     "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "EMI"
-    ],
-    "minutesSpoken": 6310
+    "minutesSpoken": 11660
   },
   {
-    "id": "agent-39",
-    "name": "Aditya",
-    "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
-    "languages": [
-      "Bhojpuri",
-      "Malayalam"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "Vehicle Loan",
-      "Credit Cards"
-    ],
-    "minutesSpoken": 25
-  },
-  {
-    "id": "agent-40",
-    "name": "Alex",
-    "gender": "Neutral",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
-    "languages": [
-      "Assamese",
-      "Hinglish",
-      "Gujarati"
-    ],
-    "rating": 3.9,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 594
-  },
-  {
-    "id": "agent-41",
-    "name": "Kabir Gupta",
-    "gender": "Male",
-    "useCase": "Customer Support",
-    "persona": "Handles account balance, statement, and card-block queries for retail banking customers.",
-    "languages": [
-      "Bengali"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 45
-  },
-  {
-    "id": "agent-42",
-    "name": "Nova",
-    "gender": "Neutral",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "English",
-      "Telugu",
-      "Assamese"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 20
-  },
-  {
-    "id": "agent-43",
-    "name": "Sarthak",
-    "gender": "Male",
-    "useCase": "Loan Collections",
-    "persona": "Follows up on overdue EMIs with a calm, non-confrontational tone, offering payment plans before escalating.",
-    "languages": [
-      "Tamil"
-    ],
-    "rating": 3.5,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "Vehicle Loan"
-    ],
-    "minutesSpoken": 12787
-  },
-  {
-    "id": "agent-44",
-    "name": "Ritu",
+    "id": "agent-12",
+    "name": "Zoya",
     "gender": "Female",
-    "useCase": "Loan Collections",
-    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans"
+    ],
+    "stage": "Bucket X",
+    "objective": "Payment collection",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment-collection calls on Home Loans accounts in the first 30 days past due (Bucket X).",
     "languages": [
       "Hinglish",
-      "Bengali",
-      "Urdu"
-    ],
-    "rating": 3.5,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "BNPL",
-      "Loans"
-    ],
-    "minutesSpoken": 1407
-  },
-  {
-    "id": "agent-45",
-    "name": "Divya",
-    "gender": "Female",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Hinglish",
-      "Rajasthani"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 2
-  },
-  {
-    "id": "agent-46",
-    "name": "Alex",
-    "gender": "Neutral",
-    "useCase": "Loan Collections",
-    "persona": "De-escalates first, negotiates second — built for borrowers already in a dispute with the lender.",
-    "languages": [
-      "Tamil",
-      "Telugu",
-      "Hinglish"
-    ],
-    "rating": 4.2,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Personal Loan",
-      "Business Loan"
-    ],
-    "minutesSpoken": 725
-  },
-  {
-    "id": "agent-47",
-    "name": "Rohan",
-    "gender": "Male",
-    "useCase": "KYC & Onboarding",
-    "persona": "Calls to complete video-KYC scheduling for account activation.",
-    "languages": [
-      "Malayalam",
-      "Urdu",
-      "Bengali"
-    ],
-    "rating": 3.6,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1129
-  },
-  {
-    "id": "agent-48",
-    "name": "Pooja",
-    "gender": "Female",
-    "useCase": "Customer Support",
-    "persona": "Handles account balance, statement, and card-block queries for retail banking customers.",
-    "languages": [
-      "Bengali",
-      "Gujarati"
-    ],
-    "rating": 4.9,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1162
-  },
-  {
-    "id": "agent-49",
-    "name": "Alex",
-    "gender": "Neutral",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Confirms a suspicious login attempt with the account holder in real time.",
-    "languages": [
-      "Bengali",
-      "Gujarati",
-      "Hinglish"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 4
-  },
-  {
-    "id": "agent-50",
-    "name": "Tanvi",
-    "gender": "Female",
-    "useCase": "Loan Collections",
-    "persona": "Follows up on overdue EMIs with a calm, non-confrontational tone, offering payment plans before escalating.",
-    "languages": [
-      "Malayalam"
-    ],
-    "rating": 3.8,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Vehicle Loan",
-      "EMI"
-    ],
-    "minutesSpoken": 572
-  },
-  {
-    "id": "agent-51",
-    "name": "Aditya",
-    "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
-    "languages": [
-      "Bengali",
-      "Tamil"
-    ],
-    "rating": 3.8,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "EMI",
-      "BNPL"
-    ],
-    "minutesSpoken": 1282
-  },
-  {
-    "id": "agent-52",
-    "name": "Priya",
-    "gender": "Female",
-    "useCase": "Complaint Resolution",
-    "persona": "Listens through an escalated billing complaint, logs it accurately, and sets a clear resolution timeline.",
-    "languages": [
-      "Malayalam"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 26
-  },
-  {
-    "id": "agent-53",
-    "name": "Aniket",
-    "gender": "Male",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Confirms a suspicious login attempt with the account holder in real time.",
-    "languages": [
-      "Marathi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 46
-  },
-  {
-    "id": "agent-54",
-    "name": "Meera",
-    "gender": "Female",
-    "useCase": "Customer Support",
-    "persona": "Handles account balance, statement, and card-block queries for retail banking customers.",
-    "languages": [
-      "Bhojpuri",
-      "Hinglish",
-      "Telugu"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 46
-  },
-  {
-    "id": "agent-55",
-    "name": "Sam",
-    "gender": "Neutral",
-    "useCase": "Credit Card Recovery",
-    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
-    "languages": [
-      "Bhojpuri"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Loans",
-      "Business Loan"
-    ],
-    "minutesSpoken": 45
-  },
-  {
-    "id": "agent-56",
-    "name": "Nova",
-    "gender": "Neutral",
-    "useCase": "Loan Collections",
-    "persona": "Firm but fair reminder call for early-cycle overdue accounts, tuned to avoid churn.",
-    "languages": [
-      "Rajasthani",
-      "Gujarati",
-      "Urdu"
-    ],
-    "rating": 3.5,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Business Loan",
-      "Vehicle Loan"
-    ],
-    "minutesSpoken": 1036
-  },
-  {
-    "id": "agent-57",
-    "name": "Divya",
-    "gender": "Female",
-    "useCase": "Complaint Resolution",
-    "persona": "De-escalates NPS-detractor callers and routes unresolved cases to a retention specialist.",
-    "languages": [
-      "Tamil",
-      "Assamese"
-    ],
-    "rating": 4.5,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1592
-  },
-  {
-    "id": "agent-58",
-    "name": "Ira Iyer",
-    "gender": "Female",
-    "useCase": "Loan Collections",
-    "persona": "Follows up on overdue EMIs with a calm, non-confrontational tone, offering payment plans before escalating.",
-    "languages": [
-      "Rajasthani",
-      "Marathi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Business Loan",
-      "Loans"
-    ],
-    "minutesSpoken": 13
-  },
-  {
-    "id": "agent-59",
-    "name": "Kiran Reddy",
-    "gender": "Male",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Tamil"
+      "Kannada"
     ],
     "rating": null,
     "status": "Dev",
@@ -1118,1101 +142,206 @@
     "minutesSpoken": 47
   },
   {
-    "id": "agent-60",
-    "name": "Aarav",
-    "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
-    "languages": [
-      "Hindi",
-      "Tamil",
-      "Assamese"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Personal Loan"
-    ],
-    "minutesSpoken": 38
-  },
-  {
-    "id": "agent-61",
-    "name": "Sam",
-    "gender": "Neutral",
-    "useCase": "Loan Collections",
-    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
-    "languages": [
-      "Punjabi",
-      "Odia"
-    ],
-    "rating": 4.6,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 3",
-      "BNPL"
-    ],
-    "minutesSpoken": 12747
-  },
-  {
-    "id": "agent-62",
-    "name": "Scout",
-    "gender": "Neutral",
-    "useCase": "Loan Collections",
-    "persona": "De-escalates first, negotiates second — built for borrowers already in a dispute with the lender.",
-    "languages": [
-      "English",
-      "Telugu",
-      "Hinglish"
-    ],
-    "rating": 4,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 3",
-      "EMI",
-      "Loans"
-    ],
-    "minutesSpoken": 872
-  },
-  {
-    "id": "agent-63",
-    "name": "Nisha",
-    "gender": "Female",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Assamese"
-    ],
-    "rating": 4.1,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 977
-  },
-  {
-    "id": "agent-64",
-    "name": "Kiran Reddy",
-    "gender": "Male",
-    "useCase": "Customer Support",
-    "persona": "Resolves failed UPI/NEFT transaction queries and files a dispute ticket when needed.",
-    "languages": [
-      "Tamil",
-      "English",
-      "Rajasthani"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 17
-  },
-  {
-    "id": "agent-65",
-    "name": "Scout",
-    "gender": "Neutral",
-    "useCase": "Customer Support",
-    "persona": "Handles account balance, statement, and card-block queries for retail banking customers.",
-    "languages": [
-      "Tamil",
-      "Rajasthani",
-      "Marathi"
-    ],
-    "rating": 3.6,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 874
-  },
-  {
-    "id": "agent-66",
-    "name": "Yash",
-    "gender": "Male",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Qualifies inbound loan leads within minutes and hands the sales team a booked, briefed call.",
-    "languages": [
-      "Bengali"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 15
-  },
-  {
-    "id": "agent-67",
-    "name": "Rohan",
-    "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
-    "languages": [
-      "Marathi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "Personal Loan",
-      "Loans"
-    ],
-    "minutesSpoken": 33
-  },
-  {
-    "id": "agent-68",
-    "name": "Sam",
-    "gender": "Neutral",
-    "useCase": "Credit Card Recovery",
-    "persona": "Negotiates EMI conversion for high-outstanding cardholders before an account is written off.",
-    "languages": [
-      "Bengali",
-      "English"
-    ],
-    "rating": 4.3,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Loans"
-    ],
-    "minutesSpoken": 636
-  },
-  {
-    "id": "agent-69",
-    "name": "Alex",
-    "gender": "Neutral",
-    "useCase": "KYC & Onboarding",
-    "persona": "Calls to complete video-KYC scheduling for account activation.",
-    "languages": [
-      "Urdu",
-      "Rajasthani",
-      "Kannada"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 48
-  },
-  {
-    "id": "agent-70",
-    "name": "Anjali",
-    "gender": "Female",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
-    "languages": [
-      "Marathi",
-      "Kannada",
-      "Rajasthani"
-    ],
-    "rating": 4.9,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 665
-  },
-  {
-    "id": "agent-71",
-    "name": "Robin Nair",
-    "gender": "Male",
-    "useCase": "KYC & Onboarding",
-    "persona": "Walks a new loan applicant through pending KYC documents and re-uploads.",
-    "languages": [
-      "Tamil",
-      "Punjabi",
-      "Marathi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 37
-  },
-  {
-    "id": "agent-72",
-    "name": "Scout",
-    "gender": "Neutral",
-    "useCase": "Complaint Resolution",
-    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
-    "languages": [
-      "Hinglish"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 13
-  },
-  {
-    "id": "agent-73",
-    "name": "Isha",
-    "gender": "Female",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Marathi",
-      "Telugu",
-      "Gujarati"
-    ],
-    "rating": 4.5,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1056
-  },
-  {
-    "id": "agent-74",
-    "name": "Nikhil",
-    "gender": "Male",
-    "useCase": "KYC & Onboarding",
-    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
-    "languages": [
-      "Hindi",
-      "Gujarati"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 48
-  },
-  {
-    "id": "agent-75",
-    "name": "Tanvi",
-    "gender": "Female",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Cross-sells top-up loans to existing good-standing borrowers based on repayment history.",
-    "languages": [
-      "Odia",
-      "Urdu"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 45
-  },
-  {
-    "id": "agent-76",
-    "name": "Sarthak",
-    "gender": "Male",
-    "useCase": "Loan Collections",
-    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
-    "languages": [
-      "Marathi",
-      "Odia",
-      "Gujarati"
-    ],
-    "rating": 3.8,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 3",
-      "Loans",
-      "Personal Loan"
-    ],
-    "minutesSpoken": 7081
-  },
-  {
-    "id": "agent-77",
-    "name": "Aniket",
-    "gender": "Male",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
-    "languages": [
-      "Rajasthani",
-      "Kannada",
-      "Bhojpuri"
-    ],
-    "rating": 4.1,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1575
-  },
-  {
-    "id": "agent-78",
-    "name": "Pooja",
-    "gender": "Female",
-    "useCase": "Credit Card Recovery",
-    "persona": "Negotiates EMI conversion for high-outstanding cardholders before an account is written off.",
-    "languages": [
-      "Bengali",
-      "Malayalam",
-      "Marathi"
-    ],
-    "rating": 4.5,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "BNPL",
-      "EMI"
-    ],
-    "minutesSpoken": 8235
-  },
-  {
-    "id": "agent-79",
-    "name": "Sam",
-    "gender": "Neutral",
-    "useCase": "KYC & Onboarding",
-    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
-    "languages": [
-      "Odia",
-      "Bengali",
-      "Gujarati"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 8
-  },
-  {
-    "id": "agent-80",
-    "name": "Anjali",
-    "gender": "Female",
-    "useCase": "KYC & Onboarding",
-    "persona": "Calls to complete video-KYC scheduling for account activation.",
-    "languages": [
-      "Bengali",
-      "Hinglish"
-    ],
-    "rating": 3.7,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 524
-  },
-  {
-    "id": "agent-81",
-    "name": "Kavya",
-    "gender": "Female",
-    "useCase": "Loan Collections",
-    "persona": "Follows up on overdue EMIs with a calm, non-confrontational tone, offering payment plans before escalating.",
-    "languages": [
-      "Gujarati",
-      "Tamil"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket X",
-      "Loans"
-    ],
-    "minutesSpoken": 18
-  },
-  {
     "id": "agent-82",
-    "name": "Yash",
+    "name": "Anil",
     "gender": "Male",
-    "useCase": "KYC & Onboarding",
-    "persona": "Walks a new loan applicant through pending KYC documents and re-uploads.",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance",
+      "Home Loans"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Payment collection",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for business borrowers. Handles payment-collection calls on Microfinance & Home Loans accounts at 30–60 days past due (Bucket 1).",
     "languages": [
-      "Bengali",
-      "English",
-      "Malayalam"
+      "Kannada",
+      "Hinglish"
     ],
     "rating": null,
     "status": "Dev",
     "real": false,
     "provider": null,
-    "minutesSpoken": 2
-  },
-  {
-    "id": "agent-83",
-    "name": "Divya",
-    "gender": "Female",
-    "useCase": "Customer Support",
-    "persona": "Resolves failed UPI/NEFT transaction queries and files a dispute ticket when needed.",
-    "languages": [
-      "English",
-      "Odia",
-      "Rajasthani"
-    ],
-    "rating": 4.4,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 731
-  },
-  {
-    "id": "agent-84",
-    "name": "Tanvi",
-    "gender": "Female",
-    "useCase": "KYC & Onboarding",
-    "persona": "Calls to complete video-KYC scheduling for account activation.",
-    "languages": [
-      "Bhojpuri",
-      "Tamil",
-      "Marathi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 34
+    "minutesSpoken": 7
   },
   {
     "id": "agent-85",
-    "name": "Rohan",
-    "gender": "Male",
-    "useCase": "Complaint Resolution",
-    "persona": "Listens through an escalated billing complaint, logs it accurately, and sets a clear resolution timeline.",
-    "languages": [
-      "Assamese",
-      "Gujarati",
-      "Rajasthani"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 14
-  },
-  {
-    "id": "agent-86",
-    "name": "Rohan",
-    "gender": "Male",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
-    "languages": [
-      "Punjabi",
-      "Bhojpuri"
-    ],
-    "rating": 4.7,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 11586
-  },
-  {
-    "id": "agent-87",
-    "name": "Robin Rao",
-    "gender": "Neutral",
-    "useCase": "Credit Card Recovery",
-    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
-    "languages": [
-      "Hinglish"
-    ],
-    "rating": 4.1,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 3",
-      "Loans"
-    ],
-    "minutesSpoken": 553
-  },
-  {
-    "id": "agent-88",
-    "name": "Veer Verma",
-    "gender": "Male",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Assamese",
-      "Bhojpuri",
-      "Hindi"
-    ],
-    "rating": 4.1,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 10024
-  },
-  {
-    "id": "agent-89",
-    "name": "Divya",
+    "name": "Rohini",
     "gender": "Female",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Restructure EMI",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles EMI restructuring conversations on Home Loans accounts at 60–90 days past due (Bucket 2).",
     "languages": [
-      "Odia"
-    ],
-    "rating": 4.5,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 6241
-  },
-  {
-    "id": "agent-90",
-    "name": "Nova",
-    "gender": "Neutral",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Guides policyholders through a claim status update and required document checklist.",
-    "languages": [
-      "Gujarati",
-      "Hinglish",
-      "Telugu"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 53
-  },
-  {
-    "id": "agent-91",
-    "name": "Yash",
-    "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
-    "languages": [
-      "Bengali",
-      "Tamil"
-    ],
-    "rating": 4.7,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket X",
-      "Credit Cards",
-      "Vehicle Loan"
-    ],
-    "minutesSpoken": 841
-  },
-  {
-    "id": "agent-92",
-    "name": "Shreya",
-    "gender": "Female",
-    "useCase": "Customer Support",
-    "persona": "First-line triage for net-banking login issues before routing to a human agent.",
-    "languages": [
-      "Marathi",
-      "Urdu",
-      "English"
-    ],
-    "rating": 4.8,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 8907
-  },
-  {
-    "id": "agent-93",
-    "name": "Yash",
-    "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
-    "languages": [
-      "Punjabi",
-      "Urdu"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "Personal Loan",
-      "Credit Cards"
-    ],
-    "minutesSpoken": 4
-  },
-  {
-    "id": "agent-94",
-    "name": "Ananya",
-    "gender": "Female",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Guides policyholders through a claim status update and required document checklist.",
-    "languages": [
-      "Urdu"
-    ],
-    "rating": 4.1,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 788
-  },
-  {
-    "id": "agent-95",
-    "name": "Ritu",
-    "gender": "Female",
-    "useCase": "Credit Card Recovery",
-    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
-    "languages": [
-      "Gujarati",
       "Telugu",
       "Hinglish"
     ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "Business Loan"
-    ],
-    "minutesSpoken": 60
-  },
-  {
-    "id": "agent-96",
-    "name": "Scout",
-    "gender": "Neutral",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Malayalam",
-      "Kannada",
-      "Odia"
-    ],
-    "rating": 4.5,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1131
-  },
-  {
-    "id": "agent-97",
-    "name": "Robin Rao",
-    "gender": "Neutral",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Confirms a suspicious login attempt with the account holder in real time.",
-    "languages": [
-      "Odia",
-      "Punjabi",
-      "Telugu"
-    ],
-    "rating": 4.9,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 895
-  },
-  {
-    "id": "agent-98",
-    "name": "Kabir Gupta",
-    "gender": "Male",
-    "useCase": "Complaint Resolution",
-    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
-    "languages": [
-      "Gujarati"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 6
-  },
-  {
-    "id": "agent-99",
-    "name": "Dev",
-    "gender": "Male",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Guides policyholders through a claim status update and required document checklist.",
-    "languages": [
-      "Bhojpuri"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 15
-  },
-  {
-    "id": "agent-100",
-    "name": "Yash",
-    "gender": "Male",
-    "useCase": "Loan Collections",
-    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
-    "languages": [
-      "Bhojpuri",
-      "Kannada"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Credit Cards",
-      "Business Loan"
-    ],
-    "minutesSpoken": 54
-  },
-  {
-    "id": "agent-101",
-    "name": "Kavya",
-    "gender": "Female",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Malayalam",
-      "Rajasthani",
-      "Assamese"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 23
-  },
-  {
-    "id": "agent-102",
-    "name": "Nova",
-    "gender": "Neutral",
-    "useCase": "KYC & Onboarding",
-    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
-    "languages": [
-      "Rajasthani"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 13
-  },
-  {
-    "id": "agent-103",
-    "name": "Anjali",
-    "gender": "Female",
-    "useCase": "Complaint Resolution",
-    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
-    "languages": [
-      "Assamese",
-      "Kannada"
-    ],
-    "rating": 4.5,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 564
-  },
-  {
-    "id": "agent-104",
-    "name": "Rahul",
-    "gender": "Male",
-    "useCase": "Loan Collections",
-    "persona": "Firm but fair reminder call for early-cycle overdue accounts, tuned to avoid churn.",
-    "languages": [
-      "Odia",
-      "Bhojpuri"
-    ],
-    "rating": 3.4,
+    "rating": 3.9,
     "status": "Live",
     "real": false,
     "provider": null,
-    "buckets": [
-      "Bucket X",
-      "Business Loan",
+    "minutesSpoken": 6384
+  },
+  {
+    "id": "agent-15",
+    "name": "Usha",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL",
       "Credit Cards"
     ],
-    "minutesSpoken": 5609
-  },
-  {
-    "id": "agent-105",
-    "name": "Veer Verma",
-    "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "stage": "Bucket X",
+    "objective": "Payment collection",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment-collection calls on BNPL & Credit Cards accounts in the first 30 days past due (Bucket X).",
     "languages": [
-      "Odia"
+      "Hindi"
     ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "EMI",
-      "BNPL"
-    ],
-    "minutesSpoken": 21
-  },
-  {
-    "id": "agent-106",
-    "name": "Nikhil",
-    "gender": "Male",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Runs outbound verification for a new card activation on a high-risk profile.",
-    "languages": [
-      "Hindi",
-      "Assamese"
-    ],
-    "rating": 4.3,
+    "rating": 3.8,
     "status": "Demo",
     "real": false,
     "provider": null,
-    "minutesSpoken": 533
+    "minutesSpoken": 1507
   },
   {
-    "id": "agent-107",
-    "name": "Ananya",
+    "id": "agent-140",
+    "name": "Mansi K.",
     "gender": "Female",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
-    "languages": [
-      "Tamil",
-      "Kannada"
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
     ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 43
-  },
-  {
-    "id": "agent-108",
-    "name": "Dev",
-    "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
+    "objective": "Lead qualification",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that qualifies a new lead’s interest and eligibility for Credit Cards & Personal Loan.",
     "languages": [
-      "Kannada",
-      "Hindi",
-      "Urdu"
-    ],
-    "rating": 4.2,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "BNPL",
-      "Vehicle Loan"
-    ],
-    "minutesSpoken": 11893
-  },
-  {
-    "id": "agent-109",
-    "name": "Robin Nair",
-    "gender": "Male",
-    "useCase": "KYC & Onboarding",
-    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
-    "languages": [
-      "Kannada"
+      "Marathi",
+      "Gujarati"
     ],
     "rating": 4,
     "status": "Demo",
     "real": false,
     "provider": null,
-    "minutesSpoken": 968
-  },
-  {
-    "id": "agent-110",
-    "name": "Nova",
-    "gender": "Neutral",
-    "useCase": "KYC & Onboarding",
-    "persona": "Calls to complete video-KYC scheduling for account activation.",
-    "languages": [
-      "Gujarati",
-      "Bhojpuri"
-    ],
-    "rating": 4.7,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 848
-  },
-  {
-    "id": "agent-111",
-    "name": "Dev",
-    "gender": "Male",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
-    "languages": [
-      "Punjabi"
-    ],
-    "rating": 4.5,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1003
-  },
-  {
-    "id": "agent-112",
-    "name": "Meera",
-    "gender": "Female",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
-    "languages": [
-      "Telugu"
-    ],
-    "rating": 4.7,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 753
-  },
-  {
-    "id": "agent-113",
-    "name": "Sneha",
-    "gender": "Female",
-    "useCase": "Complaint Resolution",
-    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
-    "languages": [
-      "Gujarati"
-    ],
-    "rating": 3.9,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1583
-  },
-  {
-    "id": "agent-114",
-    "name": "Isha",
-    "gender": "Female",
-    "useCase": "Complaint Resolution",
-    "persona": "Handles wrongly-charged-fee complaints with an on-call reversal decision where policy allows.",
-    "languages": [
-      "Telugu",
-      "Punjabi",
-      "Marathi"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 8
-  },
-  {
-    "id": "agent-115",
-    "name": "Nova",
-    "gender": "Neutral",
-    "useCase": "Credit Card Recovery",
-    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
-    "languages": [
-      "Assamese",
-      "Kannada",
-      "Bhojpuri"
-    ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 1",
-      "Credit Cards",
-      "BNPL"
-    ],
-    "minutesSpoken": 37
+    "minutesSpoken": 1492
   },
   {
     "id": "agent-116",
-    "name": "Pooja",
+    "name": "Sanjana",
     "gender": "Female",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Guides policyholders through a claim status update and required document checklist.",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Pre-approved offer pitch",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that pitches a pre-approved offer to an existing customer for Personal Loan.",
     "languages": [
-      "Bhojpuri"
+      "Hindi",
+      "Kannada"
     ],
     "rating": null,
     "status": "Dev",
     "real": false,
     "provider": null,
-    "minutesSpoken": 13
+    "minutesSpoken": 29
   },
   {
-    "id": "agent-117",
-    "name": "Sam",
-    "gender": "Neutral",
-    "useCase": "KYC & Onboarding",
-    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
-    "languages": [
-      "Bengali"
+    "id": "agent-125",
+    "name": "Kiran",
+    "gender": "Female",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
     ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 22
-  },
-  {
-    "id": "agent-118",
-    "name": "Nova",
-    "gender": "Neutral",
-    "useCase": "Complaint Resolution",
-    "persona": "De-escalates NPS-detractor callers and routes unresolved cases to a retention specialist.",
+    "objective": "Callback booking",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that books a callback with a prospect who is busy for Credit Cards & Personal Loan.",
     "languages": [
       "Punjabi",
-      "Gujarati",
-      "Telugu"
+      "Hinglish"
     ],
-    "rating": 4.5,
+    "rating": 4,
     "status": "Demo",
     "real": false,
     "provider": null,
-    "minutesSpoken": 916
+    "minutesSpoken": 532
   },
   {
-    "id": "agent-119",
-    "name": "Kavya",
+    "id": "agent-28",
+    "name": "Meera",
     "gender": "Female",
-    "useCase": "Customer Support",
-    "persona": "First-line triage for net-banking login issues before routing to a human agent.",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Home Loans"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on Credit Cards & Home Loans accounts before the due date.",
     "languages": [
-      "Punjabi",
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 40
+  },
+  {
+    "id": "agent-53",
+    "name": "Vidya",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Home Loans accounts before the due date.",
+    "languages": [
+      "Hinglish",
       "Gujarati"
     ],
     "rating": null,
     "status": "Dev",
     "real": false,
     "provider": null,
-    "minutesSpoken": 15
+    "minutesSpoken": 10
   },
   {
-    "id": "agent-120",
-    "name": "Veer Verma",
+    "id": "agent-36",
+    "name": "Aarav",
     "gender": "Male",
-    "useCase": "Customer Support",
-    "persona": "First-line triage for net-banking login issues before routing to a human agent.",
-    "languages": [
-      "Telugu",
-      "Rajasthani"
-    ],
-    "rating": 4.6,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 446
-  },
-  {
-    "id": "agent-121",
-    "name": "Meera",
-    "gender": "Female",
-    "useCase": "Credit Card Recovery",
-    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
-    "languages": [
-      "Assamese",
-      "Tamil",
-      "Hindi"
-    ],
-    "rating": 4.5,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket X",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL",
       "Personal Loan"
     ],
-    "minutesSpoken": 953
-  },
-  {
-    "id": "agent-122",
-    "name": "Nikhil",
-    "gender": "Male",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on BNPL & Personal Loan accounts before the due date.",
     "languages": [
-      "Telugu",
-      "Bengali",
-      "Tamil"
+      "Hindi",
+      "Hinglish"
     ],
     "rating": null,
     "status": "Dev",
@@ -2221,190 +350,1584 @@
     "minutesSpoken": 31
   },
   {
-    "id": "agent-123",
-    "name": "Yash",
+    "id": "agent-76",
+    "name": "Ankit",
     "gender": "Male",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Cross-sells top-up loans to existing good-standing borrowers based on repayment history.",
-    "languages": [
-      "Tamil",
-      "Urdu",
-      "Kannada"
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance",
+      "Credit Cards"
     ],
-    "rating": 3.4,
+    "stage": "Bucket 3",
+    "objective": "Settle account",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles account-settlement negotiations on Microfinance & Credit Cards accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 4.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 6688
+  },
+  {
+    "id": "agent-8",
+    "name": "Deepak",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Credit Cards"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Settle account",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for retail borrowers. Handles account-settlement negotiations on Home Loans & Credit Cards accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hinglish",
+      "Marathi",
+      "Telugu"
+    ],
+    "rating": 3.7,
     "status": "Demo",
     "real": false,
     "provider": null,
-    "minutesSpoken": 900
+    "minutesSpoken": 1413
   },
   {
-    "id": "agent-124",
-    "name": "Aditya",
-    "gender": "Male",
-    "useCase": "Loan Collections",
-    "persona": "De-escalates first, negotiates second — built for borrowers already in a dispute with the lender.",
-    "languages": [
-      "Punjabi"
+    "id": "agent-75",
+    "name": "Gauri",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Personal Loan"
     ],
-    "rating": null,
-    "status": "Dev",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 2",
-      "Business Loan"
-    ],
-    "minutesSpoken": 7
-  },
-  {
-    "id": "agent-125",
-    "name": "Robin Rao",
-    "gender": "Neutral",
-    "useCase": "Credit Card Recovery",
-    "persona": "Handles cardholders past their grace period, escalating tone only after two missed promises to pay.",
+    "stage": "Bucket 3",
+    "objective": "Restructure EMI",
+    "personaTone": "Sentimental",
+    "description": "Warm, relationship-led voice for business borrowers. Handles EMI restructuring conversations on Home Loans & Personal Loan accounts at 90–120 days past due (Bucket 3).",
     "languages": [
-      "Hinglish",
-      "English",
+      "Hindi",
+      "Kannada",
       "Telugu"
     ],
     "rating": null,
     "status": "Dev",
     "real": false,
     "provider": null,
-    "buckets": [
-      "Bucket 3",
+    "minutesSpoken": 20
+  },
+  {
+    "id": "agent-37",
+    "name": "Nirmala",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Education Loan"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Home Loans & Education Loan accounts before the due date.",
+    "languages": [
+      "Hindi",
+      "Punjabi",
+      "Kannada"
+    ],
+    "rating": 3.6,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 11231
+  },
+  {
+    "id": "agent-102",
+    "name": "Shreya",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards",
       "Personal Loan"
     ],
-    "minutesSpoken": 28
-  },
-  {
-    "id": "agent-126",
-    "name": "Sneha",
-    "gender": "Female",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Follows up on a rejected claim to explain the reason and next appeal steps.",
+    "objective": "Product upgrade",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that offers an existing customer a product upgrade for Credit Cards & Personal Loan.",
     "languages": [
+      "Gujarati",
       "Hinglish",
-      "Odia"
-    ],
-    "rating": 3.4,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1053
-  },
-  {
-    "id": "agent-127",
-    "name": "Sneha",
-    "gender": "Female",
-    "useCase": "Insurance Claims & Renewals",
-    "persona": "Calls ahead of a policy lapse date with a same-call renewal option.",
-    "languages": [
-      "Urdu",
-      "Punjabi"
-    ],
-    "rating": 3.9,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 548
-  },
-  {
-    "id": "agent-128",
-    "name": "Scout",
-    "gender": "Neutral",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
-    "languages": [
-      "Punjabi"
-    ],
-    "rating": 4.9,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 4449
-  },
-  {
-    "id": "agent-129",
-    "name": "Nisha",
-    "gender": "Female",
-    "useCase": "Loan Collections",
-    "persona": "Handles field-visit scheduling for chronic non-payers when calls and WhatsApp go unanswered.",
-    "languages": [
-      "Hindi"
-    ],
-    "rating": 4.1,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket 3",
-      "Loans",
-      "EMI"
-    ],
-    "minutesSpoken": 8053
-  },
-  {
-    "id": "agent-130",
-    "name": "Nikhil",
-    "gender": "Male",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
-    "languages": [
-      "Punjabi",
-      "Bhojpuri",
-      "Malayalam"
+      "Tamil"
     ],
     "rating": null,
     "status": "Dev",
     "real": false,
     "provider": null,
-    "minutesSpoken": 34
+    "minutesSpoken": 9
+  },
+  {
+    "id": "agent-54",
+    "name": "Lata",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on Credit Cards accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Kannada",
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 3
   },
   {
     "id": "agent-131",
-    "name": "Sam",
-    "gender": "Neutral",
-    "useCase": "Fraud Alerts & Verification",
-    "persona": "Calls to verify a flagged high-value transaction before it is blocked or released.",
+    "name": "Anushka K.",
+    "gender": "Female",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "objective": "Callback booking",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that books a callback with a prospect who is busy for Credit Cards & Personal Loan.",
     "languages": [
-      "Punjabi",
-      "Rajasthani",
-      "Assamese"
+      "Hindi"
+    ],
+    "rating": 4.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1332
+  },
+  {
+    "id": "agent-65",
+    "name": "Trisha",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles payment reminders on Credit Cards & Personal Loan accounts before the due date.",
+    "languages": [
+      "Marathi",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 3
+  },
+  {
+    "id": "agent-22",
+    "name": "Disha",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL",
+      "Personal Loan"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on BNPL & Personal Loan accounts before the due date.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 9
+  },
+  {
+    "id": "agent-101",
+    "name": "Anjali",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Application follow-up",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that follows up on an application the customer started for Credit Cards.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 18
+  },
+  {
+    "id": "agent-30",
+    "name": "Waseem",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Education Loan",
+      "BNPL"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Education Loan & BNPL accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hindi",
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 37
+  },
+  {
+    "id": "agent-98",
+    "name": "Sarita",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "objective": "Application follow-up",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that follows up on an application the customer started for Credit Cards & Personal Loan.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 5
+  },
+  {
+    "id": "agent-46",
+    "name": "Vijay",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Credit Cards accounts before the due date.",
+    "languages": [
+      "Marathi",
+      "Hindi",
+      "Telugu"
     ],
     "rating": 4.2,
     "status": "Demo",
     "real": false,
     "provider": null,
-    "minutesSpoken": 1382
+    "minutesSpoken": 1135
   },
   {
-    "id": "agent-132",
-    "name": "Kavya",
+    "id": "agent-107",
+    "name": "Swati",
     "gender": "Female",
-    "useCase": "Loan Collections",
-    "persona": "Firm but fair reminder call for early-cycle overdue accounts, tuned to avoid churn.",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Product upgrade",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that offers an existing customer a product upgrade for Personal Loan.",
     "languages": [
-      "Urdu",
+      "Hindi"
+    ],
+    "rating": 4.2,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1503
+  },
+  {
+    "id": "agent-113",
+    "name": "Jyoti",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "objective": "Product upgrade",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that offers an existing customer a product upgrade for Credit Cards & Personal Loan.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 4.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1003
+  },
+  {
+    "id": "agent-99",
+    "name": "Tushar",
+    "gender": "Male",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "objective": "Product upgrade",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that offers an existing customer a product upgrade for Personal Loan & Credit Cards.",
+    "languages": [
+      "Hindi",
+      "Kannada",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 39
+  },
+  {
+    "id": "agent-58",
+    "name": "Waheeda",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on Credit Cards & Personal Loan accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Tamil",
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 46
+  },
+  {
+    "id": "agent-59",
+    "name": "Girish",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Personal Loan"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Payment collection",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for business borrowers. Handles payment-collection calls on Home Loans & Personal Loan accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Gujarati",
+      "Hindi",
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 12
+  },
+  {
+    "id": "agent-136",
+    "name": "Amit K.",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Lead qualification",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that qualifies a new lead’s interest and eligibility for Credit Cards.",
+    "languages": [
+      "Hinglish",
+      "Tamil"
+    ],
+    "rating": 3.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 541
+  },
+  {
+    "id": "agent-121",
+    "name": "Uma",
+    "gender": "Female",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "objective": "Lead qualification",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that qualifies a new lead’s interest and eligibility for Personal Loan & Credit Cards.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": 3.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 708
+  },
+  {
+    "id": "agent-52",
+    "name": "Kunal",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan",
+      "BNPL"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Personal Loan & BNPL accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Kannada",
+      "Punjabi",
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 33
+  },
+  {
+    "id": "agent-20",
+    "name": "Mihir",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL",
+      "Personal Loan"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for retail borrowers. Handles payment-collection calls on BNPL & Personal Loan accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hinglish",
+      "Kannada",
+      "Telugu"
+    ],
+    "rating": 3.6,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 7679
+  },
+  {
+    "id": "agent-57",
+    "name": "Ananya",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on Microfinance accounts before the due date.",
+    "languages": [
+      "Hindi",
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 5
+  },
+  {
+    "id": "agent-2",
+    "name": "Chetan",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Education Loan"
+    ],
+    "stage": "Bucket X",
+    "objective": "Payment collection",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment-collection calls on Credit Cards & Education Loan accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hindi",
+      "Gujarati",
       "Kannada"
+    ],
+    "rating": 4.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1035
+  },
+  {
+    "id": "agent-106",
+    "name": "Parth",
+    "gender": "Male",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Application follow-up",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that follows up on an application the customer started for Credit Cards.",
+    "languages": [
+      "Hindi",
+      "Punjabi",
+      "Marathi"
     ],
     "rating": 4.4,
     "status": "Demo",
     "real": false,
     "provider": null,
-    "buckets": [
-      "Bucket 3",
-      "Vehicle Loan",
+    "minutesSpoken": 1328
+  },
+  {
+    "id": "agent-4",
+    "name": "Arjun",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Education Loan",
+      "BNPL"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Education Loan & BNPL accounts at 30–60 days past due (Bucket 1).",
+    "languages": [
+      "Hinglish",
+      "Punjabi",
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 8
+  },
+  {
+    "id": "agent-31",
+    "name": "Rakesh",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for retail borrowers. Handles payment-collection calls on Credit Cards & Personal Loan accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 3.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 898
+  },
+  {
+    "id": "agent-92",
+    "name": "Komal",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance",
+      "Home Loans"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles payment-collection calls on Microfinance & Home Loans accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Tamil",
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 5
+  },
+  {
+    "id": "agent-104",
+    "name": "Ishaan",
+    "gender": "Male",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "objective": "Application follow-up",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that follows up on an application the customer started for Credit Cards & Personal Loan.",
+    "languages": [
+      "Kannada",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 18
+  },
+  {
+    "id": "agent-70",
+    "name": "Prachi",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Restructure EMI",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles EMI restructuring conversations on Microfinance accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hinglish",
+      "Punjabi",
+      "Tamil"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 40
+  },
+  {
+    "id": "agent-18",
+    "name": "Rajesh",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Education Loan",
+      "Home Loans"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for retail borrowers. Handles payment-collection calls on Education Loan & Home Loans accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 4.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1596
+  },
+  {
+    "id": "agent-1",
+    "name": "Anushka",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Education Loan"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Reminder",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for retail borrowers. Handles payment reminders on Credit Cards & Education Loan accounts at 30–60 days past due (Bucket 1).",
+    "languages": [
+      "Punjabi",
+      "Hinglish"
+    ],
+    "rating": 4.2,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 891
+  },
+  {
+    "id": "agent-122",
+    "name": "Nandini",
+    "gender": "Female",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "objective": "Lead qualification",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that qualifies a new lead’s interest and eligibility for Credit Cards & Personal Loan.",
+    "languages": [
+      "Hindi",
+      "Kannada",
+      "Tamil"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 33
+  },
+  {
+    "id": "agent-33",
+    "name": "Hema",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL",
+      "Education Loan"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Settle account",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for retail borrowers. Handles account-settlement negotiations on BNPL & Education Loan accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Tamil",
+      "Punjabi",
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 10
+  },
+  {
+    "id": "agent-129",
+    "name": "Farhan",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan",
       "Credit Cards"
     ],
-    "minutesSpoken": 1043
+    "objective": "Lead qualification",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that qualifies a new lead’s interest and eligibility for Personal Loan & Credit Cards.",
+    "languages": [
+      "Telugu",
+      "Hindi"
+    ],
+    "rating": 3.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 915
+  },
+  {
+    "id": "agent-49",
+    "name": "Madhavi",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan",
+      "Home Loans"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Personal Loan & Home Loans accounts before the due date.",
+    "languages": [
+      "Telugu",
+      "Tamil",
+      "Punjabi"
+    ],
+    "rating": 4.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 8668
+  },
+  {
+    "id": "agent-139",
+    "name": "Pallavi K.",
+    "gender": "Female",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Callback booking",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that books a callback with a prospect who is busy for Credit Cards.",
+    "languages": [
+      "Gujarati",
+      "Hindi",
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 5
+  },
+  {
+    "id": "agent-73",
+    "name": "Ravi",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Restructure EMI",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for business borrowers. Handles EMI restructuring conversations on Credit Cards accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Tamil",
+      "Kannada",
+      "Hindi"
+    ],
+    "rating": 3.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 9541
+  },
+  {
+    "id": "agent-27",
+    "name": "Dhruv",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan",
+      "BNPL"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Restructure EMI",
+    "personaTone": "Sentimental",
+    "description": "Warm, relationship-led voice for retail borrowers. Handles EMI restructuring conversations on Personal Loan & BNPL accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Hinglish",
+      "Kannada",
+      "Punjabi"
+    ],
+    "rating": 4.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 4600
+  },
+  {
+    "id": "agent-62",
+    "name": "Omkar",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for business borrowers. Handles payment-collection calls on Home Loans accounts at 30–60 days past due (Bucket 1).",
+    "languages": [
+      "Hindi",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 25
+  },
+  {
+    "id": "agent-9",
+    "name": "Pallavi",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Restructure EMI",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for retail borrowers. Handles EMI restructuring conversations on Credit Cards accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 4,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 4822
   },
   {
     "id": "agent-133",
-    "name": "Alex",
-    "gender": "Neutral",
-    "useCase": "KYC & Onboarding",
-    "persona": "Calls to complete video-KYC scheduling for account activation.",
+    "name": "Kavya K.",
+    "gender": "Female",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "objective": "Lead qualification",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that qualifies a new lead’s interest and eligibility for Personal Loan & Credit Cards.",
+    "languages": [
+      "Tamil",
+      "Hindi"
+    ],
+    "rating": 4.6,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 9216
+  },
+  {
+    "id": "agent-26",
+    "name": "Siddharth",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL"
+    ],
+    "stage": "Bucket X",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for retail borrowers. Handles payment-collection calls on BNPL accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Marathi",
+      "Tamil",
+      "Telugu"
+    ],
+    "rating": 4.2,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 10795
+  },
+  {
+    "id": "agent-61",
+    "name": "Riya",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles payment reminders on Microfinance accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": 4.6,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 478
+  },
+  {
+    "id": "agent-138",
+    "name": "Deepak K.",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Product pitch",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that pitches the product to a new prospect for Personal Loan.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": 4.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1027
+  },
+  {
+    "id": "agent-71",
+    "name": "Ritu",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for business borrowers. Handles payment reminders on Personal Loan accounts before the due date.",
+    "languages": [
+      "Telugu",
+      "Kannada",
+      "Punjabi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 47
+  },
+  {
+    "id": "agent-51",
+    "name": "Aanya",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Restructure EMI",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles EMI restructuring conversations on Microfinance accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Marathi",
+      "Gujarati",
+      "Kannada"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 10
+  },
+  {
+    "id": "agent-126",
+    "name": "Karan",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Callback booking",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that books a callback with a prospect who is busy for Personal Loan.",
+    "languages": [
+      "Hindi",
+      "Telugu",
+      "Punjabi"
+    ],
+    "rating": 3.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 5750
+  },
+  {
+    "id": "agent-89",
+    "name": "Vandana",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance"
+    ],
+    "stage": "Bucket X",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for business borrowers. Handles payment-collection calls on Microfinance accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hinglish",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 49
+  },
+  {
+    "id": "agent-39",
+    "name": "Ashok",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Home Loans"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on Credit Cards & Home Loans accounts before the due date.",
+    "languages": [
+      "Hinglish",
+      "Kannada",
+      "Tamil"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 60
+  },
+  {
+    "id": "agent-35",
+    "name": "Prakash",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL",
+      "Microfinance"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Reminder",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for retail borrowers. Handles payment reminders on BNPL & Microfinance accounts at 30–60 days past due (Bucket 1).",
+    "languages": [
+      "Kannada",
+      "Hinglish"
+    ],
+    "rating": 4.6,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 648
+  },
+  {
+    "id": "agent-60",
+    "name": "Aarti",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for business borrowers. Handles payment reminders on Home Loans accounts before the due date.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 506
+  },
+  {
+    "id": "agent-69",
+    "name": "Jatin",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Restructure EMI",
+    "personaTone": "Sentimental",
+    "description": "Warm, relationship-led voice for business borrowers. Handles EMI restructuring conversations on Microfinance accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Telugu",
+      "Tamil"
+    ],
+    "rating": 3.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 9217
+  },
+  {
+    "id": "agent-42",
+    "name": "Yamini",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on Microfinance accounts at 30–60 days past due (Bucket 1).",
+    "languages": [
+      "Gujarati",
+      "Hindi",
+      "Tamil"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 25
+  },
+  {
+    "id": "agent-78",
+    "name": "Zubin",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance",
+      "Credit Cards"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for business borrowers. Handles payment-collection calls on Microfinance & Credit Cards accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Telugu",
+      "Tamil",
+      "Marathi"
+    ],
+    "rating": 4.4,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1465
+  },
+  {
+    "id": "agent-96",
+    "name": "Divya",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "objective": "Pre-approved offer pitch",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that pitches a pre-approved offer to an existing customer for Credit Cards & Personal Loan.",
+    "languages": [
+      "Hinglish",
+      "Kannada",
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 24
+  },
+  {
+    "id": "agent-123",
+    "name": "Yogesh",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Callback booking",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that books a callback with a prospect who is busy for Credit Cards.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 15
+  },
+  {
+    "id": "agent-134",
+    "name": "Arjun K.",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Lead qualification",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that qualifies a new lead’s interest and eligibility for Personal Loan.",
+    "languages": [
+      "Kannada",
+      "Hinglish"
+    ],
+    "rating": 4.1,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 997
+  },
+  {
+    "id": "agent-118",
+    "name": "Yashika",
+    "gender": "Female",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Callback booking",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that books a callback with a prospect who is busy for Personal Loan.",
+    "languages": [
+      "Hindi",
+      "Punjabi"
+    ],
+    "rating": 4.4,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1270
+  },
+  {
+    "id": "agent-120",
+    "name": "Yash",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Callback booking",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that books a callback with a prospect who is busy for Credit Cards.",
+    "languages": [
+      "Hindi",
+      "Tamil",
+      "Marathi"
+    ],
+    "rating": 4,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 4459
+  },
+  {
+    "id": "agent-86",
+    "name": "Sachin",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance",
+      "Credit Cards"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles payment reminders on Microfinance & Credit Cards accounts before the due date.",
+    "languages": [
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 19
+  },
+  {
+    "id": "agent-45",
+    "name": "Falguni",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment-collection calls on Home Loans accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hindi",
+      "Kannada"
+    ],
+    "rating": 4.3,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1100
+  },
+  {
+    "id": "agent-50",
+    "name": "Tara",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Home Loans accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hindi",
+      "Gujarati"
+    ],
+    "rating": 4.6,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 12002
+  },
+  {
+    "id": "agent-128",
+    "name": "Dev",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Product pitch",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that pitches the product to a new prospect for Credit Cards.",
+    "languages": [
+      "Punjabi",
+      "Kannada",
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 44
+  },
+  {
+    "id": "agent-56",
+    "name": "Deepa",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Settle account",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for retail borrowers. Handles account-settlement negotiations on Microfinance accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Gujarati"
+    ],
+    "rating": 4.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 12761
+  },
+  {
+    "id": "agent-105",
+    "name": "Pranav",
+    "gender": "Male",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Application follow-up",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that follows up on an application the customer started for Personal Loan.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 51
+  },
+  {
+    "id": "agent-84",
+    "name": "Vaishali",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Microfinance"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for business borrowers. Handles payment-collection calls on Credit Cards & Microfinance accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Marathi",
+      "Punjabi",
+      "Hinglish"
+    ],
+    "rating": 4.2,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 5179
+  },
+  {
+    "id": "agent-29",
+    "name": "Chitra",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Microfinance"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Restructure EMI",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles EMI restructuring conversations on Home Loans & Microfinance accounts at 60–90 days past due (Bucket 2).",
     "languages": [
       "Hindi"
     ],
@@ -2412,14 +1935,647 @@
     "status": "Dev",
     "real": false,
     "provider": null,
-    "minutesSpoken": 7
+    "minutesSpoken": 50
   },
   {
-    "id": "agent-134",
-    "name": "Nova",
-    "gender": "Neutral",
-    "useCase": "Loan Collections",
-    "persona": "De-escalates first, negotiates second — built for borrowers already in a dispute with the lender.",
+    "id": "agent-137",
+    "name": "Manisha K.",
+    "gender": "Female",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Callback booking",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that books a callback with a prospect who is busy for Credit Cards.",
+    "languages": [
+      "Kannada",
+      "Punjabi"
+    ],
+    "rating": 4.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 490
+  },
+  {
+    "id": "agent-80",
+    "name": "Bindu",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Microfinance"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Restructure EMI",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for business borrowers. Handles EMI restructuring conversations on Credit Cards & Microfinance accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Tamil",
+      "Marathi",
+      "Hindi"
+    ],
+    "rating": 4.2,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 514
+  },
+  {
+    "id": "agent-44",
+    "name": "Sneha",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL",
+      "Credit Cards"
+    ],
+    "stage": "Bucket X",
+    "objective": "Payment collection",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment-collection calls on BNPL & Credit Cards accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hindi",
+      "Tamil"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 24
+  },
+  {
+    "id": "agent-17",
+    "name": "Varsha",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Education Loan"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Education Loan accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Tamil",
+      "Hinglish"
+    ],
+    "rating": 4.4,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 10572
+  },
+  {
+    "id": "agent-43",
+    "name": "Naveen",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL",
+      "Education Loan"
+    ],
+    "stage": "Bucket X",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for retail borrowers. Handles payment-collection calls on BNPL & Education Loan accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hindi",
+      "Kannada"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 54
+  },
+  {
+    "id": "agent-132",
+    "name": "Chetan K.",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "objective": "Lead qualification",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that qualifies a new lead’s interest and eligibility for Personal Loan & Credit Cards.",
+    "languages": [
+      "Hindi",
+      "Punjabi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 57
+  },
+  {
+    "id": "agent-10",
+    "name": "Mansi",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Education Loan",
+      "Credit Cards"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Settle account",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for retail borrowers. Handles account-settlement negotiations on Education Loan & Credit Cards accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 28
+  },
+  {
+    "id": "agent-32",
+    "name": "Nisha",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Settle account",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for retail borrowers. Handles account-settlement negotiations on Credit Cards & Personal Loan accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Hinglish",
+      "Gujarati",
+      "Marathi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 8
+  },
+  {
+    "id": "agent-127",
+    "name": "Ajay",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "objective": "Lead qualification",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that qualifies a new lead’s interest and eligibility for Personal Loan & Credit Cards.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": 4.6,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 677
+  },
+  {
+    "id": "agent-64",
+    "name": "Aditi",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Personal Loan"
+    ],
+    "stage": "Bucket X",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for business borrowers. Handles payment-collection calls on Home Loans & Personal Loan accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Tamil"
+    ],
+    "rating": 3.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 426
+  },
+  {
+    "id": "agent-40",
+    "name": "Rahul",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on Home Loans accounts before the due date.",
+    "languages": [
+      "Hindi",
+      "Kannada"
+    ],
+    "rating": 3.6,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 6385
+  },
+  {
+    "id": "agent-68",
+    "name": "Geeta",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Microfinance"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Payment collection",
+    "personaTone": "Sentimental",
+    "description": "Warm, relationship-led voice for business borrowers. Handles payment-collection calls on Home Loans & Microfinance accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Hinglish",
+      "Telugu",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 59
+  },
+  {
+    "id": "agent-48",
+    "name": "Ishita",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards"
+    ],
+    "stage": "Bucket X",
+    "objective": "Payment collection",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment-collection calls on Credit Cards accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hindi",
+      "Telugu",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 56
+  },
+  {
+    "id": "agent-21",
+    "name": "Mohan",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for retail borrowers. Handles payment-collection calls on Credit Cards accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hindi",
+      "Punjabi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 0
+  },
+  {
+    "id": "agent-97",
+    "name": "Neelam",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "objective": "Product upgrade",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that offers an existing customer a product upgrade for Personal Loan & Credit Cards.",
+    "languages": [
+      "Tamil",
+      "Gujarati",
+      "Hinglish"
+    ],
+    "rating": 4.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 11463
+  },
+  {
+    "id": "agent-95",
+    "name": "Tarun",
+    "gender": "Male",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards",
+      "Personal Loan"
+    ],
+    "objective": "Product upgrade",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that offers an existing customer a product upgrade for Credit Cards & Personal Loan.",
+    "languages": [
+      "Hindi",
+      "Tamil"
+    ],
+    "rating": 4.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 632
+  },
+  {
+    "id": "agent-16",
+    "name": "Mitali",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Settle account",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles account-settlement negotiations on Credit Cards accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Gujarati"
+    ],
+    "rating": 4.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1496
+  },
+  {
+    "id": "agent-114",
+    "name": "Vinay",
+    "gender": "Male",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Pre-approved offer pitch",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that pitches a pre-approved offer to an existing customer for Personal Loan.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 33
+  },
+  {
+    "id": "agent-112",
+    "name": "Dhara",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Application follow-up",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that follows up on an application the customer started for Personal Loan.",
+    "languages": [
+      "Marathi",
+      "Hindi",
+      "Punjabi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1
+  },
+  {
+    "id": "agent-66",
+    "name": "Aditya",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Microfinance"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for business borrowers. Handles payment-collection calls on Credit Cards & Microfinance accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Kannada",
+      "Tamil"
+    ],
+    "rating": 3.5,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 12868
+  },
+  {
+    "id": "agent-91",
+    "name": "Suresh",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance",
+      "Credit Cards"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Settle account",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for business borrowers. Handles account-settlement negotiations on Microfinance & Credit Cards accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 55
+  },
+  {
+    "id": "agent-7",
+    "name": "Manisha",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Restructure EMI",
+    "personaTone": "Sentimental",
+    "description": "Warm, relationship-led voice for retail borrowers. Handles EMI restructuring conversations on Credit Cards accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Telugu",
+      "Punjabi",
+      "Hinglish"
+    ],
+    "rating": 4.2,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 12793
+  },
+  {
+    "id": "agent-110",
+    "name": "Sakshi",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Product upgrade",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that offers an existing customer a product upgrade for Personal Loan.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 22
+  },
+  {
+    "id": "agent-135",
+    "name": "Lokesh K.",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Product pitch",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that pitches the product to a new prospect for Credit Cards.",
+    "languages": [
+      "Hindi",
+      "Punjabi"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 872
+  },
+  {
+    "id": "agent-24",
+    "name": "Nitin",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Personal Loan & Credit Cards accounts before the due date.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 47
+  },
+  {
+    "id": "agent-19",
+    "name": "Sanjay",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL",
+      "Microfinance"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on BNPL & Microfinance accounts at 30–60 days past due (Bucket 1).",
+    "languages": [
+      "Kannada",
+      "Hinglish",
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 28
+  },
+  {
+    "id": "agent-103",
+    "name": "Harsh",
+    "gender": "Male",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Product upgrade",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that offers an existing customer a product upgrade for Credit Cards.",
+    "languages": [
+      "Hinglish",
+      "Tamil",
+      "Telugu"
+    ],
+    "rating": 4.1,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1186
+  },
+  {
+    "id": "agent-108",
+    "name": "Varun",
+    "gender": "Male",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Pre-approved offer pitch",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that pitches a pre-approved offer to an existing customer for Credit Cards.",
     "languages": [
       "Tamil",
       "Kannada"
@@ -2428,111 +2584,770 @@
     "status": "Dev",
     "real": false,
     "provider": null,
-    "buckets": [
-      "Bucket X",
-      "Credit Cards",
-      "Personal Loan"
-    ],
-    "minutesSpoken": 32
+    "minutesSpoken": 2
   },
   {
-    "id": "agent-135",
-    "name": "Ananya",
+    "id": "agent-88",
+    "name": "Zeenat",
     "gender": "Female",
-    "useCase": "KYC & Onboarding",
-    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance",
+      "Credit Cards"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles payment reminders on Microfinance & Credit Cards accounts at 30–60 days past due (Bucket 1).",
     "languages": [
+      "Hindi",
+      "Kannada",
+      "Gujarati"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 968
+  },
+  {
+    "id": "agent-47",
+    "name": "Manoj",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Home Loans"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on Credit Cards & Home Loans accounts before the due date.",
+    "languages": [
+      "Marathi",
+      "Punjabi"
+    ],
+    "rating": 4.4,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 12309
+  },
+  {
+    "id": "agent-74",
+    "name": "Charu",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles payment reminders on Microfinance accounts before the due date.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 4,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 5487
+  },
+  {
+    "id": "agent-119",
+    "name": "Uday",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Lead qualification",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that qualifies a new lead’s interest and eligibility for Credit Cards.",
+    "languages": [
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 22
+  },
+  {
+    "id": "agent-93",
+    "name": "Umesh",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Microfinance"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for business borrowers. Handles payment reminders on Credit Cards & Microfinance accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hinglish",
+      "Marathi"
+    ],
+    "rating": 3.8,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 6708
+  },
+  {
+    "id": "agent-90",
+    "name": "Nikhil",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan"
+    ],
+    "stage": "Bucket X",
+    "objective": "Payment collection",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles payment-collection calls on Personal Loan accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 3.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1146
+  },
+  {
+    "id": "agent-34",
+    "name": "Tanvi",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on BNPL accounts before the due date.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 4.8,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1243
+  },
+  {
+    "id": "agent-6",
+    "name": "Amit",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for retail borrowers. Handles payment-collection calls on Home Loans accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Gujarati",
+      "Hindi",
+      "Hinglish"
+    ],
+    "rating": 4,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 7321
+  },
+  {
+    "id": "agent-109",
+    "name": "Lakshmi",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "objective": "Product upgrade",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that offers an existing customer a product upgrade for Personal Loan & Credit Cards.",
+    "languages": [
+      "Telugu"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 49
+  },
+  {
+    "id": "agent-72",
+    "name": "Sameer",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan",
+      "Microfinance"
+    ],
+    "stage": "Bucket 3",
+    "objective": "Restructure EMI",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles EMI restructuring conversations on Personal Loan & Microfinance accounts at 90–120 days past due (Bucket 3).",
+    "languages": [
+      "Tamil",
+      "Hindi",
+      "Telugu"
+    ],
+    "rating": 3.4,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1480
+  },
+  {
+    "id": "agent-117",
+    "name": "Padma",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "objective": "Pre-approved offer pitch",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that pitches a pre-approved offer to an existing customer for Personal Loan & Credit Cards.",
+    "languages": [
+      "Hindi",
+      "Gujarati",
       "Marathi"
     ],
     "rating": null,
     "status": "Dev",
     "real": false,
     "provider": null,
-    "minutesSpoken": 45
+    "minutesSpoken": 57
   },
   {
-    "id": "agent-136",
-    "name": "Dev",
-    "gender": "Male",
-    "useCase": "KYC & Onboarding",
-    "persona": "Walks a new loan applicant through pending KYC documents and re-uploads.",
-    "languages": [
-      "Gujarati",
-      "Bhojpuri"
+    "id": "agent-38",
+    "name": "Indu",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL",
+      "Home Loans"
     ],
-    "rating": 4.8,
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on BNPL & Home Loans accounts before the due date.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": 3.6,
     "status": "Demo",
     "real": false,
     "provider": null,
-    "minutesSpoken": 568
+    "minutesSpoken": 1094
   },
   {
-    "id": "agent-137",
-    "name": "Robin Nair",
+    "id": "agent-25",
+    "name": "Hitesh",
     "gender": "Male",
-    "useCase": "Credit Card Recovery",
-    "persona": "Recovers overdue credit-card balances with minimum-due framing and settlement offers.",
-    "languages": [
-      "English",
-      "Gujarati"
-    ],
-    "rating": 3.4,
-    "status": "Live",
-    "real": false,
-    "provider": null,
-    "buckets": [
-      "Bucket X",
-      "Vehicle Loan",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance",
       "Personal Loan"
     ],
-    "minutesSpoken": 5197
-  },
-  {
-    "id": "agent-138",
-    "name": "Rohan",
-    "gender": "Male",
-    "useCase": "Loan Sales & Cross-sell",
-    "persona": "Re-engages abandoned loan applications with a same-day callback offer.",
+    "stage": "Bucket 3",
+    "objective": "Settle account",
+    "personaTone": "Sentimental",
+    "description": "Warm, relationship-led voice for retail borrowers. Handles account-settlement negotiations on Microfinance & Personal Loan accounts at 90–120 days past due (Bucket 3).",
     "languages": [
-      "Malayalam",
-      "Kannada",
-      "Rajasthani"
-    ],
-    "rating": 4.6,
-    "status": "Demo",
-    "real": false,
-    "provider": null,
-    "minutesSpoken": 1103
-  },
-  {
-    "id": "agent-139",
-    "name": "Veer Verma",
-    "gender": "Male",
-    "useCase": "KYC & Onboarding",
-    "persona": "Follows up on an incomplete onboarding form abandoned mid-way.",
-    "languages": [
-      "English"
+      "Hinglish",
+      "Punjabi",
+      "Marathi"
     ],
     "rating": null,
     "status": "Dev",
     "real": false,
     "provider": null,
-    "minutesSpoken": 58
+    "minutesSpoken": 15
   },
   {
-    "id": "agent-140",
-    "name": "Scout",
-    "gender": "Neutral",
-    "useCase": "Complaint Resolution",
-    "persona": "De-escalates NPS-detractor callers and routes unresolved cases to a retention specialist.",
+    "id": "agent-14",
+    "name": "Vivek",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Education Loan"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Reminder",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for retail borrowers. Handles payment reminders on Credit Cards & Education Loan accounts at 30–60 days past due (Bucket 1).",
     "languages": [
       "Marathi",
-      "Punjabi"
+      "Kannada"
     ],
-    "rating": 3.8,
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 9
+  },
+  {
+    "id": "agent-23",
+    "name": "Radhika",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Education Loan",
+      "Personal Loan"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Education Loan & Personal Loan accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hinglish",
+      "Kannada",
+      "Gujarati"
+    ],
+    "rating": 4.1,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 7118
+  },
+  {
+    "id": "agent-79",
+    "name": "Sunita",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan",
+      "Home Loans"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Payment collection",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles payment-collection calls on Personal Loan & Home Loans accounts at 30–60 days past due (Bucket 1).",
+    "languages": [
+      "Hinglish",
+      "Marathi",
+      "Gujarati"
+    ],
+    "rating": 3.7,
     "status": "Demo",
     "real": false,
     "provider": null,
-    "minutesSpoken": 1108
+    "minutesSpoken": 636
+  },
+  {
+    "id": "agent-63",
+    "name": "Gaurav",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Credit Cards"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Payment collection",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles payment-collection calls on Home Loans & Credit Cards accounts at 30–60 days past due (Bucket 1).",
+    "languages": [
+      "Hinglish",
+      "Kannada",
+      "Gujarati"
+    ],
+    "rating": 4.9,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 802
+  },
+  {
+    "id": "agent-111",
+    "name": "Harini",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Product upgrade",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that offers an existing customer a product upgrade for Credit Cards.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 59
+  },
+  {
+    "id": "agent-77",
+    "name": "Imran",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance",
+      "Credit Cards"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Payment collection",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for business borrowers. Handles payment-collection calls on Microfinance & Credit Cards accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": 3.4,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 613
+  },
+  {
+    "id": "agent-87",
+    "name": "Smita",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan",
+      "Microfinance"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for business borrowers. Handles payment reminders on Personal Loan & Microfinance accounts at 30–60 days past due (Bucket 1).",
+    "languages": [
+      "Hinglish",
+      "Punjabi"
+    ],
+    "rating": 4.4,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 9569
+  },
+  {
+    "id": "agent-94",
+    "name": "Revathi",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Pre-approved offer pitch",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that pitches a pre-approved offer to an existing customer for Credit Cards.",
+    "languages": [
+      "Hinglish",
+      "Tamil"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 8
+  },
+  {
+    "id": "agent-5",
+    "name": "Lokesh",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Microfinance"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Microfinance accounts before the due date.",
+    "languages": [
+      "Hindi",
+      "Telugu"
+    ],
+    "rating": 3.7,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1184
+  },
+  {
+    "id": "agent-130",
+    "name": "Rohan",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan",
+      "Credit Cards"
+    ],
+    "objective": "Callback booking",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice that books a callback with a prospect who is busy for Personal Loan & Credit Cards.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 4.2,
+    "status": "Live",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 6610
+  },
+  {
+    "id": "agent-41",
+    "name": "Satish",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Education Loan"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Professional",
+    "description": "Clear, professional voice for retail borrowers. Handles payment reminders on Education Loan accounts before the due date.",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 12
+  },
+  {
+    "id": "agent-55",
+    "name": "Esha",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Personal Loan"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Settle account",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for retail borrowers. Handles account-settlement negotiations on Personal Loan accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Punjabi",
+      "Hinglish",
+      "Kannada"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 57
+  },
+  {
+    "id": "agent-115",
+    "name": "Bhavna",
+    "gender": "Female",
+    "service": "Cross-selling",
+    "line": "Sales",
+    "products": [
+      "Credit Cards"
+    ],
+    "objective": "Product upgrade",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice that offers an existing customer a product upgrade for Credit Cards.",
+    "languages": [
+      "Gujarati"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 59
+  },
+  {
+    "id": "agent-67",
+    "name": "Abhay",
+    "gender": "Male",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Personal Loan"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for business borrowers. Handles payment reminders on Home Loans & Personal Loan accounts before the due date.",
+    "languages": [
+      "Kannada",
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 13
+  },
+  {
+    "id": "agent-124",
+    "name": "Bharat",
+    "gender": "Male",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Callback booking",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice that books a callback with a prospect who is busy for Personal Loan.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1293
+  },
+  {
+    "id": "agent-81",
+    "name": "Pooja",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Personal Loan"
+    ],
+    "stage": "Pre-due",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for business borrowers. Handles payment reminders on Home Loans & Personal Loan accounts before the due date.",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": 4.6,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 425
+  },
+  {
+    "id": "agent-3",
+    "name": "Kavya",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Education Loan"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Education Loan accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Punjabi",
+      "Gujarati",
+      "Hindi"
+    ],
+    "rating": 4.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 1210
+  },
+  {
+    "id": "agent-11",
+    "name": "Akash",
+    "gender": "Male",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "Credit Cards",
+      "Education Loan"
+    ],
+    "stage": "Bucket 1",
+    "objective": "Reminder",
+    "personaTone": "Friendly",
+    "description": "Friendly, conversational voice for retail borrowers. Handles payment reminders on Credit Cards & Education Loan accounts at 30–60 days past due (Bucket 1).",
+    "languages": [
+      "Kannada"
+    ],
+    "rating": 4.2,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 869
+  },
+  {
+    "id": "agent-13",
+    "name": "Jaya",
+    "gender": "Female",
+    "service": "Retail debt collections",
+    "line": "Collections",
+    "products": [
+      "BNPL"
+    ],
+    "stage": "Bucket 2",
+    "objective": "Restructure EMI",
+    "personaTone": "Firm",
+    "description": "Firm but fair voice for retail borrowers. Handles EMI restructuring conversations on BNPL accounts at 60–90 days past due (Bucket 2).",
+    "languages": [
+      "Hinglish"
+    ],
+    "rating": 3.5,
+    "status": "Demo",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 443
+  },
+  {
+    "id": "agent-83",
+    "name": "Rashmi",
+    "gender": "Female",
+    "service": "Business debt collections",
+    "line": "Collections",
+    "products": [
+      "Home Loans",
+      "Personal Loan"
+    ],
+    "stage": "Bucket X",
+    "objective": "Reminder",
+    "personaTone": "Empathetic",
+    "description": "Empathetic, patient voice for business borrowers. Handles payment reminders on Home Loans & Personal Loan accounts in the first 30 days past due (Bucket X).",
+    "languages": [
+      "Hindi"
+    ],
+    "rating": null,
+    "status": "Dev",
+    "real": false,
+    "provider": null,
+    "minutesSpoken": 31
   }
 ]
