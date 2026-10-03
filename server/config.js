@@ -87,6 +87,11 @@ module.exports = {
         appVersion: Number(process.env.SARVAM_APP_VERSION_SALES || 1),
         variables: (process.env.SARVAM_VARS_SALES || 'user_name').split(',').map(v => v.trim()).filter(Boolean),
       },
+      mpokket: {
+        appId: process.env.SARVAM_APP_ID_MPOKKET || 'Predixion-A-0127b3d3-b7da',
+        appVersion: Number(process.env.SARVAM_APP_VERSION_MPOKKET || 3),
+        variables: (process.env.SARVAM_VARS_SALES || 'user_name').split(',').map(v => v.trim()).filter(Boolean),
+      },
     },
   },
 
