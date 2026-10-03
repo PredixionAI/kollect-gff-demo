@@ -115,6 +115,38 @@
     }
   },
   {
+    "id": "mpokket-priya",
+    "name": "Priya",
+    "gender": "Female",
+    "service": "Cold sales",
+    "line": "Sales",
+    "products": [
+      "Personal Loan"
+    ],
+    "objective": "Product pitch",
+    "personaTone": "Friendly",
+    "badge": "Mpokket agent",
+    "client": "mPokket",
+    "appId": "Predixion-A-0127b3d3-b7da",
+    "appVersion": 3,
+    "description": "Engaging cold-sales voice tuned for mPokket instant personal loans. Pitch loan offers, qualify borrower eligibility, and answer product questions.",
+    "languages": [
+      "Hindi",
+      "English",
+      "Hinglish"
+    ],
+    "rating": 4.9,
+    "status": "Live",
+    "real": true,
+    "provider": "Sarvam (Samvaad)",
+    "minutesSpoken": 5840,
+    "performance": {
+      "latencyMs": 585,
+      "wordsPerMin": 155,
+      "qcScore": 98.4
+    }
+  },
+  {
     "id": "agent-100",
     "name": "Ketan",
     "gender": "Male",

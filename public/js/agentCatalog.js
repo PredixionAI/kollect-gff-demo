@@ -89,6 +89,12 @@ function bestBadge(agent){
     Best in ${agent.bestRegion}</span>`;
 }
 
+function clientBadge(agent){
+  const text = agent.badge || agent.clientBadge || (agent.client ? `${agent.client} agent` : '');
+  if (!text) return '';
+  return `<span class="agent-badge-client"><span class="badge-dot"></span>${text}</span>`;
+}
+
 function renderAgentCard(agent){
   const rating = agent.rating != null
     ? `<span class="agent-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01z"/></svg>${agent.rating.toFixed(1)}</span>`
@@ -103,6 +109,7 @@ function renderAgentCard(agent){
             <div class="usecase">${agent.service}</div>
           </div>
         </div>
+        ${clientBadge(agent)}
       </div>
       ${bestBadge(agent) ? `<div>${bestBadge(agent)}</div>` : ''}
       <div class="agent-card-persona">${agent.description}</div>
@@ -243,8 +250,11 @@ function renderAgentModalBody(agent){
   return `
     <div class="agent-modal-head">
       <div class="agent-avatar agent-avatar-lg">${initialsFor(agent.name)}</div>
-      <div>
-        <div class="agent-modal-name">${agent.name}</div>
+      <div style="flex:1">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div class="agent-modal-name">${agent.name}</div>
+          ${clientBadge(agent)}
+        </div>
         <div class="agent-modal-usecase">${agent.service}</div>
       </div>
     </div>
@@ -346,7 +356,12 @@ function renderModalPanel(kind, agent, seed){
     return;
   }
   if (kind === 'history') {
-    panel.innerHTML = `<div class="modal-panel-list">${VERSION_HISTORY_TEMPLATE.map(v => `
+    const list = (agent.appVersion || agent.appId) ? [
+      { version: `v${agent.appVersion || 3}.0`, tag: 'Active Deployment', note: `Deployed on Sarvam Samvaad (App: ${agent.appId || 'Predixion-A-0127b3d3-b7da'}), optimized for ${agent.client || 'mPokket'} cold-sales outreach.` },
+      { version: 'v2.0', tag: '', note: 'Objection handling and callback scheduling tuned for instant personal loans.' },
+      { version: 'v1.0', tag: '', note: 'Initial production release.' },
+    ] : VERSION_HISTORY_TEMPLATE;
+    panel.innerHTML = `<div class="modal-panel-list">${list.map(v => `
       <div class="modal-panel-row">
         <div class="modal-panel-row-top"><strong>${v.version}</strong>${v.tag ? `<span class="modal-panel-tag">${v.tag}</span>` : ''}</div>
         <div class="modal-panel-row-note">${v.note}</div>
