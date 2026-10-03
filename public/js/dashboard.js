@@ -1333,10 +1333,7 @@ async function triggerRealCall(){
   _voiceCallPhase = 'connecting';
   refreshVoiceCallPhone();
   try {
-    const res = await fetch('/api/call', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const callBody = {
         name: state.name,
         phone: state.phone,
         voiceId: state.voice ? state.voice.id : null,
@@ -1361,9 +1358,29 @@ async function triggerRealCall(){
         // Sales routes to a completely different Sarvam agent server-side
         // and has NO fallback to VOIZ/ElevenLabs if it fails (call.js).
         useCase: state.useCase || 'collections',
-      }),
+    };
+    const postCall = (extra) => fetch('/api/call', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...callBody, ...extra }),
     });
-    const data = await res.json();
+    let res = await postCall({});
+    let data = await res.json();
+    // The server answers 409 instead of silently dialing VOIZ (a different
+    // agent and script) when the primary agent couldn't place the call —
+    // ask first, and only retry through the backup if the attendee agrees.
+    if(res.status === 409 && data.needsFallbackConfirm){
+      const ok = window.confirm('The primary voice agent could not place this call. Place it through the backup agent instead? It uses a different voice and script.');
+      if(ok){
+        setCallStatusLine('Dialing through the backup agent…');
+        res = await postCall({ allowFallback: true });
+        data = await res.json();
+      } else {
+        setCallStatusLine('Call not placed (backup agent declined)', 'err');
+        realCallCompleted = true;
+        return;
+      }
+    }
     if(!res.ok){
       setCallStatusLine(`Call could not be placed (${data.error || res.status})`, 'err');
       realCallCompleted = true; // nothing to wait for, unblock auto-play

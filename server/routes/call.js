@@ -15,7 +15,7 @@ const router = express.Router();
 // ever sends voiceId, never an agent_id, so it can't be spoofed into calling
 // a different agent than the one it displayed.
 router.post('/call', async (req, res) => {
-  const { name, phone, voiceId, lang, firstMessage, archetypeId, overdueDays, enhancedQuality, useCase } = req.body || {};
+  const { name, phone, voiceId, lang, firstMessage, archetypeId, overdueDays, enhancedQuality, useCase, allowFallback } = req.body || {};
   if (!name || !phone) {
     return res.status(400).json({ error: 'name and phone are required' });
   }
@@ -29,6 +29,9 @@ router.post('/call', async (req, res) => {
   // each one needs.
   const resolvedUseCase = useCase === 'sales' ? 'sales' : 'collections';
   const sarvamApp = config.sarvam.apps[resolvedUseCase];
+  // Set when Sarvam was tried and failed. VOIZ only gets dialed after that
+  // if the caller re-sends with allowFallback:true (see the gate below).
+  let sarvamFailedDetail = null;
 
   // Sarvam (2026-09-24 user request) — tried FIRST, automatically, for
   // every real call, no manual toggle (unlike Enhanced Quality below).
@@ -40,7 +43,7 @@ router.post('/call', async (req, res) => {
   // an agent saying their "EMI is pending" — worse than just failing
   // cleanly, so a Sales dispatch failure returns an error instead of
   // falling through.
-  if (config.sarvam.apiKey && config.sarvam.orgId && config.sarvam.workspaceId
+  if (!allowFallback && config.sarvam.apiKey && config.sarvam.orgId && config.sarvam.workspaceId
     && sarvamApp.appId && config.sarvam.connectionId && config.sarvam.agentPhoneNumber) {
     const sarvamResult = await sarvamClient.placeCall({
       customerPhone: formattedPhone,
@@ -66,7 +69,8 @@ router.post('/call', async (req, res) => {
     if (resolvedUseCase === 'sales') {
       return res.status(502).json({ error: 'Sales agent dispatch failed', detail: sarvamResult.body });
     }
-    console.warn('[call] falling back to Enhanced Quality/VOIZ');
+    sarvamFailedDetail = (sarvamResult.body && sarvamResult.body.error && sarvamResult.body.error.data && sarvamResult.body.error.data.details)
+      || `HTTP ${sarvamResult.httpStatus}`;
   } else if (resolvedUseCase === 'sales') {
     return res.status(500).json({ error: 'Sales agent is not configured (missing Sarvam credentials or SARVAM_APP_ID_SALES)' });
   }
@@ -111,6 +115,18 @@ router.post('/call', async (req, res) => {
       return res.status(elevenResult.httpStatus).json({ call_id: callId, status: 'initiated', provider: 'elevenlabs' });
     }
     console.warn(`[call] Enhanced Quality requested but ElevenLabs dispatch failed (${elevenResult.body && (elevenResult.body.message || elevenResult.body.reason)}) — falling back to VOIZ`);
+  }
+
+  // Falling back to VOIZ (a different agent, voice and script) after Sarvam
+  // failed is the attendee's call to make, not something to do silently
+  // (2026-10-04 user request): answer 409 and let the dashboard ask, then
+  // retry with allowFallback:true. Not asked when Sarvam isn't configured at
+  // all — VOIZ is simply the primary provider then.
+  if (sarvamFailedDetail && !allowFallback) {
+    return res.status(409).json({
+      needsFallbackConfirm: true, fallback: 'voiz',
+      error: 'The primary voice agent could not place this call.', detail: sarvamFailedDetail,
+    });
   }
 
   const targetAgentId = (voiceId && config.voiz.agentIdsByVoice[voiceId]) || config.voiz.defaultAgentId;

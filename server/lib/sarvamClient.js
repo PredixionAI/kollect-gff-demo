@@ -65,21 +65,31 @@ async function placeCall({ customerPhone, customerName, overdueDays, useCase }) 
   const app = config.sarvam.apps[resolvedUseCase];
   const url = `${BASE_URL}/api/outbounds/v1/${orgWorkspacePath()}/outbounds`;
 
-  const agentVariables = resolvedUseCase === 'sales'
-    ? { user_name: customerName || 'Valued Customer' }
-    : {
-        user_name: customerName || 'Valued Customer',
-        customer_name: customerName || 'Valued Customer',
-        dpd: String(overdueDays != null ? overdueDays : 1),
-        emi_amount: String(config.demo.dueAmount),
-        emi_due_date: config.demo.dueDate,
-        outstanding_amount: String(config.demo.dueAmount),
-        overdue_amount: String(config.demo.dueAmount),
-        product_type: 'Personal Loan',
-        today_date: new Date().toISOString().slice(0, 10),
-        prior_context: '',
-        link_live: '',
-      };
+  // Every variable we can fill, all with demo data — nothing here names a
+  // real company (a made-up "XYZ Bank" stands in for the lender everywhere,
+  // 2026-10-04). Sarvam rejects the WHOLE call if even one key isn't
+  // declared on the agent, so only the names listed for this use case in
+  // config.sarvam.apps.<useCase>.variables are actually sent.
+  const name = customerName || 'Valued Customer';
+  const dueAmount = String(config.demo.dueAmount);
+  const available = {
+    user_name: name,
+    customer_name: name,
+    name,
+    bank_name: 'XYZ Bank',
+    company_name: 'XYZ Bank',
+    dpd: String(overdueDays != null ? overdueDays : 1),
+    emi_amount: dueAmount,
+    emi_due_date: config.demo.dueDate,
+    outstanding_amount: dueAmount,
+    overdue_amount: dueAmount,
+    product_type: 'Personal Loan',
+    today_date: new Date().toISOString().slice(0, 10),
+    prior_context: 'First reminder call from XYZ Bank about an overdue personal loan EMI.',
+    link_live: 'https://xyzbank.example/pay',
+  };
+  const agentVariables = {};
+  (app.variables || []).forEach(k => { if (k in available) agentVariables[k] = available[k]; });
 
   const payload = {
     app_config: {

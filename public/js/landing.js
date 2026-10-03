@@ -92,17 +92,32 @@ document.getElementById('cardLeadX').addEventListener('click', (e) => {
     statusEl.className = 'direct-call-status';
     if (window.track) track('landing_direct_call_triggered', { name, phone, useCase: dcallUsecase });
     try {
-      const res = await fetch('/api/call', {
+      const callBody = {
+        name, phone,
+        voiceId: 'priya', lang: 'hi',
+        archetypeId: 'technical', overdueDays: 12,
+        useCase: dcallUsecase,
+      };
+      const postCall = (extra) => fetch('/api/call', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name, phone,
-          voiceId: 'priya', lang: 'hi',
-          archetypeId: 'technical', overdueDays: 12,
-          useCase: dcallUsecase,
-        }),
+        body: JSON.stringify({ ...callBody, ...extra }),
       });
-      const data = await res.json();
+      let res = await postCall({});
+      let data = await res.json();
+      // Server answers 409 rather than silently dialing the backup agent
+      // when the primary one couldn't place the call — ask first.
+      if (res.status === 409 && data.needsFallbackConfirm) {
+        if (window.confirm('The primary voice agent could not place this call. Place it through the backup agent instead? It uses a different voice and script.')) {
+          statusEl.textContent = 'Calling via backup…';
+          res = await postCall({ allowFallback: true });
+          data = await res.json();
+        } else {
+          statusEl.textContent = 'Call not placed.';
+          statusEl.className = 'direct-call-status is-error';
+          return;
+        }
+      }
       if (res.ok && data.call_id) {
         // Which real provider (Sarvam/ElevenLabs/VOIZ) actually dispatched
         // the call is an internal implementation detail — never surfaced

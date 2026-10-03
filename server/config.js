@@ -79,10 +79,13 @@ module.exports = {
       collections: {
         appId: process.env.SARVAM_APP_ID_COLLECTIONS || '',
         appVersion: Number(process.env.SARVAM_APP_VERSION_COLLECTIONS || 1),
+        // Input variable names this agent declares — comma-separated env, see sarvamClient.js.
+        variables: (process.env.SARVAM_VARS_COLLECTIONS || 'user_name,customer_name,dpd,emi_amount,emi_due_date,outstanding_amount,overdue_amount,product_type,today_date,prior_context,link_live').split(',').map(v => v.trim()).filter(Boolean),
       },
       sales: {
         appId: process.env.SARVAM_APP_ID_SALES || '',
         appVersion: Number(process.env.SARVAM_APP_VERSION_SALES || 1),
+        variables: (process.env.SARVAM_VARS_SALES || 'user_name').split(',').map(v => v.trim()).filter(Boolean),
       },
     },
   },
