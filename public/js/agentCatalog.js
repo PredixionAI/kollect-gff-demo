@@ -121,6 +121,7 @@ function renderAgentCard(agent){
       <div class="agent-card-minutes">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
         ${formatMinutes(agent.minutesSpoken)}
+        ${agent.appId ? `<span style="margin-left:auto; color:#38bdf8; font-weight:600; display:inline-flex; align-items:center; gap:4px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Test call</span>` : ''}
       </div>
     </div>`;
 }
@@ -268,6 +269,9 @@ function renderAgentModalBody(agent){
     </div>
 
     <div class="agent-modal-actions">
+      <button class="catalog-filter-select agent-modal-action" data-panel="call">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:13px;height:13px;display:inline-block;vertical-align:-1px;margin-right:4px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Test call
+      </button>
       <button class="catalog-filter-select agent-modal-action" data-panel="history">Version history</button>
       <button class="catalog-filter-select agent-modal-action" data-panel="tune">Tune parameters</button>
       <button class="catalog-filter-select agent-modal-action" data-panel="performance">Performance</button>
@@ -338,6 +342,78 @@ function pickOne(rand, list){ return list[Math.floor(rand() * list.length)]; }
 
 function renderModalPanel(kind, agent, seed){
   const panel = document.getElementById('agentModalPanel');
+  if (kind === 'call') {
+    const isLiveSarvam = !!agent.appId;
+    panel.innerHTML = `
+      <div class="modal-panel-call">
+        <div class="modal-call-header">
+          <div>
+            <strong>Direct test call with ${agent.name}</strong>
+            <div class="modal-call-meta">
+              ${isLiveSarvam ? `Connected to Sarvam App: <code>${agent.appId}</code> (v${agent.appVersion || 1})` : `Dispatches via ${agent.provider || 'default provider'}`}
+            </div>
+          </div>
+          ${agent.badge ? `<span class="agent-badge-client"><span class="badge-dot"></span>${agent.badge}</span>` : ''}
+        </div>
+
+        <div style="margin-top:14px; display:flex; flex-direction:column; gap:10px;">
+          <div>
+            <label style="display:block; font-size:11.5px; color:var(--text-faint); margin-bottom:4px;">Customer / Prospect Name</label>
+            <input type="text" id="agentCallName" class="catalog-filter-select" style="width:100%; box-sizing:border-box; height:36px; padding:0 12px; font-size:13px;" placeholder="Name (e.g. Rahul Sharma)" value="${window.capturedName || ''}">
+          </div>
+          <div>
+            <label style="display:block; font-size:11.5px; color:var(--text-faint); margin-bottom:4px;">Phone Number (E.164 or 10 digits)</label>
+            <input type="tel" id="agentCallPhone" class="catalog-filter-select" style="width:100%; box-sizing:border-box; height:36px; padding:0 12px; font-size:13px;" placeholder="+91 98765 43210" value="${window.capturedPhone || ''}">
+          </div>
+          <button class="btn-pill-primary" id="btnAgentCallSubmit" style="width:100%; height:38px; margin-top:6px; font-size:13px; font-weight:600; cursor:pointer;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-right:6px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Place test call with ${agent.name}
+          </button>
+          <div id="agentCallStatus" style="font-size:12px; margin-top:6px; min-height:18px; text-align:center;"></div>
+        </div>
+      </div>`;
+
+    const nameIn = document.getElementById('agentCallName');
+    const phoneIn = document.getElementById('agentCallPhone');
+    const submitBtn = document.getElementById('btnAgentCallSubmit');
+    const statusEl = document.getElementById('agentCallStatus');
+
+    submitBtn.addEventListener('click', async () => {
+      const name = nameIn.value.trim() || 'Valued Customer';
+      const phone = phoneIn.value.trim();
+      if (!phone || phone.replace(/\D/g, '').length < 10) {
+        statusEl.innerHTML = '<span style="color:var(--red);">Please enter a valid 10-digit phone number</span>';
+        return;
+      }
+      submitBtn.disabled = true;
+      statusEl.innerHTML = `<span style="color:var(--blue);">Dialing ${agent.name}... connecting to Sarvam API</span>`;
+
+      try {
+        const res = await fetch('/api/call', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            phone,
+            useCase: agent.line === 'Sales' ? 'sales' : 'collections',
+            agentId: agent.id,
+            sarvamAppId: agent.appId || undefined,
+            sarvamAppVersion: agent.appVersion || undefined,
+          }),
+        });
+        const data = await res.json();
+        if (res.ok && data.call_id) {
+          statusEl.innerHTML = `<span style="color:var(--green);">✓ Call initiated! Attempt ID: <code>${data.call_id}</code>. Your phone should ring shortly.</span>`;
+        } else {
+          statusEl.innerHTML = `<span style="color:var(--red);">${data.error || 'Dispatch failed'}${data.detail ? ` (${JSON.stringify(data.detail)})` : ''}</span>`;
+          submitBtn.disabled = false;
+        }
+      } catch (err) {
+        statusEl.innerHTML = `<span style="color:var(--red);">Network error: ${err.message}</span>`;
+        submitBtn.disabled = false;
+      }
+    });
+    return;
+  }
   if (kind === 'performance') {
     const p = agent.performance || {};
     const insights = insightsFor(agent, seed);
@@ -415,9 +491,11 @@ function openAgentModal(agentId){
       renderModalPanel(btn.dataset.panel, agent, seed);
     });
   });
-  // Default open panel — version history is the least destructive, most
-  // informative first view.
-  document.querySelector('.agent-modal-action[data-panel="history"]').click();
+  // Default open panel — open "Test call" immediately for live agents with an appId (e.g. Priya),
+  // otherwise default to "Version history".
+  const defaultPanel = (agent.appId || agent.id === 'mpokket-priya') ? 'call' : 'history';
+  const defaultBtn = document.querySelector(`.agent-modal-action[data-panel="${defaultPanel}"]`) || document.querySelector('.agent-modal-action[data-panel="history"]');
+  if (defaultBtn) defaultBtn.click();
 }
 
 function closeAgentModal(){

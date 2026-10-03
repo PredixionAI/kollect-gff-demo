@@ -60,9 +60,11 @@ async function fetchJson(url, opts) {
 //   sales: ONLY `user_name` as input (user-confirmed 2026-09-30) —
 //     `call_summary` is an OUTPUT this agent writes back after the call,
 //     not something to send in.
-async function placeCall({ customerPhone, customerName, overdueDays, useCase }) {
+async function placeCall({ customerPhone, customerName, overdueDays, useCase, appId, appVersion }) {
   const resolvedUseCase = useCase === 'sales' ? 'sales' : 'collections';
   const app = config.sarvam.apps[resolvedUseCase];
+  const targetAppId = appId || app.appId;
+  const targetAppVersion = appVersion != null ? Number(appVersion) : app.appVersion;
   const url = `${BASE_URL}/api/outbounds/v1/${orgWorkspacePath()}/outbounds`;
 
   // Every variable we can fill, all with demo data — nothing here names a
@@ -94,8 +96,8 @@ async function placeCall({ customerPhone, customerName, overdueDays, useCase }) 
 
   const payload = {
     app_config: {
-      app_id: app.appId,
-      app_version: app.appVersion,
+      app_id: targetAppId,
+      app_version: targetAppVersion,
       connection_config: {
         connection_id: config.sarvam.connectionId,
         agent_phone_number: config.sarvam.agentPhoneNumber,
@@ -114,7 +116,7 @@ async function placeCall({ customerPhone, customerName, overdueDays, useCase }) 
     body: JSON.stringify(payload),
   });
   console.log(`[sarvamClient] Response HTTP ${httpStatus}:`, JSON.stringify(body, null, 2));
-  return { httpStatus, body: { ...body, call_id: body.attempt_id || null }, payloadSent: payload, appId: app.appId };
+  return { httpStatus, body: { ...body, call_id: body.attempt_id || null }, payloadSent: payload, appId: targetAppId };
 }
 
 // GET /api/analytics/v1/{org_id}/{workspace_id}/{app_id}/attempts, filtered

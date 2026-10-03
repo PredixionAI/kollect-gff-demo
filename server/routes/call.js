@@ -15,7 +15,7 @@ const router = express.Router();
 // ever sends voiceId, never an agent_id, so it can't be spoofed into calling
 // a different agent than the one it displayed.
 router.post('/call', async (req, res) => {
-  const { name, phone, voiceId, lang, firstMessage, archetypeId, overdueDays, enhancedQuality, useCase, allowFallback } = req.body || {};
+  const { name, phone, voiceId, lang, firstMessage, archetypeId, overdueDays, enhancedQuality, useCase, allowFallback, agentId, sarvamAppId, sarvamAppVersion } = req.body || {};
   if (!name || !phone) {
     return res.status(400).json({ error: 'name and phone are required' });
   }
@@ -23,12 +23,27 @@ router.post('/call', async (req, res) => {
   let formattedPhone = phone.replace(/[^0-9+]/g, '');
   if (!formattedPhone.startsWith('+')) formattedPhone = '+91' + formattedPhone;
 
+  let targetSarvamAppId = sarvamAppId;
+  let targetSarvamAppVersion = sarvamAppVersion;
+  if (agentId && !targetSarvamAppId) {
+    try {
+      const catalog = require('../agentCatalog.json');
+      const found = catalog.find(a => a.id === agentId);
+      if (found && found.appId) {
+        targetSarvamAppId = found.appId;
+        targetSarvamAppVersion = found.appVersion || 1;
+      }
+    } catch (_) {}
+  }
+
   // Two Sarvam agents as of 2026-09-30: Collections (original) and Sales
   // (new). `useCase` ('collections' default, or 'sales') picks which one —
   // see server/lib/sarvamClient.js for the very different agent_variables
   // each one needs.
   const resolvedUseCase = useCase === 'sales' ? 'sales' : 'collections';
   const sarvamApp = config.sarvam.apps[resolvedUseCase];
+  const effectiveAppId = targetSarvamAppId || sarvamApp.appId;
+  const effectiveAppVersion = targetSarvamAppVersion != null ? Number(targetSarvamAppVersion) : sarvamApp.appVersion;
   // Set when Sarvam was tried and failed. VOIZ only gets dialed after that
   // if the caller re-sends with allowFallback:true (see the gate below).
   let sarvamFailedDetail = null;
@@ -44,12 +59,14 @@ router.post('/call', async (req, res) => {
   // cleanly, so a Sales dispatch failure returns an error instead of
   // falling through.
   if (!allowFallback && config.sarvam.apiKey && config.sarvam.orgId && config.sarvam.workspaceId
-    && sarvamApp.appId && config.sarvam.connectionId && config.sarvam.agentPhoneNumber) {
+    && effectiveAppId && config.sarvam.connectionId && config.sarvam.agentPhoneNumber) {
     const sarvamResult = await sarvamClient.placeCall({
       customerPhone: formattedPhone,
       customerName: name,
       overdueDays: overdueDays !== undefined && overdueDays !== null ? overdueDays : 1,
       useCase: resolvedUseCase,
+      appId: effectiveAppId,
+      appVersion: effectiveAppVersion,
     });
     const dispatchedOk = sarvamResult.httpStatus >= 200 && sarvamResult.httpStatus < 300 && !!sarvamResult.body.call_id;
     if (dispatchedOk) {
