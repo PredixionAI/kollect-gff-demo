@@ -21,7 +21,8 @@ const STAGES = ['Pre-due', 'Bucket X', 'Bucket 1', 'Bucket 2', 'Bucket 3'];
 // one of them.
 function searchTextFor(agent) {
   return [agent.name, agent.service, (agent.products || []).join(', '), agent.stage, agent.objective,
-    agent.personaTone, (agent.languages || []).join(', '), agent.description]
+    agent.personaTone, (agent.languages || []).join(', '), agent.description,
+    agent.bestRegion ? `best performer in ${agent.bestRegion}` : '']
     .filter(Boolean).join(' — ');
 }
 

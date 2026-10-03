@@ -79,6 +79,16 @@ function agentChipRows(agent){
     ${languages ? `<div class="agent-card-chips">${languages}</div>` : ''}`;
 }
 
+// Only a handful of agents carry bestRegion (one winner per region, picked
+// from the catalog data), so this badge stays a deliberate marker rather
+// than something every card has.
+function bestBadge(agent){
+  if (!agent.bestRegion) return '';
+  return `<span class="agent-badge-best" title="Highest QC audit score among agents whose primary language is spoken in ${agent.bestRegion}">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01z"/></svg>
+    Best in ${agent.bestRegion}</span>`;
+}
+
 function renderAgentCard(agent){
   const rating = agent.rating != null
     ? `<span class="agent-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01z"/></svg>${agent.rating.toFixed(1)}</span>`
@@ -94,6 +104,7 @@ function renderAgentCard(agent){
           </div>
         </div>
       </div>
+      ${bestBadge(agent) ? `<div>${bestBadge(agent)}</div>` : ''}
       <div class="agent-card-persona">${agent.description}</div>
       ${agentChipRows(agent)}
       <div class="agent-card-foot">
@@ -237,6 +248,7 @@ function renderAgentModalBody(agent){
         <div class="agent-modal-usecase">${agent.service}</div>
       </div>
     </div>
+    ${bestBadge(agent) ? `<div style="margin-bottom:10px">${bestBadge(agent)}</div>` : ''}
     <p class="agent-modal-persona">${agent.description}</p>
     ${agentChipRows(agent)}
     <div class="agent-modal-stats">
@@ -248,13 +260,91 @@ function renderAgentModalBody(agent){
     <div class="agent-modal-actions">
       <button class="catalog-filter-select agent-modal-action" data-panel="history">Version history</button>
       <button class="catalog-filter-select agent-modal-action" data-panel="tune">Tune parameters</button>
+      <button class="catalog-filter-select agent-modal-action" data-panel="performance">Performance</button>
       <button class="catalog-filter-select agent-modal-action" data-panel="clone">Clone</button>
     </div>
     <div class="agent-modal-panel" id="agentModalPanel"></div>`;
 }
 
+// Insights this kind of agent captures about the people it talks to. Which
+// signals apply depends on the line: a collections agent learns why someone
+// missed a payment and how they'll respond, a sales agent learns interest,
+// spend and objections. The VALUES are seeded sample figures (same agent ->
+// same numbers every open), like the rest of this modal's mock panels —
+// what's real here is the choice of signals, not the percentages.
+function seededRand(seed){
+  let s = seed >>> 0;
+  return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+}
+function shuffled(rand, list){
+  const a = list.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+// n percentages that sum to 100, largest first.
+function splitPercents(rand, n){
+  const w = Array.from({ length: n }, () => 0.4 + rand());
+  const total = w.reduce((x, y) => x + y, 0);
+  const p = w.map(x => Math.round(x / total * 100));
+  p[0] += 100 - p.reduce((x, y) => x + y, 0);
+  return p.sort((x, y) => y - x);
+}
+function topShares(rand, labels, take){
+  const order = shuffled(rand, labels);
+  const pct = splitPercents(rand, labels.length);
+  return order.slice(0, take).map((l, i) => `${l} ${pct[i]}%`).join(' · ');
+}
+const between = (rand, lo, hi) => Math.round(lo + rand() * (hi - lo));
+
+function insightsFor(agent, seed){
+  const r = seededRand(seed ^ 0x9e3779b9);
+  if (agent.line === 'Sales') {
+    const interest = splitPercents(r, 3);
+    const products = agent.products || [];
+    const productSplit = products.length > 1
+      ? (() => { const a = between(r, 52, 72); return `${products[0]} ${a}% · ${products[1]} ${100 - a}%`; })()
+      : `${products[0] || 'Credit Cards'} 100%`;
+    const sal = between(r, 58, 82);
+    return [
+      { label: 'Interest level', desc: 'How warm the prospect is after the pitch', value: `Hot ${interest[0]}% · Warm ${interest[1]}% · Cold ${interest[2]}%` },
+      { label: 'Product interest', desc: 'Which product the prospect leaned towards', value: productSplit },
+      { label: 'Spend profile', desc: 'Where they say they spend most each month', value: topShares(r, ['Bills & utilities', 'Travel', 'Shopping', 'Dining', 'Fuel'], 3) },
+      { label: 'Employment & income', desc: 'Self-declared on the call, used to pre-screen eligibility', value: `Salaried ${sal}% · Self-employed ${100 - sal}%` },
+      { label: 'Top objections', desc: 'What stopped them saying yes', value: topShares(r, ['Annual fee', 'Already has a card', 'Not interested now', 'Wants to compare offers'], 3) },
+      { label: 'Callback window & consent', desc: 'When to follow up, and whether they agreed to be contacted', value: `${pickOne(r, ['10 AM–12 PM', '12–2 PM', '4–6 PM', '6–8 PM'])} · consent ${between(r, 84, 96)}%` },
+    ];
+  }
+  const sent = splitPercents(r, 3);
+  return [
+    { label: 'Promise-to-pay rate', desc: 'Answered calls that end in a dated payment commitment', value: `${between(r, 28, 58)}%` },
+    { label: 'Right-party contact', desc: 'Calls that reach the borrower, not a relative or wrong number', value: `${between(r, 52, 82)}%` },
+    { label: 'Reasons for delay', desc: 'Why the payment was missed, in the borrower’s own words', value: topShares(r, ['Salary delayed', 'Medical expense', 'Forgot / oversight', 'Disputes the charge', 'Business slowdown', 'Job loss'], 3) },
+    { label: 'Sentiment', desc: 'Tone of the borrower across the call', value: `Cooperative ${sent[0]}% · Neutral ${sent[1]}% · Resistant ${sent[2]}%` },
+    { label: 'Best time to reach', desc: 'Window and channel the borrower actually responds on', value: `${pickOne(r, ['9–11 AM', '12–2 PM', '4–6 PM', '6–8 PM'])} · ${pickOne(r, ['Call', 'WhatsApp'])}` },
+    { label: 'Dispute & escalation flags', desc: 'Calls flagged for a dispute, complaint or human hand-off', value: `${between(r, 3, 12)}%` },
+  ];
+}
+function pickOne(rand, list){ return list[Math.floor(rand() * list.length)]; }
+
 function renderModalPanel(kind, agent, seed){
   const panel = document.getElementById('agentModalPanel');
+  if (kind === 'performance') {
+    const p = agent.performance || {};
+    const insights = insightsFor(agent, seed);
+    panel.innerHTML = `
+      <div class="perf-grid">
+        <div class="perf-tile"><div class="perf-value">${p.latencyMs}<small>ms</small></div><div class="perf-label">Avg response latency</div></div>
+        <div class="perf-tile"><div class="perf-value">${p.wordsPerMin}<small>wpm</small></div><div class="perf-label">Word rate</div></div>
+        <div class="perf-tile perf-tile-qc"><div class="perf-value">${p.qcScore.toFixed(1)}<small>/100</small></div><div class="perf-label">QC audit score</div></div>
+      </div>
+      <div class="insights-head">Insights captured about customers</div>
+      <div class="insight-list">${insights.map(i => `
+        <div class="insight-row">
+          <div class="insight-main"><div class="l">${i.label}</div><div class="d">${i.desc}</div></div>
+          <div class="insight-val">${i.value}</div>
+        </div>`).join('')}</div>`;
+    return;
+  }
   if (kind === 'history') {
     panel.innerHTML = `<div class="modal-panel-list">${VERSION_HISTORY_TEMPLATE.map(v => `
       <div class="modal-panel-row">
