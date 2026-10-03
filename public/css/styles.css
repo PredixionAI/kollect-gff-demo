@@ -152,8 +152,13 @@ body{
    /.btn-primary since this nav/footer differ from the rest of the app (a
    horizontal top nav instead of a fixed corner mark, a plain external link
    card instead of a form). */
+/* No `position` here on purpose: .screen already gives every screen
+   position:absolute + inset:0 (it fills the 900px design canvas). An earlier
+   `position:relative` on this ID selector overrode that, so the landing
+   screen collapsed to its content height (836px) with zero slack and its
+   blocks ran into each other (2026-10-04 user report). */
 #screen-landing{
-  flex-direction:column; align-items:center; position:relative;
+  flex-direction:column; align-items:center;
   /* Dual-tone ambient light rather than one flat glow — depth from two soft,
      off-center light sources reads as a real environment instead of a
      single vignette pasted behind the content (apple-design materials §12). */
@@ -196,7 +201,12 @@ body{
 .btn-pill-primary:hover{background:#e8e8e8;}
 .btn-pill-primary:active{transform:scale(.97);}
 
-.landing-hero{max-width:600px; text-align:center; margin:76px 0 48px; position:relative; z-index:1;}
+/* Vertical rhythm of the landing screen (900px canvas): each block keeps its
+   own explicit gap and never shrinks, so if content ever outgrows the canvas
+   it overflows instead of squeezing blocks onto each other. Whatever slack
+   is left goes to .landing-foot's margin-top:auto, pinning it to the bottom. */
+.landing-hero, .landing-grid, .landing-metrics, .direct-call-trigger{flex-shrink:0;}
+.landing-hero{max-width:600px; text-align:center; margin:56px 0 40px; position:relative; z-index:1;}
 .landing-hero h1{
   font-size:clamp(40px, 4.4vw, 52px); font-weight:700; letter-spacing:-1.4px;
   line-height:1.05; margin-bottom:16px; font-optical-sizing:auto;
@@ -287,7 +297,7 @@ body{
 
 .landing-metrics{
   width:100%; max-width:900px; display:flex; align-items:center; justify-content:center;
-  gap:56px; padding:0 40px; margin:auto 0;
+  gap:56px; padding:0 40px; margin:40px 0 0;
 }
 .landing-metric{text-align:center;}
 .landing-metric-value{
@@ -306,7 +316,7 @@ body{
 
 .direct-call-trigger{
   display:flex; flex-direction:column; align-items:center; gap:14px;
-  padding:0 40px;
+  padding:0 40px; margin-top:32px;
 }
 /* Below ~700px this app's viewportFit.js clamps #app's scale at 0.5x (it
    was designed for a booth kiosk/iPad, not a personal phone) — a button
