@@ -87,6 +87,7 @@ async function placeCall({ customerPhone, customerName, overdueDays, useCase }) 
     today_date: new Date().toISOString().slice(0, 10),
     prior_context: 'First reminder call from XYZ Bank about an overdue personal loan EMI.',
     link_live: 'https://xyzbank.example/pay',
+    attempt_no_month: '1',
   };
   const agentVariables = {};
   (app.variables || []).forEach(k => { if (k in available) agentVariables[k] = available[k]; });
